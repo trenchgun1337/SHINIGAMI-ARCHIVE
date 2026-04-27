@@ -257,6 +257,7 @@ a:hover { text-decoration: underline; }
   border-collapse: collapse;
   border: 1px solid #cccccc;
   background: #f9f9f9;
+  table-layout: fixed;
 }
 
 .chan-label {
@@ -272,21 +273,22 @@ a:hover { text-decoration: underline; }
   text-align: left;
 }
 
+
 .chan-field {
   background: #f8f8f8;
   border: 1px solid #cccccc;
   padding: 3px 5px;
   vertical-align: middle;
+  overflow: hidden;
+  max-width: 0;
 }
 
+
+/* DEPOIS */
 .chan-input {
-  background: #ffffff;
-  border: 1px solid #cccccc;
-  padding: 2px 4px;
-  font-family: arial, helvetica, sans-serif;
-  font-size: 13px;
-  color: #111111;
-  width: 280px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .chan-input:focus { outline: none !important; }
@@ -878,8 +880,7 @@ a:hover { text-decoration: underline; }
                 <td class="chan-field">
                   <div style="display:flex;flex-direction:column;gap:6px;">
                     <input id="linkInput" class="chan-input" type="text" placeholder="paste youtube / spotify / soundcloud link">
-                    <div id="linkDropdown" style="background:#fff;border:1px inset #aaa;max-height:90px;overflow-y:auto;font-size:12px;padding:4px;"></div>
-                  </div>
+<div id="linkDropdown" style="background:#fff;border:1px inset #aaa;max-height:90px;overflow-y:auto;overflow-x:hidden;word-break:break-all;font-size:12px;padding:4px;"></div>                  </div>
                 </td>
               </tr>
               <tr>
