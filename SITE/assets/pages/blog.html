@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:;">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Archive Shinigami</title>
+<link rel="icon" href="../images/favicon/favicon.ico">
+<link rel="preload" href="../fonts/cloister_black/CloisterBlack.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="../fonts/deathnote_font/DEATH_NOTE1.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="../fonts/Special_Elite/SpecialElite-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<style>
+@font-face{font-family:'cloister';src:url('../fonts/cloister_black/CloisterBlack.ttf') format('truetype');font-display:block;}
+@font-face{font-family:'DeathNote';src:url('../fonts/deathnote_font/DEATH_NOTE1.ttf') format('truetype');font-display:block;}
+@font-face{font-family:'SpecialElite';src:url('../fonts/Special_Elite/SpecialElite-Regular.ttf') format('truetype');font-display:block;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+*:focus{outline:none!important;}
+img{-webkit-user-drag:none;user-select:none;}
+::selection{background:#fff;color:#000;}
+::-moz-selection{background:#fff;color:#000;}
+::-webkit-scrollbar{width:16px;}
+::-webkit-scrollbar-track{background:#080808;border-left:3px solid #fff;}
+::-webkit-scrollbar-thumb{background-image:url('../images/scrollbar1.webp');background-size:cover;background-position:center;background-repeat:no-repeat;border:1px dashed #000;}
+::-webkit-scrollbar-thumb:hover{background-image:url('../images/scrollbar2.webp');filter:brightness(100);}
+::-webkit-scrollbar-corner{background:#111;}
+
+#videoBg{position:fixed;inset:0;z-index:-1;background:#000;overflow:hidden;pointer-events:none;}
+#videoBg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;}
+
+body{font-family:'SpecialElite',Georgia,serif;font-size:13px;color:#fff;background:transparent;min-height:100vh;overflow-x:hidden;display:flex;justify-content:center;}
+a{color:#fff;text-decoration:none;}
+a:hover{text-decoration:underline;}
+#wrapper{width:560px;max-width:100%;}
+
+#siteHeader{background:#000;border-bottom:2px solid #fff;padding:16px 14px 11px;}
+#siteIcon{width:78px;height:78px;object-fit:contain;object-position:center;display:inline-block;margin-left:221px;}
+#siteLogo{width:370px;margin-left:45px;height:90px;object-position:center;filter:invert();}
+
+#siteNav{background:#000;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:40px;font-family:'SpecialElite',Georgia,serif;font-size:12px;}
+.nav-sep{color:#444;margin:0 9px;user-select:none;}
+.nav-item{color:#fff;text-decoration:none;cursor:pointer;position:relative;display:inline-block;padding:2px 18px 2px 4px;}
+.nav-item:hover,.nav-item.active{color:#000;background-color:#fff;text-decoration:underline;}
+.nav-item:hover::after,.nav-item.active::after{content:"";position:absolute;right:-2px;top:50%;transform:translateY(-50%);width:22px;height:12px;background-image:url('../images/navcross.png');background-size:contain;background-repeat:no-repeat;background-position:center;pointer-events:none;}
+
+#mainContent{position:relative;background:#000;min-height:400px;}
+#mainContent::before,#mainContent::after{content:"";position:absolute;top:0;bottom:0;width:12px;background:url('https://wallpapers.com/images/thumbnail/filigree-samsung-black-9u6vx5ktxvmprgub.webp') repeat-y;filter:brightness(3.4);}
+#mainContent::before{left:0;}
+#mainContent::after{right:0;}
+
+.section-bar{background:#000;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:22px;font-weight:normal;padding:8px 0 5px;display:block;text-align:center;border-bottom:1px solid #e5dada;text-transform:uppercase;}
+.black-gap{background-image:url('../images/scrollbar1.webp');height:8px;border-top:1px solid #000;border-bottom:1px solid #000;}
+.intro-box{background:#000;color:#fff;padding:12px 14px 14px;border-bottom:2px solid #fff;text-align:center;}
+.intro-box p{font-family:'SpecialElite',Georgia,serif;font-size:13px;line-height:1.72;color:#fff;}
+
+.tab-bar{display:flex;background:#000;border-bottom:1px solid #333;}
+.tab-btn{flex:1;background:none;border:none;border-right:1px solid #333;color:#555;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:7px 0;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+.tab-btn:last-child{border-right:none;}
+.tab-btn:hover{color:#fff;background:#111;}
+.tab-btn.active{color:#000;background:#fff;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.posts-area{background:#000;padding:0 14px 14px;}
+.post-search-bar{display:flex;gap:6px;padding:10px 0 8px;}
+.post-search-bar input{flex:1;background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:4px 8px;}
+.post-search-bar input::placeholder{color:#555;}
+.post-search-bar select{background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:4px 6px;cursor:pointer;}
+
+.post-card{background:#f6f6f6;border:1px solid #ccc;margin-bottom:14px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;}
+.post-card-header{background:#f0f0f0;border-bottom:1px solid #ccc;padding:5px 10px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.post-author{font-weight:bold;font-size:14px;color:#000;}
+.post-date{font-size:11px;color:#555;}
+.post-no{font-size:11px;color:#888;margin-left:auto;}
+.post-body{padding:10px 12px;}
+.post-img-wrap{margin-bottom:8px;display:inline-block;position:relative;}
+.post-img-wrap img{max-width:220px;max-height:220px;object-fit:contain;border:1px solid #ccc;display:block;cursor:zoom-in;}
+
+.spoiler-text{background:#111;color:#111;cursor:pointer;padding:0 2px;border-radius:2px;}
+.spoiler-text:hover,.spoiler-text.revealed{color:#fff;}
+.spoiler-img-wrap{position:relative;display:inline-block;cursor:pointer;}
+.spoiler-img-wrap::after{content:"SPOILER — click to reveal";position:absolute;inset:0;background:rgba(0,0,0,.92);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;font-family:'SpecialElite',Georgia,serif;letter-spacing:1px;text-transform:uppercase;}
+.spoiler-img-wrap.revealed::after{display:none;}
+.spoiler-img-wrap img{max-width:220px;max-height:220px;object-fit:contain;display:block;}
+.post-content{line-height:1.65;word-break:break-word;overflow-wrap:break-word;}
+.post-embed{margin-top:8px;}
+.post-embed iframe{border:1px solid #ccc;display:block;max-width:100%;}
+.post-actions{padding:4px 10px 6px;text-align:right;border-top:1px dashed #ccc;}
+.post-del-btn{background:none;border:1px solid #ccc;color:#aaa;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:2px 8px;cursor:pointer;letter-spacing:.5px;}
+.post-del-btn:hover{background:#fff;color:#c00;border-color:#c00;}
+.no-posts{padding:30px;text-align:center;color:#555;font-family:'SpecialElite',Georgia,serif;font-size:13px;}
+
+.admin-area{background:#000;padding:0 14px 14px;}
+.admin-login{padding:20px 0;}
+.admin-login input{background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:13px;padding:5px 10px;width:200px;}
+.admin-login button{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:5px 14px;cursor:pointer;margin-left:6px;}
+.admin-login button:hover{background:#000;color:#fff;}
+
+.editor-toolbar{background:#111;border:1px solid #333;border-bottom:none;padding:5px 6px;display:flex;flex-wrap:wrap;gap:3px;align-items:center;}
+.tb-btn{background:#222;border:1px solid #444;color:#fff;font-size:11px;padding:2px 7px;cursor:pointer;font-family:Arial,sans-serif;min-width:22px;text-align:center;}
+.tb-btn:hover{background:#fff;color:#000;border-color:#fff;}
+.tb-sep{width:1px;height:16px;background:#444;margin:0 2px;}
+.tb-color{width:20px;height:20px;border:1px solid #555;cursor:pointer;padding:0;background:none;}
+.tb-size{background:#222;border:1px solid #444;color:#fff;font-size:11px;font-family:Arial,sans-serif;padding:2px 4px;cursor:pointer;}
+
+#postEditor{background:#fff;border:1px solid #444;min-height:150px;max-height:320px;overflow-y:auto;padding:8px 10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;line-height:1.6;word-break:break-word;}
+#postEditor:empty::before{content:"write your post...";color:#aaa;pointer-events:none;}
+
+.editor-footer{background:#111;border:1px solid #333;border-top:none;padding:6px 8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.ed-file-btn{background:#222;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 10px;cursor:pointer;}
+.ed-file-btn:hover{background:#fff;color:#000;}
+.ed-file-name{color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;}
+.ed-spoiler-check{display:flex;align-items:center;gap:5px;color:#aaa;font-size:11px;font-family:'SpecialElite',Georgia,serif;cursor:pointer;}
+.submit-row{display:flex;gap:8px;align-items:center;margin-top:8px;}
+.submit-btn{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:13px;padding:5px 18px;cursor:pointer;letter-spacing:.5px;}
+.submit-btn:hover{background:#000;color:#fff;}
+.submit-btn:disabled{opacity:.4;cursor:default;}
+#edStatus{font-size:11px;color:#aaa;font-family:'SpecialElite',Georgia,serif;}
+
+.admin-search-row{display:flex;gap:6px;padding:10px 0 6px;}
+.admin-search-row input{flex:1;background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:4px 8px;}
+.admin-search-row button{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 12px;cursor:pointer;}
+.admin-search-row button:hover{background:#000;color:#fff;border-color:#fff;}
+.admin-sep{border:none;border-top:1px solid #333;margin:12px 0;}
+
+#lightbox{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.95);align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+#lightbox.active{display:flex;}
+#lbImg{max-width:90vw;max-height:85vh;object-fit:contain;border:1px solid #444;display:block;}
+#lbClose{position:fixed;top:16px;right:20px;background:#000;border:1px solid #fff;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 10px;cursor:pointer;}
+#lbClose:hover{background:#fff;color:#000;}
+
+#pageFooter{padding:1px 1px 10px;background:#000;border-top:1px solid #222;font-family:'SpecialElite',Georgia,serif;font-size:11.5px;color:#555;text-align:center;}
+#pageFooter .footer-author{color:#777;cursor:default;border-bottom:1px dotted #444;}
+#pageFooter .footer-author:hover{color:#ccc;border-bottom-style:solid;}
+
+@media(max-width:700px){
+  body{justify-content:flex-start;}
+  #wrapper{width:100%;}
+  #siteIcon{margin-left:0;display:block;margin:0 auto 8px;}
+  #siteLogo{width:min(100%,280px);margin:0 auto;display:block;height:auto;}
+}
+</style>
+</head>
+<body>
+
+<div id="videoBg">
+  <video id="vid1" src="../video/blogbg1.mp4" muted playsinline preload="auto"></video>
+  <video id="vid2" src="../video/blogbg2.mp4" muted playsinline preload="auto"></video>
+</div>
+
+<div id="lightbox">
+  <button id="lbClose" onclick="closeLb()">close</button>
+  <img id="lbImg" src="" alt="">
+</div>
+
+<div id="wrapper">
+
+  <header id="siteHeader">
+    <img id="siteIcon" src="../images/skull1.jpg" alt="">
+    <img id="siteLogo" src="../images/deathlogo.png" alt="logo">
+  </header>
+
+  <nav id="siteNav">
+    <a class="nav-item" href="../../index.html#introduction">introduction</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-item" href="../../index.html#resources">resources</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-item" href="contact.html">contact</a>
+  </nav>
+
+  <main id="mainContent">
+
+    <span class="section-bar">blog</span>
+    <div class="intro-box"><p>thoughts, updates &amp; whatever.</p></div>
+    <div class="black-gap"></div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('posts')">Posts</button>
+      <button class="tab-btn" onclick="switchTab('admin')">Admin</button>
+    </div>
+
+    <div id="tab-posts" class="tab-panel active">
+      <div class="posts-area">
+        <div class="post-search-bar">
+          <input type="text" id="searchInput" placeholder="search posts..." oninput="filterPosts()">
+          <select id="sortSelect" onchange="filterPosts()">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+          </select>
+        </div>
+        <div id="postsContainer"><div class="no-posts">loading...</div></div>
+      </div>
+    </div>
+
+    <div id="tab-admin" class="tab-panel">
+      <div class="admin-area">
+        <div id="adminLogin" class="admin-login">
+          <span style="color:#555;font-family:'SpecialElite',Georgia,serif;font-size:12px;display:block;margin-bottom:8px;">admin password:</span>
+          <input type="password" id="pwInput" placeholder="password" onkeydown="if(event.key==='Enter')tryLogin()">
+          <button onclick="tryLogin()">Enter</button>
+          <div id="loginErr" style="color:#c00;font-size:11px;margin-top:6px;font-family:'SpecialElite',Georgia,serif;"></div>
+        </div>
+
+        <div id="adminPanel" style="display:none;">
+          <div style="padding:10px 0 6px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">logged in as Settembre</span>
+            <button onclick="logout()" style="background:none;border:1px solid #333;color:#555;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:2px 8px;cursor:pointer;">logout</button>
+          </div>
+
+          <div class="section-bar" style="font-size:16px;margin-bottom:6px;">New Post</div>
+
+          <div class="editor-toolbar">
+            <button class="tb-btn" onclick="fmt('bold')"><b>B</b></button>
+            <button class="tb-btn" onclick="fmt('italic')"><i>I</i></button>
+            <button class="tb-btn" onclick="fmt('underline')"><u>U</u></button>
+            <button class="tb-btn" onclick="fmt('strikeThrough')"><s>S</s></button>
+            <div class="tb-sep"></div>
+            <select class="tb-size" onchange="fmt('fontSize',this.value);this.value=''">
+              <option value="">size</option>
+              <option value="1">tiny</option>
+              <option value="2">small</option>
+              <option value="3">normal</option>
+              <option value="4">large</option>
+              <option value="5">larger</option>
+              <option value="6">big</option>
+              <option value="7">huge</option>
+            </select>
+            <div class="tb-sep"></div>
+            <label style="display:flex;align-items:center;gap:3px;color:#aaa;font-size:10px;cursor:pointer;font-family:Arial,sans-serif;">
+              A <input type="color" class="tb-color" value="#ffffff" onchange="fmt('foreColor',this.value)">
+            </label>
+            <label style="display:flex;align-items:center;gap:3px;color:#aaa;font-size:10px;cursor:pointer;font-family:Arial,sans-serif;">
+              BG <input type="color" class="tb-color" value="#000000" onchange="fmt('hiliteColor',this.value)">
+            </label>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" onclick="fmt('justifyLeft')">L</button>
+            <button class="tb-btn" onclick="fmt('justifyCenter')">C</button>
+            <button class="tb-btn" onclick="fmt('justifyRight')">R</button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" onclick="insertSpoilerText()">SPOILER</button>
+            <button class="tb-btn" onclick="insertLink()">LINK</button>
+            <button class="tb-btn" onclick="clearEditor()" style="margin-left:auto;color:#f66;">CLR</button>
+          </div>
+
+          <div id="postEditor" contenteditable="true" spellcheck="true" onpaste="handleEditorPaste(event)"></div>
+
+          <div class="editor-footer">
+            <button class="ed-file-btn" onclick="document.getElementById('edFileInput').click()">Attach image</button>
+            <span class="ed-file-name" id="edFileName">no file</span>
+            <button class="ed-file-btn" id="edRemoveImg" style="display:none;color:#c00;" onclick="removeEditorImg()">Remove</button>
+            <label class="ed-spoiler-check"><input type="checkbox" id="edSpoilerImg"> Spoiler image</label>
+            <input type="file" id="edFileInput" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleEditorImg(event)" style="display:none;">
+          </div>
+
+          <div class="submit-row">
+            <button class="submit-btn" id="submitBtn" onclick="submitPost()">Post</button>
+            <span id="edStatus"></span>
+          </div>
+
+          <hr class="admin-sep">
+
+          <div class="section-bar" style="font-size:16px;margin-bottom:6px;">Delete Post</div>
+          <div class="admin-search-row">
+            <input type="text" id="adminSearch" placeholder="search by text or date (YYYY-MM-DD)...">
+            <button onclick="adminSearchPosts()">Search</button>
+          </div>
+          <div id="adminSearchResults"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="black-gap"></div>
+
+    <footer id="pageFooter">
+      2026 | Death Archive / Created by
+      <span class="footer-author">Settembre19th</span>
+    </footer>
+
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const FB = {
+  apiKey:"AIzaSyBBr6zPaWgGNcGHz9iiNTO8O4EgAzsUMOk",
+  authDomain:"scrapfielddatabase.firebaseapp.com",
+  databaseURL:"https://scrapfielddatabase-default-rtdb.firebaseio.com",
+  projectId:"scrapfielddatabase",
+  storageBucket:"scrapfielddatabase.firebasestorage.app",
+  messagingSenderId:"489751764776",
+  appId:"1:489751764776:web:22255a1e9bf05a538bfa1d"
+};
+const app = initializeApp(FB);
+const db  = getDatabase(app);
+const PREF = 'blog/posts';
+
+window._fbDb = db;
+window._fbRef = ref;
+window._fbPush = push;
+window._fbRemove = remove;
+
+onValue(ref(db, PREF), snap => {
+  const raw = [];
+  snap.forEach(c => raw.push({id:c.key,...c.val()}));
+  window._allPosts = raw.reverse();
+  filterPosts();
+});
+</script>
+
+<script>
+const ADMIN_PASS = 'death1337';
+let isAdmin = false;
+let editorImgUrl = null;
+window._allPosts = [];
+
+// ── AUTH ──
+function tryLogin(){
+  if(document.getElementById('pwInput').value===ADMIN_PASS){
+    isAdmin=true;
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    document.getElementById('loginErr').textContent='';
+  } else {
+    document.getElementById('loginErr').textContent='wrong password.';
+  }
+}
+function logout(){
+  isAdmin=false;
+  document.getElementById('adminLogin').style.display='block';
+  document.getElementById('adminPanel').style.display='none';
+  document.getElementById('pwInput').value='';
+}
+window.tryLogin=tryLogin; window.logout=logout;
+
+// ── TABS ──
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['posts','admin'][i]===tab));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+window.switchTab=switchTab;
+
+// ── DATE ──
+function fmtDate(ts){
+  const d=new Date(ts);
+  const DAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${DAY[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} ${MON[d.getMonth()]} ${d.getFullYear()} — ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+function isoDate(ts){return new Date(ts).toISOString().slice(0,10);}
+
+// ── EMBEDS ──
+const EPATS=[
+  {name:'youtube',re:/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?[^\s]*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/g,
+   build:m=>({iframeSrc:`https://www.youtube.com/embed/${m[1]}?rel=0&modestbranding=1`,url:m[0]})},
+  {name:'spotify',re:/https?:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(track|album|playlist|episode)\/([a-zA-Z0-9]+)(?:\?[^\s]*)?/g,
+   build:m=>({iframeSrc:`https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0`,url:m[0]})},
+  {name:'soundcloud',re:/https?:\/\/(?:www\.)?soundcloud\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+(?:\?[^\s]*)?/g,
+   build:m=>({iframeSrc:`https://w.soundcloud.com/player/?url=${encodeURIComponent(m[0])}&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`,url:m[0]})}
+];
+function detectEmbeds(html){
+  const text=html.replace(/<[^>]*>/g,' ');
+  const found=[];
+  for(const p of EPATS){p.re.lastIndex=0;let m;while((m=p.re.exec(text))!==null){const b=p.build(m);if(!found.some(e=>e.url===b.url))found.push(b);}}
+  return found;
+}
+
+// ── RENDER ──
+function filterPosts(){
+  const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
+  const sort=document.getElementById('sortSelect')?.value||'newest';
+  let posts=[...window._allPosts];
+  if(q) posts=posts.filter(p=>{
+    const t=(p.contentHtml||'').replace(/<[^>]*>/g,'').toLowerCase();
+    return t.includes(q)||isoDate(p.ts).includes(q)||fmtDate(p.ts).toLowerCase().includes(q);
+  });
+  if(sort==='oldest') posts.reverse();
+  renderPosts(posts, document.getElementById('postsContainer'), false);
+}
+window.filterPosts=filterPosts;
+
+function renderPosts(posts, container, adminMode){
+  if(!container) return;
+  if(!posts.length){container.innerHTML='<div class="no-posts">no posts found.</div>';return;}
+  const total=posts.length;
+  container.innerHTML=posts.map((p,i)=>buildCard(p,total-i,adminMode)).join('');
+  container.querySelectorAll('.spoiler-text').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('revealed')));
+  container.querySelectorAll('.spoiler-img-wrap').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('revealed')));
+  container.querySelectorAll('.post-img-wrap img').forEach(img=>img.addEventListener('click',()=>openLb(img.src)));
+}
+
+function buildCard(p, num, adminMode){
+  const embeds=detectEmbeds(p.contentHtml||'');
+  const embedHTML=embeds.map(e=>`<div class="post-embed"><iframe src="${e.iframeSrc}" width="100%" height="95" frameborder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" loading="lazy"></iframe></div>`).join('');
+  let imgHTML='';
+  if(p.imageSrc){
+    const cls=p.spoilerImg?'post-img-wrap spoiler-img-wrap':'post-img-wrap';
+    imgHTML=`<div class="${cls}"><img src="${p.imageSrc}" alt="" loading="lazy"></div>`;
+  }
+  const canDel=isAdmin||adminMode;
+  const delHTML=canDel?`<div class="post-actions"><button class="post-del-btn" onclick="deletePost('${p.id}')">delete</button></div>`:'';
+  return `<div class="post-card" id="post-${p.id}">
+    <div class="post-card-header">
+      <span class="post-author">Settembre</span>
+      <span class="post-date">${fmtDate(p.ts)}</span>
+      <span class="post-no">No.${num}</span>
+    </div>
+    <div class="post-body">
+      ${imgHTML}
+      <div class="post-content">${p.contentHtml||''}</div>
+      ${embedHTML}
+    </div>
+    ${delHTML}
+  </div>`;
+}
+
+async function deletePost(id){
+  if(!isAdmin){return;}
+  if(!confirm('delete this post?')) return;
+  try{
+    await window._fbRemove(window._fbRef(window._fbDb,'blog/posts/'+id));
+    document.getElementById('post-'+id)?.remove();
+  }catch(e){alert('error: '+e.message);}
+}
+window.deletePost=deletePost;
+
+// ── EDITOR ──
+function fmt(cmd,val){document.getElementById('postEditor').focus();document.execCommand(cmd,false,val||null);}
+window.fmt=fmt;
+
+function insertSpoilerText(){
+  const sel=window.getSelection();
+  const txt=sel&&sel.toString()?sel.toString():'spoiler text';
+  document.getElementById('postEditor').focus();
+  document.execCommand('insertHTML',false,`<span class="spoiler-text" onclick="this.classList.toggle('revealed')">${txt}</span>`);
+}
+window.insertSpoilerText=insertSpoilerText;
+
+function insertLink(){const url=prompt('URL:');if(url){document.getElementById('postEditor').focus();document.execCommand('createLink',false,url);}}
+window.insertLink=insertLink;
+
+function clearEditor(){document.getElementById('postEditor').innerHTML='';removeEditorImg();}
+window.clearEditor=clearEditor;
+
+function handleEditorPaste(e){e.preventDefault();const t=e.clipboardData.getData('text/plain');if(t)document.execCommand('insertText',false,t);}
+window.handleEditorPaste=handleEditorPaste;
+
+async function handleEditorImg(event){
+  const file=event.target.files[0];
+  if(!file) return;
+  if(file.size>600*1024){alert('max 600kb');event.target.value='';return;}
+  document.getElementById('edStatus').textContent='uploading...';
+  try{
+    const fd=new FormData();
+    fd.append('file',file);
+    fd.append('upload_preset','unsigned_upload');
+    const res=await fetch(`https://api.cloudinary.com/v1_1/dagsxkazw/image/upload`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(!data.secure_url) throw new Error('failed');
+    editorImgUrl=data.secure_url;
+    document.getElementById('edFileName').textContent=file.name;
+    document.getElementById('edRemoveImg').style.display='inline-block';
+    document.getElementById('edStatus').textContent='image ready.';
+  }catch(e){document.getElementById('edStatus').textContent='upload failed.';console.error(e);}
+  event.target.value='';
+}
+window.handleEditorImg=handleEditorImg;
+
+function removeEditorImg(){
+  editorImgUrl=null;
+  document.getElementById('edFileName').textContent='no file';
+  document.getElementById('edRemoveImg').style.display='none';
+}
+window.removeEditorImg=removeEditorImg;
+
+async function submitPost(){
+  if(!isAdmin) return;
+  const btn=document.getElementById('submitBtn');
+  const status=document.getElementById('edStatus');
+  const html=document.getElementById('postEditor').innerHTML.trim();
+  if(!html&&!editorImgUrl){status.textContent='write something first.';return;}
+  btn.disabled=true; status.textContent='posting...';
+  try{
+    await window._fbPush(window._fbRef(window._fbDb,'blog/posts'),{
+      contentHtml:html,
+      imageSrc:editorImgUrl||null,
+      spoilerImg:document.getElementById('edSpoilerImg').checked,
+      ts:Date.now()
+    });
+    clearEditor();
+    document.getElementById('edSpoilerImg').checked=false;
+    status.textContent='posted!';
+    setTimeout(()=>{status.textContent='';},3000);
+  }catch(e){status.textContent='error: '+e.message;}
+  btn.disabled=false;
+}
+window.submitPost=submitPost;
+
+function adminSearchPosts(){
+  const q=document.getElementById('adminSearch').value.toLowerCase().trim();
+  const c=document.getElementById('adminSearchResults');
+  if(!q){c.innerHTML='';return;}
+  const m=window._allPosts.filter(p=>{
+    const t=(p.contentHtml||'').replace(/<[^>]*>/g,'').toLowerCase();
+    return t.includes(q)||isoDate(p.ts).includes(q)||fmtDate(p.ts).toLowerCase().includes(q);
+  });
+  if(!m.length){c.innerHTML='<div class="no-posts" style="color:#555;">no matches.</div>';return;}
+  renderPosts(m,c,true);
+}
+window.adminSearchPosts=adminSearchPosts;
+
+// ── LIGHTBOX ──
+function openLb(src){document.getElementById('lbImg').src=src;document.getElementById('lightbox').classList.add('active');document.addEventListener('keydown',lbK);}
+function closeLb(){document.getElementById('lightbox').classList.remove('active');document.removeEventListener('keydown',lbK);}
+function lbK(e){if(e.key==='Escape')closeLb();}
+document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLb();});
+window.closeLb=closeLb;
+
+// ── VIDEO BG ──
+(function(){
+  const v1=document.getElementById('vid1');
+  const v2=document.getElementById('vid2');
+  if(!v1||!v2) return;
+
+  const FADE_SECS=32;
+  const PAUSE_MS=3000;
+  const FADEIN_MS=1500;
+  let active=1, fadingOut=false, fadeRaf=null;
+
+  function setOp(v,o){v.style.opacity=String(Math.max(0,Math.min(1,o)));}
+
+  function fadeIn(v,cb){
+    const t0=performance.now();
+    (function step(now){
+      const p=Math.min((now-t0)/FADEIN_MS,1);
+      setOp(v,p);
+      if(p<1) requestAnimationFrame(step); else if(cb) cb();
+    })(t0);
+  }
+
+  function startVid(n){
+    const cur=n===1?v1:v2, other=n===1?v2:v1;
+    active=n; fadingOut=false;
+    setOp(other,0);
+    cur.currentTime=0;
+    cur.play().catch(()=>{});
+    fadeIn(cur,null);
+  }
+
+  function tick(){
+    const v=active===1?v1:v2;
+    if(!v.duration||isNaN(v.duration)) return;
+    const rem=v.duration-v.currentTime;
+    if(rem<=FADE_SECS&&!fadingOut){
+      fadingOut=true;
+      const t0=performance.now(), dur=rem*1000, s0=parseFloat(v.style.opacity)||1;
+      if(fadeRaf){cancelAnimationFrame(fadeRaf);fadeRaf=null;}
+      (function step(now){
+        const p=Math.min((now-t0)/dur,1);
+        setOp(v,s0*(1-p));
+        if(p<1){fadeRaf=requestAnimationFrame(step);}
+      })(t0);
+    }
+  }
+
+  v1.addEventListener('timeupdate',tick);
+  v2.addEventListener('timeupdate',tick);
+
+  function onEnd(n){
+    return function(){
+      fadingOut=false;
+      if(fadeRaf){cancelAnimationFrame(fadeRaf);fadeRaf=null;}
+      const v=n===1?v1:v2;
+      setOp(v,0); v.pause();
+      setTimeout(()=>startVid(n===1?2:1),PAUSE_MS);
+    };
+  }
+
+  v1.addEventListener('ended',onEnd(1));
+  v2.addEventListener('ended',onEnd(2));
+
+  document.addEventListener('DOMContentLoaded',()=>startVid(1));
+  document.addEventListener('click',function once(){startVid(1);document.removeEventListener('click',once);},{once:true});
+})();
+</script>
+</body>
+</html>
