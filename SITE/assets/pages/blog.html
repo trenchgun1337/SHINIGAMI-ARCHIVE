@@ -13,35 +13,48 @@
 @font-face{font-family:'cloister';src:url('../fonts/cloister_black/CloisterBlack.ttf') format('truetype');font-display:block;}
 @font-face{font-family:'DeathNote';src:url('../fonts/deathnote_font/DEATH_NOTE1.ttf') format('truetype');font-display:block;}
 @font-face{font-family:'SpecialElite';src:url('../fonts/Special_Elite/SpecialElite-Regular.ttf') format('truetype');font-display:block;}
+
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 *:focus{outline:none!important;}
 img{-webkit-user-drag:none;user-select:none;}
+
+/* ── SELECTION — dark bg: white sel; light bg: black sel ── */
 ::selection{background:#fff;color:#000;}
 ::-moz-selection{background:#fff;color:#000;}
+.post-card ::selection,.post-form-wrap ::selection,
+#postEditor ::selection,.admin-results-area ::selection{background:#000;color:#fff;}
+.post-card ::-moz-selection,.post-form-wrap ::-moz-selection,
+#postEditor ::-moz-selection,.admin-results-area ::-moz-selection{background:#000;color:#fff;}
+
 ::-webkit-scrollbar{width:16px;}
 ::-webkit-scrollbar-track{background:#080808;border-left:3px solid #fff;}
 ::-webkit-scrollbar-thumb{background-image:url('../images/scrollbar1.webp');background-size:cover;background-position:center;background-repeat:no-repeat;border:1px dashed #000;}
 ::-webkit-scrollbar-thumb:hover{background-image:url('../images/scrollbar2.webp');filter:brightness(100);}
 ::-webkit-scrollbar-corner{background:#111;}
 
+/* ── VIDEO BG ── */
 #videoBg{position:fixed;inset:0;z-index:-1;background:#000;overflow:hidden;pointer-events:none;}
 #videoBg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;}
 
+/* ── LAYOUT ── */
 body{font-family:'SpecialElite',Georgia,serif;font-size:13px;color:#fff;background:transparent;min-height:100vh;overflow-x:hidden;display:flex;justify-content:center;}
 a{color:#fff;text-decoration:none;}
 a:hover{text-decoration:underline;}
 #wrapper{width:560px;max-width:100%;}
 
+/* ── HEADER ── */
 #siteHeader{background:#000;border-bottom:2px solid #fff;padding:16px 14px 11px;}
 #siteIcon{width:78px;height:78px;object-fit:contain;object-position:center;display:inline-block;margin-left:221px;}
 #siteLogo{width:370px;margin-left:95px;height:90px;object-position:center;filter:invert();}
 
+/* ── NAV ── */
 #siteNav{background:#000;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:40px;font-family:'SpecialElite',Georgia,serif;font-size:12px;}
 .nav-sep{color:#444;margin:0 9px;user-select:none;}
 .nav-item{color:#fff;text-decoration:none;cursor:pointer;position:relative;display:inline-block;padding:2px 18px 2px 4px;}
 .nav-item:hover,.nav-item.active{color:#000;background-color:#fff;text-decoration:underline;}
 .nav-item:hover::after,.nav-item.active::after{content:"";position:absolute;right:-2px;top:50%;transform:translateY(-50%);width:22px;height:12px;background-image:url('../images/navcross.png');background-size:contain;background-repeat:no-repeat;background-position:center;pointer-events:none;}
 
+/* ── MAIN ── */
 #mainContent{position:relative;background:#000;min-height:400px;}
 #mainContent::before,#mainContent::after{content:"";position:absolute;top:0;bottom:0;width:12px;background:url('https://wallpapers.com/images/thumbnail/filigree-samsung-black-9u6vx5ktxvmprgub.webp') repeat-y;filter:brightness(3.4);}
 #mainContent::before{left:0;}
@@ -52,82 +65,126 @@ a:hover{text-decoration:underline;}
 .intro-box{background:#000;color:#fff;padding:12px 14px 14px;border-bottom:2px solid #fff;text-align:center;}
 .intro-box p{font-family:'SpecialElite',Georgia,serif;font-size:13px;line-height:1.72;color:#fff;}
 
-.tab-bar{display:flex;background:#000;border-bottom:1px solid #333;}
-.tab-btn{flex:1;background:none;border:none;border-right:1px solid #333;color:#555;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:7px 0;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
-.tab-btn:last-child{border-right:none;}
-.tab-btn:hover{color:#fff;background:#111;}
-.tab-btn.active{color:#000;background:#fff;}
-.tab-panel{display:none;}
-.tab-panel.active{display:block;}
+/* ── SORT BAR (no search) ── */
+.sort-bar{display:flex;justify-content:flex-end;align-items:center;background:#000;padding:6px 14px 6px;border-bottom:1px solid #1a1a1a;}
+.sort-bar label{color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;margin-right:6px;}
+#sortSelect{
+  background:#000;color:#fff;
+  border:1px solid #444;
+  font-family:'SpecialElite',Georgia,serif;font-size:11px;
+  padding:3px 22px 3px 6px;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23fff'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 5px center;
+}
+#sortSelect option{background:#000;color:#fff;}
 
+/* ── POSTS ── */
 .posts-area{background:#000;padding:0 14px 14px;}
-.post-search-bar{display:flex;gap:6px;padding:10px 0 8px;}
-.post-search-bar input{flex:1;background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:4px 8px;}
-.post-search-bar input::placeholder{color:#555;}
-.post-search-bar select{background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:4px 6px;cursor:pointer;}
-
-.post-card{background:#f6f6f6;border:1px solid #ccc;margin-bottom:14px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;}
+.post-card{background:#f6f6f6;border:1px solid #ccc;margin-top:14px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;}
 .post-card-header{background:#f0f0f0;border-bottom:1px solid #ccc;padding:5px 10px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
 .post-author{font-weight:bold;font-size:14px;color:#000;}
 .post-date{font-size:11px;color:#555;}
 .post-no{font-size:11px;color:#888;margin-left:auto;}
 .post-body{padding:10px 12px;}
+.post-img-file-info{font-family:monospace;font-size:11px;color:#555;margin-bottom:4px;display:block;clear:both;}
 .post-img-wrap{margin-bottom:8px;display:inline-block;position:relative;}
 .post-img-wrap img{max-width:220px;max-height:220px;object-fit:contain;border:1px solid #ccc;display:block;cursor:zoom-in;}
-
-.spoiler-text{background:#111;color:#111;cursor:pointer;padding:0 2px;border-radius:2px;}
-.spoiler-text:hover,.spoiler-text.revealed{color:#fff;}
+.spoiler-text{background:#111;color:#111;cursor:pointer;padding:0 2px;border-radius:2px;transition:color 0.1s;}
+.spoiler-text:hover,.spoiler-text.revealed{background:#333;color:#fff;}
 .spoiler-img-wrap{position:relative;display:inline-block;cursor:pointer;}
 .spoiler-img-wrap::after{content:"SPOILER — click to reveal";position:absolute;inset:0;background:rgba(0,0,0,.92);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;font-family:'SpecialElite',Georgia,serif;letter-spacing:1px;text-transform:uppercase;}
 .spoiler-img-wrap.revealed::after{display:none;}
 .spoiler-img-wrap img{max-width:220px;max-height:220px;object-fit:contain;display:block;}
 .post-content{line-height:1.65;word-break:break-word;overflow-wrap:break-word;}
-.post-embed{margin-top:8px;}
+.post-content pre{font-family:monospace;white-space:pre;font-size:12px;line-height:1.3;background:#1a1a1a;color:#0f0;padding:8px;margin:4px 0;overflow-x:auto;border:1px solid #333;}
+.post-content blockquote{border-left:3px solid #bbb;margin:4px 0;padding:4px 8px;color:#555;font-style:italic;}
+.post-embed{margin-top:8px;clear:both;}
 .post-embed iframe{border:1px solid #ccc;display:block;max-width:100%;}
 .post-actions{padding:4px 10px 6px;text-align:right;border-top:1px dashed #ccc;}
 .post-del-btn{background:none;border:1px solid #ccc;color:#aaa;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:2px 8px;cursor:pointer;letter-spacing:.5px;}
 .post-del-btn:hover{background:#fff;color:#c00;border-color:#c00;}
 .no-posts{padding:30px;text-align:center;color:#555;font-family:'SpecialElite',Georgia,serif;font-size:13px;}
 
-.admin-area{background:#000;padding:0 14px 14px;}
+/* ── ADMIN AREA (injected via JS only when ?admin) ── */
+#adminContainer{background:#000;}
+.admin-inner{padding:0 14px 20px;}
+.admin-section-bar{background:#000;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:16px;font-weight:normal;padding:6px 0 4px;display:block;text-align:center;border-bottom:1px solid #333;text-transform:uppercase;margin-bottom:10px;}
+
+/* Admin login */
 .admin-login{padding:20px 0;}
 .admin-login input{background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:13px;padding:5px 10px;width:200px;}
 .admin-login button{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:5px 14px;cursor:pointer;margin-left:6px;}
 .admin-login button:hover{background:#000;color:#fff;}
 
-.editor-toolbar{background:#111;border:1px solid #333;border-bottom:none;padding:5px 6px;display:flex;flex-wrap:wrap;gap:3px;align-items:center;}
-.tb-btn{background:#222;border:1px solid #444;color:#fff;font-size:11px;padding:2px 7px;cursor:pointer;font-family:Arial,sans-serif;min-width:22px;text-align:center;}
-.tb-btn:hover{background:#fff;color:#000;border-color:#fff;}
-.tb-sep{width:1px;height:16px;background:#444;margin:0 2px;}
-.tb-color{width:20px;height:20px;border:1px solid #555;cursor:pointer;padding:0;background:none;}
-.tb-size{background:#222;border:1px solid #444;color:#fff;font-size:11px;font-family:Arial,sans-serif;padding:2px 4px;cursor:pointer;}
+/* Post form (chan-style) */
+.post-form-wrap{background:#f6f6f6;border:1px solid #ccc;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;}
+.chan-table{width:100%;border-collapse:collapse;background:#f9f9f9;}
+.chan-label{background:#f0f0f0;border:1px solid #ccc;font-size:12px;font-weight:bold;color:#111;padding:5px 8px;white-space:nowrap;vertical-align:top;padding-top:7px;width:76px;}
+.chan-field{background:#f8f8f8;border:1px solid #ccc;padding:3px 5px;vertical-align:middle;}
+.chan-input-text{width:100%;box-sizing:border-box;background:#fff;border:1px solid #ccc;font-family:Arial,sans-serif;font-size:13px;color:#111;padding:3px 5px;}
 
-#postEditor{background:#fff;border:1px solid #444;min-height:150px;max-height:320px;overflow-y:auto;padding:8px 10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;line-height:1.6;word-break:break-word;}
-#postEditor:empty::before{content:"write your post...";color:#aaa;pointer-events:none;}
+/* Editor */
+.editor-wrap{border:1px solid #ccc;}
+.tb-row{background:#e8e8e8;border-bottom:1px solid #ccc;padding:3px 4px;display:flex;flex-wrap:wrap;gap:2px;align-items:center;}
+.tb-btn{background:#fff;border:1px solid #bbb;color:#111;font-size:11px;padding:2px 5px;cursor:pointer;font-family:Arial,sans-serif;min-width:20px;text-align:center;line-height:1.5;white-space:nowrap;}
+.tb-btn:hover{background:#000;color:#fff;border-color:#000;}
+.tb-btn:active{box-shadow:inset 1px 1px 2px rgba(0,0,0,.3);}
+.tb-sep{width:1px;height:15px;background:#bbb;margin:0 1px;display:inline-block;flex-shrink:0;}
+.tb-sel{background:#fff;border:1px solid #bbb;color:#111;font-size:11px;font-family:Arial,sans-serif;padding:2px 3px;cursor:pointer;max-width:100px;}
+.tb-sel:hover,.tb-sel:focus{border-color:#000;}
+.tb-col-wrap{display:flex;align-items:center;gap:2px;font-size:10px;color:#666;font-family:Arial,sans-serif;white-space:nowrap;}
+.tb-col{width:18px;height:16px;border:1px solid #bbb;cursor:pointer;padding:0;display:block;flex-shrink:0;}
 
-.editor-footer{background:#111;border:1px solid #333;border-top:none;padding:6px 8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.ed-file-btn{background:#222;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 10px;cursor:pointer;}
-.ed-file-btn:hover{background:#fff;color:#000;}
-.ed-file-name{color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;}
-.ed-spoiler-check{display:flex;align-items:center;gap:5px;color:#aaa;font-size:11px;font-family:'SpecialElite',Georgia,serif;cursor:pointer;}
-.submit-row{display:flex;gap:8px;align-items:center;margin-top:8px;}
-.submit-btn{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:13px;padding:5px 18px;cursor:pointer;letter-spacing:.5px;}
-.submit-btn:hover{background:#000;color:#fff;}
+#postEditor{
+  background:#fff;min-height:180px;max-height:360px;
+  overflow-y:auto;overflow-x:hidden;
+  padding:7px 9px;
+  font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;
+  line-height:1.6;word-break:break-word;overflow-wrap:break-word;
+}
+#postEditor:empty::before{content:"write your post... (ctrl+v to paste images)";color:#aaa;pointer-events:none;font-style:italic;}
+#postEditor pre{font-family:monospace;white-space:pre;font-size:12px;line-height:1.3;background:#f4f4f4;color:#111;padding:6px 8px;margin:4px 0;border:1px solid #ddd;overflow-x:auto;display:block;}
+#postEditor blockquote{border-left:3px solid #bbb;margin:3px 0;padding:3px 8px;color:#555;font-style:italic;}
+#postEditor .spoiler-text{background:#111;color:#111;cursor:pointer;padding:0 2px;border-radius:2px;}
+#postEditor .spoiler-text:hover,#postEditor .spoiler-text.revealed{background:#333;color:#fff;}
+#postEditor img.ed-img{float:left;max-width:180px;max-height:180px;margin:0 10px 6px 0;border:1px solid #ccc;display:block;cursor:default;}
+#postEditor .ed-img-info{font-family:monospace;font-size:11px;color:#555;display:block;clear:both;margin-bottom:3px;cursor:default;}
+
+/* Editor footer */
+.ed-footer{background:#e8e8e8;border-top:1px solid #ccc;padding:5px 6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.ed-file-btn{background:#fff;border:1px solid #bbb;color:#111;font-family:Arial,sans-serif;font-size:11px;padding:2px 8px;cursor:pointer;}
+.ed-file-btn:hover{background:#000;color:#fff;border-color:#000;}
+.ed-fname{color:#555;font-size:11px;font-family:Arial,sans-serif;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ed-check{display:flex;align-items:center;gap:3px;color:#555;font-size:11px;font-family:Arial,sans-serif;cursor:pointer;}
+
+/* Submit row */
+.submit-row{background:#f0f0f0;border-top:1px solid #ddd;padding:5px 7px;display:flex;gap:8px;align-items:center;}
+.submit-btn{background:#f0f0f0;border:1px solid #aaa;color:#111;font-family:Arial,sans-serif;font-size:13px;padding:3px 16px;cursor:pointer;}
+.submit-btn:hover{background:#000;color:#fff;border-color:#000;}
 .submit-btn:disabled{opacity:.4;cursor:default;}
-#edStatus{font-size:11px;color:#aaa;font-family:'SpecialElite',Georgia,serif;}
+#edStatus{font-size:11px;color:#555;font-family:Arial,sans-serif;}
 
-.admin-search-row{display:flex;gap:6px;padding:10px 0 6px;}
-.admin-search-row input{flex:1;background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:4px 8px;}
-.admin-search-row button{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 12px;cursor:pointer;}
-.admin-search-row button:hover{background:#000;color:#fff;border-color:#fff;}
-.admin-sep{border:none;border-top:1px solid #333;margin:12px 0;}
+/* Embed link list */
+.embed-list{max-height:70px;overflow-y:auto;font-size:12px;font-family:Arial,sans-serif;margin-top:3px;}
+.embed-entry{display:flex;justify-content:space-between;align-items:center;padding:1px 3px;border-bottom:1px dotted #ddd;color:#111;word-break:break-all;gap:4px;}
+.embed-rm{background:none;border:none;color:#c00;cursor:pointer;font-size:12px;flex-shrink:0;padding:0 2px;}
 
+/* Admin search */
+.admin-search-row{display:flex;gap:6px;padding:6px 0;}
+.admin-search-row input{flex:1;background:#fff;border:1px solid #ccc;color:#111;font-family:Arial,sans-serif;font-size:12px;padding:4px 7px;}
+.admin-search-row button{background:#000;border:1px solid #000;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 12px;cursor:pointer;}
+.admin-search-row button:hover{background:#fff;color:#000;}
+.admin-sep{border:none;border-top:1px solid #222;margin:14px 0;}
+
+/* ── LIGHTBOX ── */
 #lightbox{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.95);align-items:center;justify-content:center;flex-direction:column;gap:12px;}
 #lightbox.active{display:flex;}
 #lbImg{max-width:90vw;max-height:85vh;object-fit:contain;border:1px solid #444;display:block;}
 #lbClose{position:fixed;top:16px;right:20px;background:#000;border:1px solid #fff;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 10px;cursor:pointer;}
 #lbClose:hover{background:#fff;color:#000;}
 
+/* ── FOOTER ── */
 #pageFooter{padding:1px 1px 10px;background:#000;border-top:1px solid #222;font-family:'SpecialElite',Georgia,serif;font-size:11.5px;color:#555;text-align:center;}
 #pageFooter .footer-author{color:#777;cursor:default;border-bottom:1px dotted #444;}
 #pageFooter .footer-author:hover{color:#ccc;border-bottom-style:solid;}
@@ -153,7 +210,6 @@ a:hover{text-decoration:underline;}
 </div>
 
 <div id="wrapper">
-
   <header id="siteHeader">
     <img id="siteIcon" src="../images/skull1.jpg" alt="">
     <img id="siteLogo" src="../images/deathlogo.png" alt="logo">
@@ -168,120 +224,39 @@ a:hover{text-decoration:underline;}
   </nav>
 
   <main id="mainContent">
-
     <span class="section-bar">blog</span>
     <div class="intro-box"><p>thoughts, updates &amp; whatever.</p></div>
     <div class="black-gap"></div>
 
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('posts')">Posts</button>
-      <button class="tab-btn" onclick="switchTab('admin')">Admin</button>
+    <div class="sort-bar">
+      <label for="sortSelect">sort:</label>
+      <select id="sortSelect" onchange="filterPosts()">
+        <option value="newest">newest first</option>
+        <option value="oldest">oldest first</option>
+      </select>
     </div>
 
-    <div id="tab-posts" class="tab-panel active">
-      <div class="posts-area">
-        <div class="post-search-bar">
-          <input type="text" id="searchInput" placeholder="search posts..." oninput="filterPosts()">
-          <select id="sortSelect" onchange="filterPosts()">
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-          </select>
-        </div>
-        <div id="postsContainer"><div class="no-posts">loading...</div></div>
-      </div>
+    <div class="posts-area">
+      <div id="postsContainer"><div class="no-posts">loading...</div></div>
     </div>
 
-    <div id="tab-admin" class="tab-panel">
-      <div class="admin-area">
-        <div id="adminLogin" class="admin-login">
-          <span style="color:#555;font-family:'SpecialElite',Georgia,serif;font-size:12px;display:block;margin-bottom:8px;">admin password:</span>
-          <input type="password" id="pwInput" placeholder="password" onkeydown="if(event.key==='Enter')tryLogin()">
-          <button onclick="tryLogin()">Enter</button>
-          <div id="loginErr" style="color:#c00;font-size:11px;margin-top:6px;font-family:'SpecialElite',Georgia,serif;"></div>
-        </div>
-
-        <div id="adminPanel" style="display:none;">
-          <div style="padding:10px 0 6px;display:flex;justify-content:space-between;align-items:center;">
-            <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">logged in as Settembre</span>
-            <button onclick="logout()" style="background:none;border:1px solid #333;color:#555;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:2px 8px;cursor:pointer;">logout</button>
-          </div>
-
-          <div class="section-bar" style="font-size:16px;margin-bottom:6px;">New Post</div>
-
-          <div class="editor-toolbar">
-            <button class="tb-btn" onclick="fmt('bold')"><b>B</b></button>
-            <button class="tb-btn" onclick="fmt('italic')"><i>I</i></button>
-            <button class="tb-btn" onclick="fmt('underline')"><u>U</u></button>
-            <button class="tb-btn" onclick="fmt('strikeThrough')"><s>S</s></button>
-            <div class="tb-sep"></div>
-            <select class="tb-size" onchange="fmt('fontSize',this.value);this.value=''">
-              <option value="">size</option>
-              <option value="1">tiny</option>
-              <option value="2">small</option>
-              <option value="3">normal</option>
-              <option value="4">large</option>
-              <option value="5">larger</option>
-              <option value="6">big</option>
-              <option value="7">huge</option>
-            </select>
-            <div class="tb-sep"></div>
-            <label style="display:flex;align-items:center;gap:3px;color:#aaa;font-size:10px;cursor:pointer;font-family:Arial,sans-serif;">
-              A <input type="color" class="tb-color" value="#ffffff" onchange="fmt('foreColor',this.value)">
-            </label>
-            <label style="display:flex;align-items:center;gap:3px;color:#aaa;font-size:10px;cursor:pointer;font-family:Arial,sans-serif;">
-              BG <input type="color" class="tb-color" value="#000000" onchange="fmt('hiliteColor',this.value)">
-            </label>
-            <div class="tb-sep"></div>
-            <button class="tb-btn" onclick="fmt('justifyLeft')">L</button>
-            <button class="tb-btn" onclick="fmt('justifyCenter')">C</button>
-            <button class="tb-btn" onclick="fmt('justifyRight')">R</button>
-            <div class="tb-sep"></div>
-            <button class="tb-btn" onclick="insertSpoilerText()">SPOILER</button>
-            <button class="tb-btn" onclick="insertLink()">LINK</button>
-            <button class="tb-btn" onclick="clearEditor()" style="margin-left:auto;color:#f66;">CLR</button>
-          </div>
-
-          <div id="postEditor" contenteditable="true" spellcheck="true" onpaste="handleEditorPaste(event)"></div>
-
-          <div class="editor-footer">
-            <button class="ed-file-btn" onclick="document.getElementById('edFileInput').click()">Attach image</button>
-            <span class="ed-file-name" id="edFileName">no file</span>
-            <button class="ed-file-btn" id="edRemoveImg" style="display:none;color:#c00;" onclick="removeEditorImg()">Remove</button>
-            <label class="ed-spoiler-check"><input type="checkbox" id="edSpoilerImg"> Spoiler image</label>
-            <input type="file" id="edFileInput" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleEditorImg(event)" style="display:none;">
-          </div>
-
-          <div class="submit-row">
-            <button class="submit-btn" id="submitBtn" onclick="submitPost()">Post</button>
-            <span id="edStatus"></span>
-          </div>
-
-          <hr class="admin-sep">
-
-          <div class="section-bar" style="font-size:16px;margin-bottom:6px;">Delete Post</div>
-          <div class="admin-search-row">
-            <input type="text" id="adminSearch" placeholder="search by text or date (YYYY-MM-DD)...">
-            <button onclick="adminSearchPosts()">Search</button>
-          </div>
-          <div id="adminSearchResults"></div>
-        </div>
-      </div>
-    </div>
+    <!-- Admin panel — only injected by JS when URL has ?admin -->
+    <div id="adminContainer"></div>
 
     <div class="black-gap"></div>
-
     <footer id="pageFooter">
       2026 | Death Archive / Created by
       <span class="footer-author">Settembre19th</span>
     </footer>
-
   </main>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, push, remove, onValue, get, set }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+// ── Firebase init ──────────────────────────────────────────────────────────
 const FB = {
   apiKey:"AIzaSyBBr6zPaWgGNcGHz9iiNTO8O4EgAzsUMOk",
   authDomain:"scrapfielddatabase.firebaseapp.com",
@@ -293,113 +268,141 @@ const FB = {
 };
 const app = initializeApp(FB);
 const db  = getDatabase(app);
-const PREF = 'blog/posts';
 
-window._fbDb = db;
-window._fbRef = ref;
-window._fbPush = push;
-window._fbRemove = remove;
+// ── SHA-256 helper ─────────────────────────────────────────────────────────
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
 
-onValue(ref(db, PREF), snap => {
+// ── Expose FB helpers to global scope ─────────────────────────────────────
+window._db  = db;
+window._ref = ref;
+window._push = push;
+window._remove = remove;
+window._get = get;
+window._set = set;
+window._sha256 = sha256;
+
+// ── Seed admin password if not set (first-time setup) ─────────────────────
+const passRef = ref(db, 'admin/passHash');
+get(passRef).then(snap => {
+  if (!snap.exists()) {
+    sha256('shlimazl').then(hash => set(passRef, hash));
+  }
+});
+
+// ── Subscribe to posts ─────────────────────────────────────────────────────
+onValue(ref(db, 'blog/posts'), snap => {
   const raw = [];
-  snap.forEach(c => raw.push({id:c.key,...c.val()}));
-  window._allPosts = raw.reverse();
+  snap.forEach(c => raw.push({id: c.key, ...c.val()}));
+  window._allPosts = raw.reverse(); // newest first by default
   filterPosts();
 });
+
+// ── Inject admin panel only if URL param ?admin present ───────────────────
+const IS_ADMIN_URL = new URLSearchParams(window.location.search).has('admin');
+if (IS_ADMIN_URL) {
+  window._isAdminUrl = true;
+  // Wait for DOM then inject
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectAdminUI);
+  } else {
+    injectAdminUI();
+  }
+}
 </script>
 
 <script>
-const ADMIN_PASS = 'death1337';
-let isAdmin = false;
-let editorImgUrl = null;
+// ═══════════════════════════════════════════════════════════════════════════
+// GLOBALS
+// ═══════════════════════════════════════════════════════════════════════════
 window._allPosts = [];
+let _isAdmin = false;
+let _imgUrl  = null;
+let _imgInfo = null;
+const _embedLinks = [];
 
-// ── AUTH ──
-function tryLogin(){
-  if(document.getElementById('pwInput').value===ADMIN_PASS){
-    isAdmin=true;
-    document.getElementById('adminLogin').style.display='none';
-    document.getElementById('adminPanel').style.display='block';
-    document.getElementById('loginErr').textContent='';
-  } else {
-    document.getElementById('loginErr').textContent='wrong password.';
-  }
+// ═══════════════════════════════════════════════════════════════════════════
+// DATE FORMATTING
+// ═══════════════════════════════════════════════════════════════════════════
+function fmtDate(ts) {
+  const d   = new Date(ts);
+  const DAY = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${DAY[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} ${MON[d.getMonth()]} ${d.getFullYear()} — `
+       + `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
 }
-function logout(){
-  isAdmin=false;
-  document.getElementById('adminLogin').style.display='block';
-  document.getElementById('adminPanel').style.display='none';
-  document.getElementById('pwInput').value='';
-}
-window.tryLogin=tryLogin; window.logout=logout;
+function isoDate(ts) { return new Date(ts).toISOString().slice(0,10); }
 
-// ── TABS ──
-function switchTab(tab){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['posts','admin'][i]===tab));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-}
-window.switchTab=switchTab;
-
-// ── DATE ──
-function fmtDate(ts){
-  const d=new Date(ts);
-  const DAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${DAY[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} ${MON[d.getMonth()]} ${d.getFullYear()} — ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
-}
-function isoDate(ts){return new Date(ts).toISOString().slice(0,10);}
-
-// ── EMBEDS ──
-const EPATS=[
-  {name:'youtube',re:/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?[^\s]*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/g,
-   build:m=>({iframeSrc:`https://www.youtube.com/embed/${m[1]}?rel=0&modestbranding=1`,url:m[0]})},
-  {name:'spotify',re:/https?:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(track|album|playlist|episode)\/([a-zA-Z0-9]+)(?:\?[^\s]*)?/g,
-   build:m=>({iframeSrc:`https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0`,url:m[0]})},
-  {name:'soundcloud',re:/https?:\/\/(?:www\.)?soundcloud\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+(?:\?[^\s]*)?/g,
-   build:m=>({iframeSrc:`https://w.soundcloud.com/player/?url=${encodeURIComponent(m[0])}&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`,url:m[0]})}
+// ═══════════════════════════════════════════════════════════════════════════
+// EMBED DETECTION
+// ═══════════════════════════════════════════════════════════════════════════
+const EPATS = [
+  { re: /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?[^\s]*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/g,
+    build: m => ({ src:`https://www.youtube.com/embed/${m[1]}?rel=0&modestbranding=1`, url:m[0] }) },
+  { re: /https?:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(track|album|playlist|episode)\/([a-zA-Z0-9]+)(?:\?[^\s]*)?/g,
+    build: m => ({ src:`https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0`, url:m[0] }) },
+  { re: /https?:\/\/(?:www\.)?soundcloud\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+(?:\?[^\s]*)?/g,
+    build: m => ({ src:`https://w.soundcloud.com/player/?url=${encodeURIComponent(m[0])}&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`, url:m[0] }) }
 ];
-function detectEmbeds(html){
-  const text=html.replace(/<[^>]*>/g,' ');
-  const found=[];
-  for(const p of EPATS){p.re.lastIndex=0;let m;while((m=p.re.exec(text))!==null){const b=p.build(m);if(!found.some(e=>e.url===b.url))found.push(b);}}
+function detectEmbeds(html) {
+  const text = html.replace(/<[^>]*>/g,' ');
+  const found = [];
+  for (const p of EPATS) {
+    p.re.lastIndex = 0;
+    let m;
+    while ((m = p.re.exec(text)) !== null) {
+      const b = p.build(m);
+      if (!found.some(e => e.url === b.url)) found.push(b);
+    }
+  }
   return found;
 }
 
-// ── RENDER ──
-function filterPosts(){
-  const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
-  const sort=document.getElementById('sortSelect')?.value||'newest';
-  let posts=[...window._allPosts];
-  if(q) posts=posts.filter(p=>{
-    const t=(p.contentHtml||'').replace(/<[^>]*>/g,'').toLowerCase();
-    return t.includes(q)||isoDate(p.ts).includes(q)||fmtDate(p.ts).toLowerCase().includes(q);
-  });
-  if(sort==='oldest') posts.reverse();
+// ═══════════════════════════════════════════════════════════════════════════
+// RENDER POSTS
+// ═══════════════════════════════════════════════════════════════════════════
+function filterPosts() {
+  const sort = document.getElementById('sortSelect')?.value || 'newest';
+  let posts = [...window._allPosts];
+  if (sort === 'oldest') posts.reverse();
   renderPosts(posts, document.getElementById('postsContainer'), false);
 }
-window.filterPosts=filterPosts;
+window.filterPosts = filterPosts;
 
-function renderPosts(posts, container, adminMode){
-  if(!container) return;
-  if(!posts.length){container.innerHTML='<div class="no-posts">no posts found.</div>';return;}
-  const total=posts.length;
-  container.innerHTML=posts.map((p,i)=>buildCard(p,total-i,adminMode)).join('');
-  container.querySelectorAll('.spoiler-text').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('revealed')));
-  container.querySelectorAll('.spoiler-img-wrap').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('revealed')));
-  container.querySelectorAll('.post-img-wrap img').forEach(img=>img.addEventListener('click',()=>openLb(img.src)));
+function renderPosts(posts, container, adminMode) {
+  if (!container) return;
+  if (!posts.length) { container.innerHTML = '<div class="no-posts">no posts found.</div>'; return; }
+  const total = posts.length;
+  container.innerHTML = posts.map((p, i) => buildCard(p, total - i, adminMode)).join('');
+  // Re-attach spoiler listeners
+  container.querySelectorAll('.spoiler-text').forEach(el =>
+    el.addEventListener('click', () => el.classList.toggle('revealed')));
+  container.querySelectorAll('.spoiler-img-wrap').forEach(el =>
+    el.addEventListener('click', () => el.classList.toggle('revealed')));
+  container.querySelectorAll('.post-img-wrap img').forEach(img =>
+    img.addEventListener('click', () => openLb(img.src)));
 }
 
-function buildCard(p, num, adminMode){
-  const embeds=detectEmbeds(p.contentHtml||'');
-  const embedHTML=embeds.map(e=>`<div class="post-embed"><iframe src="${e.iframeSrc}" width="100%" height="95" frameborder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" loading="lazy"></iframe></div>`).join('');
-  let imgHTML='';
-  if(p.imageSrc){
-    const cls=p.spoilerImg?'post-img-wrap spoiler-img-wrap':'post-img-wrap';
-    imgHTML=`<div class="${cls}"><img src="${p.imageSrc}" alt="" loading="lazy"></div>`;
+function buildCard(p, num, adminMode) {
+  const embeds = detectEmbeds((p.contentHtml || '') + (p.embedUrls ? '\n' + p.embedUrls.join('\n') : ''));
+  const embedHTML = embeds.map(e =>
+    `<div class="post-embed"><iframe src="${e.src}" width="100%" height="95" frameborder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" loading="lazy"></iframe></div>`
+  ).join('');
+
+  let imgHTML = '';
+  if (p.imageSrc) {
+    const info = p.imageInfo
+      ? `<span class="post-img-file-info">File: ${p.imageInfo.name} (${p.imageInfo.sizeKB} KB, ${p.imageInfo.w}×${p.imageInfo.h})</span>`
+      : '';
+    const cls = p.spoilerImg ? 'post-img-wrap spoiler-img-wrap' : 'post-img-wrap';
+    imgHTML = info + `<div class="${cls}"><img src="${p.imageSrc}" alt="" loading="lazy"></div>`;
   }
-  const canDel=isAdmin||adminMode;
-  const delHTML=canDel?`<div class="post-actions"><button class="post-del-btn" onclick="deletePost('${p.id}')">delete</button></div>`:'';
+
+  const delHTML = (_isAdmin || adminMode)
+    ? `<div class="post-actions"><button class="post-del-btn" onclick="deletePost('${p.id}')">delete</button></div>` : '';
+
   return `<div class="post-card" id="post-${p.id}">
     <div class="post-card-header">
       <span class="post-author">Settembre</span>
@@ -408,180 +411,627 @@ function buildCard(p, num, adminMode){
     </div>
     <div class="post-body">
       ${imgHTML}
-      <div class="post-content">${p.contentHtml||''}</div>
+      <div class="post-content">${p.contentHtml || ''}</div>
+      <div style="clear:both;"></div>
       ${embedHTML}
     </div>
     ${delHTML}
   </div>`;
 }
 
-async function deletePost(id){
-  if(!isAdmin){return;}
-  if(!confirm('delete this post?')) return;
-  try{
-    await window._fbRemove(window._fbRef(window._fbDb,'blog/posts/'+id));
-    document.getElementById('post-'+id)?.remove();
-  }catch(e){alert('error: '+e.message);}
+async function deletePost(id) {
+  if (!_isAdmin) return;
+  if (!confirm('delete this post?')) return;
+  try {
+    await window._remove(window._ref(window._db, 'blog/posts/' + id));
+    document.getElementById('post-' + id)?.remove();
+  } catch(e) { alert('error: ' + e.message); }
 }
-window.deletePost=deletePost;
+window.deletePost = deletePost;
 
-// ── EDITOR ──
-function fmt(cmd,val){document.getElementById('postEditor').focus();document.execCommand(cmd,false,val||null);}
-window.fmt=fmt;
+// ═══════════════════════════════════════════════════════════════════════════
+// ADMIN UI INJECTION
+// ═══════════════════════════════════════════════════════════════════════════
+function injectAdminUI() {
+  const container = document.getElementById('adminContainer');
+  if (!container) return;
 
-function insertSpoilerText(){
-  const sel=window.getSelection();
-  const txt=sel&&sel.toString()?sel.toString():'spoiler text';
-  document.getElementById('postEditor').focus();
-  document.execCommand('insertHTML',false,`<span class="spoiler-text" onclick="this.classList.toggle('revealed')">${txt}</span>`);
-}
-window.insertSpoilerText=insertSpoilerText;
+  container.innerHTML = `
+<div class="black-gap"></div>
+<span class="section-bar" style="font-size:17px;">admin</span>
+<div class="admin-inner">
 
-function insertLink(){const url=prompt('URL:');if(url){document.getElementById('postEditor').focus();document.execCommand('createLink',false,url);}}
-window.insertLink=insertLink;
+  <!-- LOGIN -->
+  <div id="adminLogin" class="admin-login">
+    <span style="color:#555;font-family:'SpecialElite',Georgia,serif;font-size:12px;display:block;margin-bottom:8px;">admin password:</span>
+    <input type="password" id="pwInput" placeholder="password" onkeydown="if(event.key==='Enter')tryLogin()">
+    <button onclick="tryLogin()">enter</button>
+    <div id="loginErr" style="color:#c00;font-size:11px;margin-top:6px;font-family:'SpecialElite',Georgia,serif;"></div>
+  </div>
 
-function clearEditor(){document.getElementById('postEditor').innerHTML='';removeEditorImg();}
-window.clearEditor=clearEditor;
+  <!-- ADMIN PANEL (hidden until login) -->
+  <div id="adminPanel" style="display:none;">
+    <div style="padding:7px 0 10px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;margin-bottom:12px;">
+      <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">logged in as Settembre</span>
+      <button onclick="logout()" style="background:none;border:1px solid #333;color:#555;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:2px 8px;cursor:pointer;">logout</button>
+    </div>
 
-function handleEditorPaste(e){e.preventDefault();const t=e.clipboardData.getData('text/plain');if(t)document.execCommand('insertText',false,t);}
-window.handleEditorPaste=handleEditorPaste;
+    <span class="admin-section-bar">new post</span>
 
-async function handleEditorImg(event){
-  const file=event.target.files[0];
-  if(!file) return;
-  if(file.size>600*1024){alert('max 600kb');event.target.value='';return;}
-  document.getElementById('edStatus').textContent='uploading...';
-  try{
-    const fd=new FormData();
-    fd.append('file',file);
-    fd.append('upload_preset','unsigned_upload');
-    const res=await fetch(`https://api.cloudinary.com/v1_1/dagsxkazw/image/upload`,{method:'POST',body:fd});
-    const data=await res.json();
-    if(!data.secure_url) throw new Error('failed');
-    editorImgUrl=data.secure_url;
-    document.getElementById('edFileName').textContent=file.name;
-    document.getElementById('edRemoveImg').style.display='inline-block';
-    document.getElementById('edStatus').textContent='image ready.';
-  }catch(e){document.getElementById('edStatus').textContent='upload failed.';console.error(e);}
-  event.target.value='';
-}
-window.handleEditorImg=handleEditorImg;
+    <div class="post-form-wrap">
+      <table class="chan-table">
+        <tbody>
+          <tr>
+            <td class="chan-label">Name</td>
+            <td class="chan-field"><input class="chan-input-text" type="text" value="Settembre" disabled style="background:#f0f0f0;color:#666;border:1px solid #ddd;"></td>
+          </tr>
+          <tr>
+            <td class="chan-label" style="vertical-align:top;">Content</td>
+            <td class="chan-field" style="padding:0;">
+              <div class="editor-wrap">
 
-function removeEditorImg(){
-  editorImgUrl=null;
-  document.getElementById('edFileName').textContent='no file';
-  document.getElementById('edRemoveImg').style.display='none';
-}
-window.removeEditorImg=removeEditorImg;
+                <!-- TOOLBAR ROW 1: text style + font + size + color -->
+                <div class="tb-row">
+                  <button class="tb-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+                  <button class="tb-btn" onclick="fmt('italic')" title="Italic"><i>I</i></button>
+                  <button class="tb-btn" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+                  <button class="tb-btn" onclick="fmt('strikeThrough')" title="Strikethrough"><s>S</s></button>
+                  <button class="tb-btn" onclick="fmt('superscript')" title="Superscript" style="font-size:9px;">x²</button>
+                  <button class="tb-btn" onclick="fmt('subscript')" title="Subscript" style="font-size:9px;">x₂</button>
+                  <div class="tb-sep"></div>
+                  <select class="tb-sel" title="Font family" onchange="applyFont(this.value);this.value='';" style="max-width:108px;">
+                    <option value="">— font —</option>
+                    <option value="'SpecialElite',Georgia,serif">SpecialElite</option>
+                    <option value="'cloister',Georgia,serif">CloisterBlack</option>
+                    <option value="'DeathNote',Georgia,serif">DeathNote</option>
+                    <option value="Arial,sans-serif">Arial</option>
+                    <option value="Georgia,serif">Georgia</option>
+                    <option value="'Courier New',monospace">Courier New</option>
+                    <option value="'Times New Roman',serif">Times New Roman</option>
+                    <option value="monospace">Monospace</option>
+                    <option value="'Palatino Linotype',serif">Palatino</option>
+                    <option value="Impact,sans-serif">Impact</option>
+                  </select>
+                  <select class="tb-sel" title="Font size" onchange="fmt('fontSize',this.value);this.value='';">
+                    <option value="">— size —</option>
+                    <option value="1">tiny</option>
+                    <option value="2">small</option>
+                    <option value="3">normal</option>
+                    <option value="4">large</option>
+                    <option value="5">larger</option>
+                    <option value="6">big</option>
+                    <option value="7">huge</option>
+                  </select>
+                  <div class="tb-sep"></div>
+                  <span class="tb-col-wrap" title="Text color">A <input type="color" class="tb-col" value="#000000" oninput="fmt('foreColor',this.value)"></span>
+                  <span class="tb-col-wrap" title="Highlight">HL <input type="color" class="tb-col" value="#ffff00" oninput="fmt('hiliteColor',this.value)"></span>
+                </div>
 
-async function submitPost(){
-  if(!isAdmin) return;
-  const btn=document.getElementById('submitBtn');
-  const status=document.getElementById('edStatus');
-  const html=document.getElementById('postEditor').innerHTML.trim();
-  if(!html&&!editorImgUrl){status.textContent='write something first.';return;}
-  btn.disabled=true; status.textContent='posting...';
-  try{
-    await window._fbPush(window._fbRef(window._fbDb,'blog/posts'),{
-      contentHtml:html,
-      imageSrc:editorImgUrl||null,
-      spoilerImg:document.getElementById('edSpoilerImg').checked,
-      ts:Date.now()
-    });
-    clearEditor();
-    document.getElementById('edSpoilerImg').checked=false;
-    status.textContent='posted!';
-    setTimeout(()=>{status.textContent='';},3000);
-  }catch(e){status.textContent='error: '+e.message;}
-  btn.disabled=false;
-}
-window.submitPost=submitPost;
+                <!-- TOOLBAR ROW 2: align + structure + insert -->
+                <div class="tb-row">
+                  <button class="tb-btn" onclick="fmt('justifyLeft')" title="Left">≡L</button>
+                  <button class="tb-btn" onclick="fmt('justifyCenter')" title="Center">≡C</button>
+                  <button class="tb-btn" onclick="fmt('justifyRight')" title="Right">≡R</button>
+                  <div class="tb-sep"></div>
+                  <button class="tb-btn" onclick="fmt('insertUnorderedList')" title="Bullet list">• list</button>
+                  <button class="tb-btn" onclick="fmt('insertOrderedList')" title="Numbered list">1. list</button>
+                  <button class="tb-btn" onclick="edInsertBlockquote()" title="Blockquote">❝ quote</button>
+                  <button class="tb-btn" onclick="edInsertPre()" title="Preformatted / ASCII art">PRE</button>
+                  <button class="tb-btn" onclick="fmt('insertHorizontalRule')" title="Horizontal rule">───</button>
+                  <div class="tb-sep"></div>
+                  <button class="tb-btn" onclick="edInsertSpoiler()" title="Wrap selection as spoiler" style="background:#111;color:#fff;border-color:#555;">SPOILER</button>
+                  <button class="tb-btn" onclick="edInsertLink()" title="Insert hyperlink">🔗 link</button>
+                  <button class="tb-btn" onclick="fmt('removeFormat')" title="Remove all formatting">✕ fmt</button>
+                  <button class="tb-btn" onclick="clearEditor()" title="Clear everything" style="color:#c00;border-color:#c00;margin-left:auto;">CLR</button>
+                </div>
 
-function adminSearchPosts(){
-  const q=document.getElementById('adminSearch').value.toLowerCase().trim();
-  const c=document.getElementById('adminSearchResults');
-  if(!q){c.innerHTML='';return;}
-  const m=window._allPosts.filter(p=>{
-    const t=(p.contentHtml||'').replace(/<[^>]*>/g,'').toLowerCase();
-    return t.includes(q)||isoDate(p.ts).includes(q)||fmtDate(p.ts).toLowerCase().includes(q);
+                <!-- THE EDITOR -->
+                <div id="postEditor" contenteditable="true" spellcheck="true"></div>
+
+              </div><!-- /.editor-wrap -->
+            </td>
+          </tr>
+          <tr>
+            <td class="chan-label" style="vertical-align:top;padding-top:8px;">File</td>
+            <td class="chan-field">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <button class="ed-file-btn" onclick="document.getElementById('edFileInput').click()">Choose file</button>
+                <span class="ed-fname" id="edFileName">no file</span>
+                <button class="ed-file-btn" id="edRemoveImg" style="display:none;color:#c00;border-color:#c00;" onclick="removeEditorImg()">remove</button>
+                <label class="ed-check"><input type="checkbox" id="edSpoilerImg"> spoiler</label>
+                <input type="file" id="edFileInput" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleFileSelect(event)" style="display:none;">
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="chan-label" style="vertical-align:top;padding-top:8px;">Embeds</td>
+            <td class="chan-field">
+              <input id="embedInput" class="chan-input-text" type="text" placeholder="paste YouTube / Spotify / SoundCloud URL — press Enter">
+              <div id="embedList" class="embed-list"></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="submit-row">
+        <button class="submit-btn" id="submitBtn" onclick="submitPost()">Post</button>
+        <span id="edStatus"></span>
+      </div>
+    </div><!-- /.post-form-wrap -->
+
+    <hr class="admin-sep">
+    <span class="admin-section-bar">delete post</span>
+    <div class="admin-search-row">
+      <input type="text" id="adminSearch" placeholder="search by text or date (YYYY-MM-DD)...">
+      <button onclick="adminSearch()">search</button>
+    </div>
+    <div id="adminResults" class="admin-results-area"></div>
+
+  </div><!-- /#adminPanel -->
+</div><!-- /.admin-inner -->
+`;
+
+  // Setup embed input
+  document.getElementById('embedInput').addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const val = e.target.value.trim();
+    if (val && !_embedLinks.includes(val)) { _embedLinks.push(val); renderEmbedList(); }
+    e.target.value = '';
   });
-  if(!m.length){c.innerHTML='<div class="no-posts" style="color:#555;">no matches.</div>';return;}
-  renderPosts(m,c,true);
+
+  // Setup paste on editor
+  document.getElementById('postEditor').addEventListener('paste', onEditorPaste);
+  // Prevent drag-drop of images into editor
+  document.getElementById('postEditor').addEventListener('drop', e => {
+    const hasImg = [...(e.dataTransfer?.items||[])].some(i => i.type.startsWith('image/'));
+    if (hasImg) { e.preventDefault(); }
+  });
 }
-window.adminSearchPosts=adminSearchPosts;
+window.injectAdminUI = injectAdminUI;
 
-// ── LIGHTBOX ──
-function openLb(src){document.getElementById('lbImg').src=src;document.getElementById('lightbox').classList.add('active');document.addEventListener('keydown',lbK);}
-function closeLb(){document.getElementById('lightbox').classList.remove('active');document.removeEventListener('keydown',lbK);}
-function lbK(e){if(e.key==='Escape')closeLb();}
-document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLb();});
-window.closeLb=closeLb;
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════════════════════
+async function tryLogin() {
+  const input  = document.getElementById('pwInput').value;
+  const errEl  = document.getElementById('loginErr');
+  errEl.textContent = 'checking...';
+  try {
+    const hash = await window._sha256(input);
+    const snap = await window._get(window._ref(window._db, 'admin/passHash'));
+    if (snap.val() === hash) {
+      _isAdmin = true;
+      document.getElementById('adminLogin').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      errEl.textContent = '';
+    } else {
+      errEl.textContent = 'wrong password.';
+    }
+  } catch(e) {
+    errEl.textContent = 'error: ' + e.message;
+  }
+}
+function logout() {
+  _isAdmin = false;
+  document.getElementById('adminLogin').style.display = 'block';
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+  filterPosts(); // Re-render to remove delete buttons
+}
+window.tryLogin = tryLogin;
+window.logout   = logout;
 
-// ── VIDEO BG ──
-(function(){
-  const v1=document.getElementById('vid1');
-  const v2=document.getElementById('vid2');
-  if(!v1||!v2) return;
+// ═══════════════════════════════════════════════════════════════════════════
+// EDITOR HELPERS
+// ═══════════════════════════════════════════════════════════════════════════
+function ed() { return document.getElementById('postEditor'); }
 
-  const FADE_SECS=32;
-  const PAUSE_MS=3000;
-  const FADEIN_MS=1500;
-  let active=1, fadingOut=false, fadeRaf=null;
+function fmt(cmd, val) {
+  ed().focus();
+  document.execCommand(cmd, false, val || null);
+}
+window.fmt = fmt;
 
-  function setOp(v,o){v.style.opacity=String(Math.max(0,Math.min(1,o)));}
+function applyFont(family) {
+  if (!family) return;
+  const editor = ed();
+  editor.focus();
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  if (!editor.contains(range.commonAncestorContainer)) return;
 
-  function fadeIn(v,cb){
-    const t0=performance.now();
-    (function step(now){
-      const p=Math.min((now-t0)/FADEIN_MS,1);
-      setOp(v,p);
-      if(p<1) requestAnimationFrame(step); else if(cb) cb();
+  if (range.collapsed) {
+    // No selection — apply via execCommand (affects next typed chars)
+    document.execCommand('fontName', false, family);
+    return;
+  }
+  // Wrap selection in a styled span
+  const span = document.createElement('span');
+  span.style.fontFamily = family;
+  try {
+    const frag = range.extractContents();
+    span.appendChild(frag);
+    range.insertNode(span);
+    const r2 = document.createRange();
+    r2.selectNodeContents(span);
+    sel.removeAllRanges(); sel.addRange(r2);
+  } catch(_) {
+    document.execCommand('fontName', false, family);
+  }
+}
+window.applyFont = applyFont;
+
+function edInsertSpoiler() {
+  const editor = ed();
+  editor.focus();
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  if (!editor.contains(range.commonAncestorContainer)) return;
+
+  const selectedText = range.toString();
+  const span = document.createElement('span');
+  span.className = 'spoiler-text';
+  span.textContent = selectedText || 'spoiler text';
+  span.addEventListener('click', () => span.classList.toggle('revealed'));
+
+  if (selectedText) range.deleteContents();
+  range.insertNode(span);
+
+  // Move cursor after span
+  const r2 = document.createRange();
+  r2.setStartAfter(span); r2.collapse(true);
+  sel.removeAllRanges(); sel.addRange(r2);
+}
+window.edInsertSpoiler = edInsertSpoiler;
+
+function edInsertLink() {
+  const url = prompt('URL:');
+  if (!url) return;
+  ed().focus();
+  document.execCommand('createLink', false, url);
+  // Ensure link opens in new tab
+  ed().querySelectorAll('a[href="'+url+'"]').forEach(a => {
+    a.target = '_blank'; a.rel = 'noopener noreferrer';
+    if (!a.style.color) a.style.color = '#0000cc';
+  });
+}
+window.edInsertLink = edInsertLink;
+
+function edInsertBlockquote() {
+  const editor = ed();
+  editor.focus();
+  const sel = window.getSelection();
+  const txt = (sel && !sel.isCollapsed) ? sel.toString() : '';
+  const bq = document.createElement('blockquote');
+  bq.style.cssText = 'border-left:3px solid #bbb;margin:4px 0;padding:4px 8px;color:#555;font-style:italic;';
+  bq.textContent = txt || 'quote';
+  if (sel && sel.rangeCount && editor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+    const range = sel.getRangeAt(0);
+    if (txt) range.deleteContents();
+    range.insertNode(bq);
+    const r2 = document.createRange();
+    r2.setStartAfter(bq); r2.collapse(true);
+    sel.removeAllRanges(); sel.addRange(r2);
+  } else {
+    editor.appendChild(bq);
+  }
+}
+window.edInsertBlockquote = edInsertBlockquote;
+
+function edInsertPre() {
+  const editor = ed();
+  editor.focus();
+  const sel   = window.getSelection();
+  const txt   = (sel && !sel.isCollapsed) ? sel.toString() : '';
+  const pre   = document.createElement('pre');
+  pre.textContent = txt || '';
+  if (sel && sel.rangeCount && editor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+    const range = sel.getRangeAt(0);
+    if (txt) range.deleteContents();
+    range.insertNode(pre);
+  } else {
+    editor.appendChild(pre);
+  }
+  // Move cursor inside pre
+  const r2 = document.createRange();
+  r2.selectNodeContents(pre); r2.collapse(false);
+  sel.removeAllRanges(); sel.addRange(r2);
+}
+window.edInsertPre = edInsertPre;
+
+function clearEditor() {
+  ed().innerHTML = '';
+  removeEditorImg();
+}
+window.clearEditor = clearEditor;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// IMAGE HANDLING
+// ═══════════════════════════════════════════════════════════════════════════
+async function onEditorPaste(e) {
+  const items = e.clipboardData?.items || [];
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      e.preventDefault();
+      const file = item.getAsFile();
+      if (file) await uploadAndInsert(file);
+      return;
+    }
+  }
+  // Plain text paste — strip formatting
+  e.preventDefault();
+  const text = e.clipboardData.getData('text/plain');
+  if (text) document.execCommand('insertText', false, text);
+}
+
+async function handleFileSelect(event) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+  if (file.size > 600 * 1024) { alert('max 600 KB'); return; }
+  await uploadAndInsert(file);
+}
+window.handleFileSelect = handleFileSelect;
+
+async function uploadAndInsert(file) {
+  const statusEl = document.getElementById('edStatus');
+  const fnameEl  = document.getElementById('edFileName');
+  const rmBtn    = document.getElementById('edRemoveImg');
+  if (statusEl) statusEl.textContent = 'uploading...';
+
+  // Read dimensions first
+  const tmpUrl = URL.createObjectURL(file);
+  const tmpImg = new Image();
+  tmpImg.src = tmpUrl;
+  await new Promise(res => { tmpImg.onload = tmpImg.onerror = res; });
+  const w = tmpImg.naturalWidth, h = tmpImg.naturalHeight;
+  URL.revokeObjectURL(tmpUrl);
+  const sizeKB = (file.size / 1024).toFixed(1);
+
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', 'unsigned_upload');
+    const res  = await fetch('https://api.cloudinary.com/v1_1/dagsxkazw/image/upload', { method:'POST', body:fd });
+    const data = await res.json();
+    if (!data.secure_url) throw new Error('upload failed');
+
+    _imgUrl  = data.secure_url;
+    _imgInfo = { name: file.name, sizeKB, w, h };
+
+    if (fnameEl) fnameEl.textContent = file.name;
+    if (rmBtn)   rmBtn.style.display  = 'inline-block';
+    if (statusEl) statusEl.textContent = 'image ready.';
+
+    insertImgPreview(data.secure_url, file.name, sizeKB, w, h);
+  } catch(err) {
+    if (statusEl) statusEl.textContent = 'upload failed.';
+    console.error(err);
+  }
+}
+
+function insertImgPreview(src, name, sizeKB, w, h) {
+  const editor = ed();
+  // Remove previous preview elements
+  editor.querySelectorAll('img.ed-img, .ed-img-info').forEach(el => el.remove());
+
+  const info = document.createElement('div');
+  info.className = 'ed-img-info';
+  info.contentEditable = 'false';
+  info.textContent = `File: ${name} (${sizeKB} KB, ${w}×${h})`;
+
+  const img = document.createElement('img');
+  img.src = src;
+  img.className = 'ed-img';
+  img.contentEditable = 'false';
+  img.draggable = false;
+
+  editor.insertBefore(img,  editor.firstChild);
+  editor.insertBefore(info, editor.firstChild);
+  editor.scrollTop = 0;
+}
+
+function removeEditorImg() {
+  _imgUrl = null; _imgInfo = null;
+  ed()?.querySelectorAll('img.ed-img, .ed-img-info').forEach(el => el.remove());
+  const fn = document.getElementById('edFileName');
+  const rb = document.getElementById('edRemoveImg');
+  if (fn) fn.textContent = 'no file';
+  if (rb) rb.style.display = 'none';
+}
+window.removeEditorImg = removeEditorImg;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EMBED LINK LIST
+// ═══════════════════════════════════════════════════════════════════════════
+function renderEmbedList() {
+  const list = document.getElementById('embedList');
+  if (!list) return;
+  list.innerHTML = _embedLinks.map((l, i) =>
+    `<div class="embed-entry">
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${l}</span>
+      <button class="embed-rm" onclick="removeEmbed(${i})">✕</button>
+    </div>`
+  ).join('');
+}
+function removeEmbed(i) { _embedLinks.splice(i, 1); renderEmbedList(); }
+window.removeEmbed = removeEmbed;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SUBMIT POST
+// ═══════════════════════════════════════════════════════════════════════════
+async function submitPost() {
+  if (!_isAdmin) return;
+  const btn    = document.getElementById('submitBtn');
+  const status = document.getElementById('edStatus');
+  const editor = ed();
+
+  // Build clean HTML (strip editor-only preview elements)
+  const clone = editor.cloneNode(true);
+  clone.querySelectorAll('img.ed-img, .ed-img-info').forEach(el => el.remove());
+  const html = clone.innerHTML.trim();
+
+  if (!html && !_imgUrl && !_embedLinks.length) {
+    if (status) status.textContent = 'write something first.';
+    return;
+  }
+
+  btn.disabled = true;
+  if (status) status.textContent = 'posting...';
+
+  try {
+    await window._push(window._ref(window._db, 'blog/posts'), {
+      contentHtml: html,
+      imageSrc:    _imgUrl  || null,
+      imageInfo:   _imgInfo || null,
+      spoilerImg:  document.getElementById('edSpoilerImg')?.checked || false,
+      embedUrls:   _embedLinks.length ? [..._embedLinks] : null,
+      ts: Date.now()
+    });
+
+    clearEditor();
+    _embedLinks.length = 0;
+    renderEmbedList();
+    const si = document.getElementById('edSpoilerImg');
+    if (si) si.checked = false;
+    if (status) { status.textContent = 'posted!'; setTimeout(() => { status.textContent = ''; }, 3000); }
+  } catch(e) {
+    if (status) status.textContent = 'error: ' + e.message;
+  }
+  btn.disabled = false;
+}
+window.submitPost = submitPost;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADMIN SEARCH/DELETE
+// ═══════════════════════════════════════════════════════════════════════════
+function adminSearch() {
+  const q = document.getElementById('adminSearch').value.toLowerCase().trim();
+  const c = document.getElementById('adminResults');
+  if (!q) { c.innerHTML = ''; return; }
+  const m = window._allPosts.filter(p => {
+    const t = (p.contentHtml || '').replace(/<[^>]*>/g, '').toLowerCase();
+    return t.includes(q) || isoDate(p.ts).includes(q) || fmtDate(p.ts).toLowerCase().includes(q);
+  });
+  if (!m.length) { c.innerHTML = '<div class="no-posts" style="color:#555;padding:16px 0;">no matches.</div>'; return; }
+  renderPosts(m, c, true);
+}
+window.adminSearch = adminSearch;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LIGHTBOX
+// ═══════════════════════════════════════════════════════════════════════════
+function openLb(src) {
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lightbox').classList.add('active');
+  document.addEventListener('keydown', lbKey);
+}
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.removeEventListener('keydown', lbKey);
+}
+function lbKey(e) { if (e.key === 'Escape') closeLb(); }
+document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLb(); });
+window.closeLb = closeLb;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VIDEO BACKGROUND
+// Fix: blogbg1 → (very fast fadeout at 32s remain) → 3s pause → blogbg2 → loop
+// ═══════════════════════════════════════════════════════════════════════════
+(function() {
+  const v1 = document.getElementById('vid1');
+  const v2 = document.getElementById('vid2');
+  if (!v1 || !v2) return;
+
+  const TRIGGER_S  = 32;    // seconds before end to start fadeout
+  const FADEOUT_MS = 400;   // VERY fast fadeout
+  const PAUSE_MS   = 3000;  // pause between videos
+  const FADEIN_MS  = 1500;  // fade in speed
+
+  let current  = 0; // 0=uninit, 1=v1, 2=v2
+  let fadingOut = false;
+  let fadeRaf  = null;
+
+  function setOp(v, o) { v.style.opacity = String(Math.max(0, Math.min(1, o))); }
+
+  function doFadeIn(v, onDone) {
+    setOp(v, 0);
+    const t0 = performance.now();
+    (function step(now) {
+      const p = Math.min((now - t0) / FADEIN_MS, 1);
+      setOp(v, p);
+      if (p < 1) requestAnimationFrame(step);
+      else if (onDone) onDone();
     })(t0);
   }
 
-  function startVid(n){
-    const cur=n===1?v1:v2, other=n===1?v2:v1;
-    active=n; fadingOut=false;
-    setOp(other,0);
-    cur.currentTime=0;
-    cur.play().catch(()=>{});
-    fadeIn(cur,null);
+  function doFadeOut(v, duration, onDone) {
+    const s0 = parseFloat(v.style.opacity) || 1;
+    const t0 = performance.now();
+    if (fadeRaf) { cancelAnimationFrame(fadeRaf); fadeRaf = null; }
+    (function step(now) {
+      const p = Math.min((now - t0) / duration, 1);
+      setOp(v, s0 * (1 - p));
+      if (p < 1) { fadeRaf = requestAnimationFrame(step); }
+      else { setOp(v, 0); fadeRaf = null; if (onDone) onDone(); }
+    })(t0);
   }
 
-  function tick(){
-    const v=active===1?v1:v2;
-    if(!v.duration||isNaN(v.duration)) return;
-    const rem=v.duration-v.currentTime;
-    if(rem<=FADE_SECS&&!fadingOut){
-      fadingOut=true;
-      const t0=performance.now(), dur=rem*1000, s0=parseFloat(v.style.opacity)||1;
-      if(fadeRaf){cancelAnimationFrame(fadeRaf);fadeRaf=null;}
-      (function step(now){
-        const p=Math.min((now-t0)/dur,1);
-        setOp(v,s0*(1-p));
-        if(p<1){fadeRaf=requestAnimationFrame(step);}
-      })(t0);
+  function startVideo(n) {
+    current   = n;
+    fadingOut = false;
+    const cur   = n === 1 ? v1 : v2;
+    const other = n === 1 ? v2 : v1;
+    setOp(other, 0);
+    cur.currentTime = 0;
+    cur.play().catch(() => {});
+    doFadeIn(cur, null);
+  }
+
+  // Per-video timeupdate handlers
+  v1.addEventListener('timeupdate', () => {
+    if (current !== 1 || fadingOut || !v1.duration || isNaN(v1.duration)) return;
+    if (v1.duration - v1.currentTime <= TRIGGER_S) {
+      fadingOut = true;
+      doFadeOut(v1, FADEOUT_MS, null); // fade out very fast; video will end naturally
     }
+  });
+  v2.addEventListener('timeupdate', () => {
+    if (current !== 2 || fadingOut || !v2.duration || isNaN(v2.duration)) return;
+    if (v2.duration - v2.currentTime <= TRIGGER_S) {
+      fadingOut = true;
+      doFadeOut(v2, FADEOUT_MS, null);
+    }
+  });
+
+  // On video end: pause, wait 3s, start next
+  v1.addEventListener('ended', () => {
+    fadingOut = false;
+    if (fadeRaf) { cancelAnimationFrame(fadeRaf); fadeRaf = null; }
+    setOp(v1, 0); v1.pause();
+    setTimeout(() => startVideo(2), PAUSE_MS);
+  });
+  v2.addEventListener('ended', () => {
+    fadingOut = false;
+    if (fadeRaf) { cancelAnimationFrame(fadeRaf); fadeRaf = null; }
+    setOp(v2, 0); v2.pause();
+    setTimeout(() => startVideo(1), PAUSE_MS);
+  });
+
+  // Start on load
+  function init() { startVideo(1); }
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    init();
+  } else {
+    document.addEventListener('DOMContentLoaded', init);
   }
-
-  v1.addEventListener('timeupdate',tick);
-  v2.addEventListener('timeupdate',tick);
-
-  function onEnd(n){
-    return function(){
-      fadingOut=false;
-      if(fadeRaf){cancelAnimationFrame(fadeRaf);fadeRaf=null;}
-      const v=n===1?v1:v2;
-      setOp(v,0); v.pause();
-      setTimeout(()=>startVid(n===1?2:1),PAUSE_MS);
-    };
-  }
-
-  v1.addEventListener('ended',onEnd(1));
-  v2.addEventListener('ended',onEnd(2));
-
-  document.addEventListener('DOMContentLoaded',()=>startVid(1));
-  document.addEventListener('click',function once(){startVid(1);document.removeEventListener('click',once);},{once:true});
+  // Also re-trigger on first user click (bypass autoplay restrictions)
+  document.addEventListener('click', function once() {
+    if (current === 1 && (parseFloat(v1.style.opacity) || 0) < 0.05) startVideo(1);
+    document.removeEventListener('click', once);
+  }, { once: true });
 })();
 </script>
 </body>
