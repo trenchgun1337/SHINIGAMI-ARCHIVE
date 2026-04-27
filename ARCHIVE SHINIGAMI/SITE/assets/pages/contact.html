@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:;">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact - Archive Shinigami</title>
+<link rel="icon" href="../images/favicon/favicon.ico">
+<link rel="preload" href="../fonts/angelicwar/AngelicWar.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="../fonts/special_elite/SpecialElite-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+
+@font-face {
+  font-family: 'AngelicWar';
+  src: url('../fonts/angelicwar/AngelicWar.ttf') format('truetype');
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'SpecialElite';
+  src: url('../fonts/special_elite/SpecialElite-Regular.ttf') format('truetype');
+  font-display: block;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*:focus { outline: none !important; }
+img { -webkit-user-drag: none; user-select: none; }
+
+::selection { background: #ffffff; color: #000000; }
+::-moz-selection { background: #ffffff; color: #000000; }
+
+::-webkit-scrollbar { width: 16px; }
+::-webkit-scrollbar-track {
+  background: #080808;
+  border-left: 3px solid #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  background-image: url('../images/scrollbar1.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px dashed #000000;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-image: url('../images/scrollbar2.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(100);
+}
+::-webkit-scrollbar-corner { background: #111; }
+
+:root { --editor-h: 120px; }
+
+body {
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 13px;
+  color: #ffffff;
+  background-color: #ffffff;
+  background-image: url('../images/backgrounds/contactbg.jpg');
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+  min-height: 100vh;
+  padding: 0 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  overflow-x: hidden;
+}
+
+a { color: #ffffff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+#postFormWrap a,
+#previewBody a,
+#msgEditor a,
+#linkDropdown a,
+.thanks-list a { color: #111111; }
+#postFormWrap a:hover,
+#previewBody a:hover,
+#msgEditor a:hover,
+.thanks-list a:hover { text-decoration: underline; }
+
+#pageWrap {
+  width: 560px;
+  max-width: 100%;
+  margin: 0 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+#siteHeader {
+  background: #000;
+  border-bottom: 2px solid #fff;
+  padding: 16px 14px 11px;
+}
+
+#siteIcon {
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  object-position: center;
+  display: inline-block;
+  margin-left: 221px;
+}
+
+#siteLogo {
+  width: 370px;
+  margin-left: 95px;
+  height: 90px;
+  object-position: center;
+  filter: invert();
+}
+
+#topBar {
+  background: #000;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 12px;
+}
+
+.nav-sep {
+  color: #444;
+  margin: 0 9px;
+  user-select: none;
+}
+
+.back-link {
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  padding: 2px 18px 2px 4px;
+}
+
+.back-link:hover,
+.back-link.active {
+  color: #000000;
+  background-color: #ffffff;
+  text-decoration: underline;
+}
+
+.back-link:hover::after,
+.back-link.active::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 12px;
+  background-image: url('../images/navcross.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+}
+
+#mainPanel {
+  position: relative;
+  background: #000;
+  min-height: 400px;
+  padding-bottom: 20px;
+}
+
+#mainPanel::before,
+#mainPanel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  background: url('https://wallpapers.com/images/thumbnail/filigree-samsung-black-9u6vx5ktxvmprgub.webp') repeat-y;
+  filter: brightness(3.4);
+}
+
+#mainPanel::before { left: 0; }
+#mainPanel::after { right: 0; }
+
+.panel-inner {
+  position: relative;
+  padding: 0 12px;
+}
+
+.bar-row {
+  display: block;
+  padding: 8px 0 5px;
+  margin: 0;
+  line-height: 1;
+  text-align: center;
+}
+
+.bar-row h1 {
+  display: inline-block;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 400;
+  text-transform: uppercase;
+  padding: 0;
+  font-family: 'SpecialElite', Georgia, serif;
+}
+
+.glass-borders {
+  background: #000000;
+  color: #ffffff;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  padding: 12px 14px 14px;
+  margin: 0;
+}
+
+
+
+.aero-borders { border: 1px solid #222; }
+
+.styled-containers-headers {
+  background: #000;
+  padding: 0;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 13px;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.72;
+}
+
+#postFormWrap {
+  background: #f6f6f6;
+  border: 1px solid #cccccc;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 13px;
+  color: #111111;
+  padding: 0;
+}
+
+.content-shell {
+  margin: 0 13px 13px;
+}
+
+.chan-outer {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #cccccc;
+  background: #f9f9f9;
+}
+
+.chan-label {
+  background: #f0f0f0;
+  border: 1px solid #cccccc;
+  font-size: 12px;
+  font-weight: bold;
+  color: #111111;
+  padding: 4px 8px;
+  white-space: nowrap;
+  vertical-align: middle;
+  width: 90px;
+  text-align: left;
+}
+
+.chan-field {
+  background: #f8f8f8;
+  border: 1px solid #cccccc;
+  padding: 3px 5px;
+  vertical-align: middle;
+}
+
+.chan-input {
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  padding: 2px 4px;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 13px;
+  color: #111111;
+  width: 280px;
+}
+
+.chan-input:focus { outline: none !important; }
+.chan-input[disabled] { background: #f0f0f0; color: #555555; }
+
+.post-row-inner { display: flex; align-items: center; gap: 6px; }
+
+.chan-post-btn {
+  background: #f0f0f0;
+  border: 1px solid #cccccc;
+  padding: 2px 12px;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 13px;
+  color: #111111;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.chan-post-btn:hover { background: #e5e5e5; }
+.chan-post-btn:active { border-style: inset; }
+.chan-post-btn:disabled { opacity: .5; cursor: default; }
+
+#msgEditor {
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  height: var(--editor-h);
+  min-height: var(--editor-h);
+  max-height: var(--editor-h);
+  width: 100%;
+  padding: 3px 4px;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  resize: none;
+  contain: strict;
+  color: #111111;
+}
+
+#msgEditor:empty::before {
+  content: attr(data-placeholder);
+  color: #aaaaaa;
+  pointer-events: none;
+}
+
+#msgEditor .link-span { color: #000000; }
+
+.chan-file-inner { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.chan-file-btn {
+  background: #f0f0f0;
+  border: 1px solid #cccccc;
+  padding: 2px 8px;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 12px;
+  color: #111111;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.chan-file-btn:hover { background: #e5e5e5; }
+
+.chan-file-name {
+  font-size: 12px;
+  color: #111111;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#imgFileInput { display: none; }
+
+#removeBtn, #removeEmbedBtn {
+  font-family: arial, helvetica, sans-serif;
+  font-size: 12px;
+  color: #111111;
+  cursor: pointer;
+  white-space: nowrap;
+  display: none;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+#removeBtn:hover, #removeEmbedBtn:hover { background: #222222; text-decoration: underline; }
+#removeBtn:active, #removeEmbedBtn:active { border-style: inset; }
+
+.chan-footer-note { font-size: 11px; color: #555555; margin-top: 5px; padding: 0 6px 6px; }
+
+#statusMsg { font-size: 11px; color: #111111; }
+#statusMsg.ok { color: #111111; font-weight: bold; }
+#statusMsg.err { color: #111111; font-weight: bold; }
+
+#previewBody {
+  padding: 10px 12px;
+  background: #f6f6f6;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 13px;
+  color: #111111;
+}
+
+.chan-post-box {
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  padding: 8px 10px;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  color: #111111;
+}
+
+.chan-post-meta { font-size: 12px; margin-bottom: 6px; line-height: 1.4; }
+.chan-post-name { color: #111111; font-weight: bold; }
+.chan-post-time { color: #555555; margin-left: 6px; font-size: 11px; }
+
+#previewMsg {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: var(--editor-h);
+  min-height: var(--editor-h);
+  max-height: var(--editor-h);
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.embed-wrap { margin: 6px 0; clear: both; }
+.embed-wrap iframe { border: 1px solid #ffffff; display: block; max-width: 100%; }
+
+
+@media (max-width: 700px) {
+  body {
+    padding: 0 0 24px;
+    background-image: none;
+    background-attachment: scroll;
+  }
+
+  #pageWrap { width: 100%; margin: 0; }
+
+  #siteHeader { text-align: center; }
+
+  #siteIcon {
+    margin-left: 0;
+    display: block;
+    margin: 0 auto 8px;
+  }
+
+  #siteLogo {
+    width: min(100%, 320px);
+    margin: 0 auto;
+    display: block;
+    height: auto;
+  }
+
+  #topBar { gap: 14px; }
+}
+
+#mainContent{
+  position: relative;
+  background:#000;
+  min-height:400px;
+}
+
+#mainContent::before,
+#mainContent::after{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:12px;
+  background:url('https://wallpapers.com/images/thumbnail/filigree-samsung-black-9u6vx5ktxvmprgub.webp') repeat-y;
+  filter: brightness(3.4);
+}
+
+#mainContent::before{
+  left:0;
+}
+
+#mainContent::after{
+  right:0;
+}
+
+.section-bar {
+    color: #fff;
+    font-family: 'SpecialElite', Georgia, serif;
+    font-size: 22px;
+    font-weight: normal;
+    padding: 8px 0 5px;
+    display: block;
+    text-align: center;
+    border-bottom: 1px solid #e5dada;
+    text-transform: uppercase ;
+}
+
+.paper {
+  background: #000000;
+  color: #ffffff;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+.paper p {
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 13px;
+  line-height: 1.72;
+  color: #ffffff;
+  text-align: center;
+  margin: 0;
+}
+
+.paper p + p {
+  margin-top: 9px;
+}
+
+#introBanner {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  border-bottom: 1px solid #000;
+  pointer-events: none;
+}
+
+.intro-box {
+  background: #000000;
+  color: #ffffff;
+  padding: 12px 14px 14px;
+  border-bottom: 2px solid #ffffff;
+  text-align: center;
+}
+
+.about-cols {
+  display: flex;
+}
+
+.about-col {
+  flex: 1;
+  padding: 12px 14px;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 12.5px;
+  line-height: 1.68;
+  color: #111;
+}
+
+.about-col + .about-col {
+  border-left: 1px solid #ddd;
+}
+
+.about-col-label {
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 17px;
+  color: #ffffff;
+  background: #000000;
+  font-weight: normal;
+  padding: 2px 8px;
+  display: inline-block;
+  margin-bottom: 10px;
+  margin-left: 60px;
+  text-align: center;
+}
+
+.name-highlight {
+  font-family: 'DeathNote', Georgia, serif;
+  font-size: 20px;
+  color: #000;
+}
+
+#name-cloister {
+  font-family: 'cloister', Georgia, serif;
+  font-size: 26px;
+  color: #000000;
+  background-color: #ffffff;
+  font-weight: normal;
+}
+
+.stats-row {
+  display: flex;
+  background: #000000;
+  color: #ffffff;
+}
+
+.stat-cell {
+  flex: 1;
+  padding: 14px 8px;
+  text-align: center;
+  border-right: 1px solid #ddd;
+}
+
+.stat-cell:last-child {
+  border-right: none;
+}
+
+.stat-num {
+  display: block;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 46px;
+  font-weight: normal;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.stat-label {
+  background: rgb(0, 0, 0);
+  display: inline-block;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 20px;
+  padding: 2px 8px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.lu-box {
+  background: #000000;
+  color: #111;
+  padding: 12px;
+  text-align: center;
+}
+
+.lu-date {
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 26px;
+  font-weight: normal;
+  color: #ffffff;
+}
+
+.thanks-list {
+  color: #ffffff;
+  list-style: none;
+}
+
+.thanks-list li {
+  padding: 7px 14px;
+  border-bottom: 1px dotted #ddd;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 12.5px;
+}
+
+.thanks-list li:last-child {
+  border-bottom: none;
+}
+
+.thanks-list li::before {
+  content: '> ';
+  color: #ffffff;
+}
+
+.thanks-list a {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.thanks-list a:hover {
+  color: #000000;
+  background-color: white;
+}
+
+.res-block {
+  background: #000000;
+  color: #ffffff;
+  list-style: none;
+}
+
+.res-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 14px;
+  border-bottom: 1px dotted #ddd;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 12.5px;
+}
+
+.res-item:last-child {
+  border-bottom: none;
+}
+
+.res-item a {
+  color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.res-item a:hover .res-name {
+  color: #000;
+  background-color: white;
+  text-decoration: underline;
+}
+
+.res-note {
+  font-size: 10.5px;
+  color: #ffffff;
+  font-family: 'SpecialElite', Georgia, serif;
+}
+
+.res-item.locked {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.res-bar {
+  background: #000;
+  color: #fff;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 22px;
+  font-weight: normal;
+  padding: 4px 0 2px;
+  display: block;
+  text-align: center;
+  border-top: 1px solid #222;
+  border-bottom: 1px solid #333;
+  text-transform: uppercase;
+}
+
+.black-gap {
+  background-image: url('../images/scrollbar1.webp');
+  height: 8px;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ─── FOOTER ─── */
+
+#pageFooter {
+    padding: 1px 1px 10px;
+    background: #000;
+    border-top: 1px solid #222;
+    font-family: 'SpecialElite', Georgia, serif;
+    font-size: 11.5px;
+    color: #555;
+    text-align: center;
+}
+
+#pageFooter .footer-author {
+  color: #777;
+  cursor: default;
+  border-bottom: 1px dotted #444;
+}
+
+#pageFooter .footer-author:hover {
+  color: #ccc;
+  border-bottom-style: solid;
+}
+
+#wa-tooltip {
+  position: fixed;
+  z-index: 99999;
+  background: #fff;
+  border: 1px solid #aaa;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.30);
+  padding: 8px 10px;
+  font-size: 11.5px;
+  color: #111;
+  font-family: 'SpecialElite', Georgia, serif;
+  pointer-events: none;
+  display: none;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+#wa-tooltip a { color: #000; text-decoration: underline; }
+#wa-tooltip td { vertical-align: middle; }
+#wa-tooltip td:last-child { padding-left: 10px; }
+
+#shlimazl-card {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  pointer-events: none;
+  background: #fff;
+  border: 2px solid #000;
+  padding: 10px 14px 12px;
+  max-width: 240px;
+  font-family: 'SpecialElite', Georgia, serif;
+}
+
+#shlimazl-card.visible { display: block; }
+#shlimazl-card .sc-word  { font-size: 24px; font-weight: 900; color: #0a0a0a; display: block; line-height: 1; margin-bottom: 2px; }
+#shlimazl-card .sc-pron  { font-size: 10px; color: #555; font-style: italic; display: block; }
+#shlimazl-card .sc-type  { font-size: 10px; color: #555; font-style: italic; font-weight: bold; display: block; margin-bottom: 4px; }
+#shlimazl-card hr        { border: none; border-top: 1px solid #ddd; margin: 4px 0; }
+#shlimazl-card .sc-def   { font-size: 11.5px; color: #111; line-height: 1.4; display: block; }
+
+.interest-shlimazl {
+  cursor: default;
+}
+
+#siteIcon {
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  object-position: center;
+  display: inline-block;
+  margin-left: 221px;
+}
+
+#logotext {
+  display: inline-block;
+  margin-left: 14px;
+  font-size: 60px;
+  text-align: center;
+  margin-left: 46px;
+  font-family: 'DeathNote', Georgia, serif;
+}
+
+@media (max-width: 700px) {
+  #wrapper { width: 100%; margin: 0; }
+  body { background-image: none; }
+  .about-cols { flex-direction: column; }
+  .about-col + .about-col { border-left: none; border-top: 1px solid #ddd; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="wa-tooltip"></div>
+
+<div id="pageWrap">
+
+  <header id="siteHeader">
+    <img id="siteIcon" src="../images/skull1.jpg" alt="">
+    <img id="siteLogo" src="../images/deathlogo.png" alt="logo">
+  </header>
+
+  <nav id="topBar">
+    <a class="back-link" href="../../index.html#introduction">introduction</a>
+    <span class="nav-sep">|</span>
+    <a class="back-link" href="../../index.html#resources">resources</a>
+    <span class="nav-sep">|</span>
+    <a class="back-link active" href="contact.html">contact</a>
+    
+  </nav>
+
+  <div id="mainPanel">
+    <div class="panel-inner">
+
+            <span class="section-bar">contact</span>
+      
+      <div class="intro-box">
+        
+        <p>Send anonymous messages, attach links, or upload images.</p>
+      </div>
+        
+      
+
+      <div class="black-gap"></div>
+      <div class="bar-row"><h1>Post</h1></div>
+      <div class="content-shell">
+        <div id="postFormWrap" class="aero-borders">
+          <table class="chan-outer">
+            <tbody>
+              <tr>
+                <td class="chan-label">Name</td>
+                <td class="chan-field">
+                  <input class="chan-input" type="text" value="Anonymous" disabled>
+                </td>
+              </tr>
+              <tr>
+                <td class="chan-label"></td>
+                <td class="chan-field">
+                  <div class="post-row-inner">
+                    <button class="chan-post-btn" id="sendBtn" onclick="sendMsg()">Post</button>
+                    <div id="statusMsg"></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="chan-label" style="vertical-align:top;padding-top:6px;">Content</td>
+                <td class="chan-field">
+                  <div id="msgEditor" contenteditable="true" data-placeholder="" spellcheck="true"></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="chan-label">Links</td>
+                <td class="chan-field">
+                  <div style="display:flex;flex-direction:column;gap:6px;">
+                    <input id="linkInput" class="chan-input" type="text" placeholder="paste youtube / spotify / soundcloud link">
+                    <div id="linkDropdown" style="background:#fff;border:1px inset #aaa;max-height:90px;overflow-y:auto;font-size:12px;padding:4px;"></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="chan-label">File</td>
+                <td class="chan-field">
+                  <div class="chan-file-inner">
+                    <button class="chan-file-btn" onclick="document.getElementById('imgFileInput').click()">Choose file</button>
+                    <span class="chan-file-name" id="fileNameDisplay">No file chosen</span>
+                    <button id="removeBtn" onclick="removeAttachment()">Remove attachment</button>
+                    <button id="removeEmbedBtn" onclick="removeEmbeds()">Remove embed</button>
+                    <input type="file" id="imgFileInput" accept="image/jpeg,image/png,image/gif,image/webp" onchange="insertImage(event)">
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="chan-footer-note">• Please be kind to me.</div>
+        </div>
+      </div>
+
+      <div class="bar-row"><h1>Preview</h1></div>
+      <div class="content-shell">
+        <div class="aero-borders">
+          <div id="previewBody">
+            <div style="color:#111111;font-size:11px;margin-bottom:8px;">anonymous message - shinigamiarchive.vercel.app/contact</div>
+            <div class="chan-post-box">
+              <div class="chan-post-meta">
+                <span class="chan-post-name">Anonymous</span>
+                <span class="chan-post-time" id="previewTime"></span>
+              </div>
+              <div id="previewMsg">
+                <span style="color:#555555;">your message will appear here...</span>
+              </div>
+              <div style="clear:both;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="black-gap"></div>
+      <span class="section-bar">services</span>
+      <ul class="thanks-list">
+        <li>Services: <a href="https://www.emailjs.com" target="_blank" rel="noopener noreferrer">emailjs.com</a></li>
+      </ul>
+
+    </div>
+  </div><!-- /#mainPanel -->
+
+  <footer id="pageFooter">
+    2026 | Death Archive / Created by
+    <span class="footer-author" onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')" onmouseout="WaTooltip.hide()">Settembre19th</span>
+  </footer>
+
+</div><!-- /#pageWrap -->
+
+<script>
+emailjs.init({ publicKey: 'iww-r-sgJVyoRmokf' });
+
+const CLOUD_NAME    = 'dagsxkazw';
+const UPLOAD_PRESET = 'unsigned_upload';
+const SERVICE_ID    = 'service_ina2cb8';
+const TEMPLATE_ID   = 'template_g7owumb';
+
+function getChanTime() {
+  const now  = new Date();
+  const mm   = String(now.getMonth()+1).padStart(2,'0');
+  const dd   = String(now.getDate()).padStart(2,'0');
+  const yy   = String(now.getFullYear()).slice(2);
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const day  = days[now.getDay()];
+  const hh   = String(now.getHours()).padStart(2,'0');
+  const min  = String(now.getMinutes()).padStart(2,'0');
+  const ss   = String(now.getSeconds()).padStart(2,'0');
+  return `${mm}/${dd}/${yy}(${day})${hh}:${min}:${ss}`;
+}
+
+const embedPatterns = [
+  {
+    name:'youtube',
+    regex:/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?(?:[^#&\s]*&)*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/g,
+    build:(m)=>({ url:m[0], id:m[1], iframeSrc:`https://www.youtube.com/embed/${m[1]}?rel=0&modestbranding=1`, width:'100%', height:'95' })
+  },
+  {
+    name:'spotify',
+    regex:/https?:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(track|album|playlist|episode)\/([a-zA-Z0-9]+)(?:\?[^\s]*)?/g,
+    build:(m)=>({ url:m[0], iframeSrc:`https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0`, width:'100%', height:'95' })
+  },
+  {
+    name:'soundcloud',
+    regex:/https?:\/\/(?:www\.)?soundcloud\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+(?:\?[^\s]*)?/g,
+    build:(m)=>({ url:m[0], iframeSrc:`https://w.soundcloud.com/player/?url=${encodeURIComponent(m[0])}&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`, width:'100%', height:'95' })
+  }
+];
+
+const EMBED_URL_REGEX = /(?:https?:\/\/)?(?:(?:www\.)?(?:youtube\.com\/watch\?[^\s]*v=[a-zA-Z0-9_-]{11}|youtu\.be\/[a-zA-Z0-9_-]{11})|open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(?:track|album|playlist|episode)\/[a-zA-Z0-9]+(?:\?[^\s]*)?|(?:www\.)?soundcloud\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+(?:\?[^\s]*)?)/g;
+
+function detectEmbeds(text) {
+  const found = [];
+  for (const pat of embedPatterns) {
+    pat.regex.lastIndex = 0;
+    let m;
+    while ((m = pat.regex.exec(text)) !== null) {
+      const built = pat.build(m);
+      if (!found.some(e => e.url === built.url)) found.push({ ...built, name:pat.name });
+    }
+  }
+  return found;
+}
+
+function buildEmbedPreviewHTML(embeds) {
+  if (!embeds.length) return '';
+  return embeds.map(e =>
+`<div class="embed-wrap"><iframe src="${escapeAttr(e.iframeSrc)}" width="${e.width}" height="${e.height}" frameborder="0" allow="autoplay;clipboard-write;encrypted-media;fullscreen;picture-in-picture" loading="lazy" style="border-radius:0;border:1px solid #000;display:block;"></iframe></div>`  ).join('');
+}
+
+function buildEmbedEmailHTML(embeds) {
+  if (!embeds.length) return '';
+  const items = embeds.map(e => `<div style="margin:4px 0;font-size:12px;">[${e.name.toUpperCase()}] <a href="${escapeAttr(e.url)}" style="color:#000000;">${escapeHtml(e.url)}</a></div>`).join('');
+  return `<div style="margin-top:8px;padding-top:6px;border-top:1px dotted #ffffff;font-size:11px;color:#ffffff;">Embeds:</div>${items}`;
+}
+
+function getCaretCharOffset(el) {
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return 0;
+  const range = sel.getRangeAt(0).cloneRange();
+  const preRange = document.createRange();
+  preRange.selectNodeContents(el);
+  preRange.setEnd(range.endContainer, range.endOffset);
+  return preRange.toString().length;
+}
+
+function setCaretByOffset(el, offset) {
+  const sel = window.getSelection();
+  if (!sel) return;
+  let pos = 0, found = false;
+  function walk(node) {
+    if (found) return;
+    if (node.nodeType === Node.TEXT_NODE) {
+      const len = node.textContent.length;
+      if (pos + len >= offset) {
+        const range = document.createRange();
+        range.setStart(node, offset - pos);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        found = true;
+        return;
+      }
+      pos += len;
+    } else {
+      for (const child of node.childNodes) { walk(child); if (found) return; }
+    }
+  }
+  walk(el);
+  if (!found) {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+}
+
+function unwrapLinkSpans() {
+  editor.querySelectorAll('.link-span').forEach(span => {
+    const parent = span.parentNode;
+    if (!parent) return;
+    while (span.firstChild) parent.insertBefore(span.firstChild, span);
+    parent.removeChild(span);
+  });
+  editor.normalize();
+}
+
+function highlightLinks() {
+  const rawText = editor.textContent.replace(/\u200B/g,'');
+  EMBED_URL_REGEX.lastIndex = 0;
+  const hasLinks = EMBED_URL_REGEX.test(rawText);
+  const hasSpans = !!editor.querySelector('.link-span');
+  if (!hasLinks && !hasSpans) return;
+  const caretOffset = getCaretCharOffset(editor);
+  unwrapLinkSpans();
+  function processNode(node) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      if (node.tagName === 'IMG' || (node.classList && (node.classList.contains('pic-specs') || node.classList.contains('link-span')))) return;
+      Array.from(node.childNodes).forEach(processNode);
+    } else if (node.nodeType === Node.TEXT_NODE) {
+      EMBED_URL_REGEX.lastIndex = 0;
+      if (!EMBED_URL_REGEX.test(node.textContent)) return;
+      EMBED_URL_REGEX.lastIndex = 0;
+      const frag = document.createDocumentFragment();
+      let lastIndex = 0, m;
+      const text = node.textContent;
+      while ((m = EMBED_URL_REGEX.exec(text)) !== null) {
+        if (m.index > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
+        const span = document.createElement('span');
+        span.className = 'link-span';
+        span.style.color = '#000000';
+        span.textContent = m[0];
+        frag.appendChild(span);
+        lastIndex = m.index + m[0].length;
+      }
+      if (lastIndex < text.length) frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+      if (node.parentNode) node.parentNode.replaceChild(frag, node);
+    }
+  }
+  Array.from(editor.childNodes).forEach(processNode);
+  setCaretByOffset(editor, caretOffset);
+}
+
+const editor      = document.getElementById('msgEditor');
+const previewMsg  = document.getElementById('previewMsg');
+const previewTime = document.getElementById('previewTime');
+const links       = [];
+const linkInput   = document.getElementById('linkInput');
+const linkDropdown = document.getElementById('linkDropdown');
+
+linkInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const val = linkInput.value.trim();
+    if (!val) return;
+    if (!links.includes(val)) links.push(val);
+    linkInput.value = '';
+    renderLinks();
+    updatePreview();
+  }
+});
+
+function renderLinks() {
+  linkDropdown.innerHTML = links.map((l,i) =>
+    `<div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:3px;">
+      <span style="color:#000000;overflow:hidden;text-overflow:ellipsis;">${l}</span>
+      <button onclick="removeLink(${i})" style="color:#ffffff;background:none;border:none;cursor:pointer;">x</button>
+    </div>`
+  ).join('');
+}
+
+function removeLink(i) { links.splice(i,1); renderLinks(); updatePreview(); }
+
+function extractLinksFromEditor() {
+  const text = editor.innerText.replace(/\u200B/g,'');
+  const matches = text.match(EMBED_URL_REGEX);
+  if (!matches) return;
+  matches.forEach(link => { if (!links.includes(link)) links.push(link); });
+  renderLinks();
+}
+
+previewTime.textContent = getChanTime();
+setInterval(() => { previewTime.textContent = getChanTime(); }, 1000);
+
+editor.addEventListener('input', () => {
+  suppressedEmbeds.clear();
+  extractLinksFromEditor();
+  highlightLinks();
+  updatePreview();
+});
+
+editor.addEventListener('paste', (e) => {
+  e.preventDefault();
+  const text = e.clipboardData.getData('text/plain');
+  if (text) document.execCommand('insertText', false, text);
+});
+
+editor.addEventListener('dragstart', (e) => { if (e.target.tagName === 'IMG') e.preventDefault(); });
+
+editor.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+    const img = editor.querySelector('img');
+    if (img) {
+      e.preventDefault();
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      const textNodes = [];
+      function collectTextNodes(node) {
+        if (node.nodeType === Node.TEXT_NODE) textNodes.push(node);
+        else if (node.tagName !== 'IMG' && !(node.classList && node.classList.contains('pic-specs')))
+          for (const child of node.childNodes) collectTextNodes(child);
+      }
+      collectTextNodes(editor);
+      if (textNodes.length > 0) {
+        const range = document.createRange();
+        range.setStart(textNodes[0], 0);
+        const last = textNodes[textNodes.length-1];
+        range.setEnd(last, last.textContent.length);
+        sel.addRange(range);
+      }
+      return;
+    }
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    const br = document.createElement('br');
+    range.insertNode(br);
+    range.setStartAfter(br);
+    range.setEndAfter(br);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    return;
+  }
+});
+
+const suppressedEmbeds = new Set();
+
+function updatePreview() {
+  const text   = editor.innerText.replace(/\u200B/g,'').trim();
+  const hasImg = !!editor.querySelector('img');
+  const editorText = editor.innerText.replace(/\u200B/g,'');
+  const allEmbeds = detectEmbeds(editorText + '\n' + links.join('\n'));
+  const visibleEmbeds = allEmbeds.filter(e => !suppressedEmbeds.has(e.url));
+  document.getElementById('removeEmbedBtn').style.display = visibleEmbeds.length ? 'inline-block' : 'none';
+  if (text || hasImg) {
+    previewMsg.innerHTML = buildPreviewHTML(editor.innerHTML) + buildEmbedPreviewHTML(visibleEmbeds);
+  } else {
+    previewMsg.innerHTML = '<span style="color:#555555;">your message will appear here...</span>';
+  }
+}
+
+function buildPreviewHTML(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html.replace(/\u200B/g,'');
+  tmp.querySelectorAll('.link-span').forEach(span => {
+    const a = document.createElement('a');
+    a.href = span.textContent; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.style.color = '#000000'; a.textContent = span.textContent;
+    span.parentNode.replaceChild(a, span);
+  });
+  tmp.querySelectorAll('img').forEach(img => {
+    img.removeAttribute('style');
+    img.style.cssText = 'float:left;max-width:200px;max-height:200px;margin:0 12px 8px 0;border:1px solid #000000;display:block;';
+  });
+  tmp.querySelectorAll('.pic-specs').forEach(el => {
+    el.removeAttribute('contenteditable');
+    el.style.cssText = 'font-family:monospace;font-size:11px;color:#111111;margin:0 0 2px;display:block;clear:both;';
+  });
+  return tmp.innerHTML;
+}
+
+function buildEmailHTML(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html.replace(/\u200B/g,'');
+  tmp.querySelectorAll('.link-span').forEach(span => {
+    const a = document.createElement('a');
+    a.href = span.textContent; a.style.color = '#000000'; a.textContent = span.textContent;
+    span.parentNode.replaceChild(a, span);
+  });
+  const img   = tmp.querySelector('img');
+  const specs = tmp.querySelector('.pic-specs');
+  const rawText = tmp.innerText || '';
+  const embeds = detectEmbeds(rawText + '\n' + links.join('\n'));
+  const embedsSection = buildEmbedEmailHTML(embeds);
+  let bodyHTML;
+  if (img) {
+    const specsHTML = specs ? `<div style="font-family:monospace;font-size:11px;color:#111111;margin:0 0 4px;display:block;">${escapeHtml(specs.textContent)}</div>` : '';
+    if (specs) specs.remove();
+    img.remove();
+    const textHTML = tmp.innerHTML.trim();
+    bodyHTML = `${specsHTML}<table role="presentation" style="border-collapse:collapse;margin:0;"><tr><td style="vertical-align:top;padding-right:10px;"><img src="${escapeAttr(img.src)}" style="max-width:200px;max-height:200px;border:1px solid #ffffff;display:block;"></td><td style="vertical-align:top;font-size:13px;line-height:1.6;">${textHTML || '&nbsp;'}</td></tr></table>`;
+  } else {
+    bodyHTML = tmp.innerHTML;
+  }
+  return bodyHTML + embedsSection;
+}
+
+function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(str) { return str.replace(/"/g,'&quot;'); }
+
+function truncateFileName(name, maxLen) {
+  if (name.length <= maxLen) return name;
+  const ext  = name.includes('.') ? name.slice(name.lastIndexOf('.')) : '';
+  const base = name.slice(0, name.lastIndexOf('.'));
+  const allowed = maxLen - ext.length - 3;
+  if (allowed <= 0) return name.slice(0, maxLen-3) + '...';
+  return base.slice(0, allowed) + '...' + ext;
+}
+
+async function uploadToCloudinary(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', UPLOAD_PRESET);
+  const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method:'POST', body:fd });
+  const data = await res.json();
+  if (!data.secure_url) throw new Error('upload failed');
+  return data.secure_url;
+}
+
+async function insertImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status      = document.getElementById('statusMsg');
+  const fileDisplay = document.getElementById('fileNameDisplay');
+  const removeBtn   = document.getElementById('removeBtn');
+  const fileName    = file.name;
+  const fileSizeKB  = (file.size / 1024).toFixed(1);
+  if (file.size > 400*1024) {
+    status.textContent = 'Image too large (max 400 KB).'; status.className = 'err';
+    event.target.value = ''; return;
+  }
+  status.textContent = 'Uploading...'; status.className = '';
+  const tmpURL = URL.createObjectURL(file);
+  const tmpImg = new Image(); tmpImg.src = tmpURL;
+  await new Promise(res => { tmpImg.onload = res; tmpImg.onerror = res; });
+  const w = tmpImg.naturalWidth, h = tmpImg.naturalHeight;
+  URL.revokeObjectURL(tmpURL);
+  const existingText = editor.innerText.replace(/\u200B/g,'').trim();
+  try {
+    const imgUrl = await uploadToCloudinary(file);
+    const specs = document.createElement('div');
+    specs.className = 'pic-specs'; specs.contentEditable = 'false';
+    specs.style.cssText = 'font-family:monospace;font-size:11px;color:#ffffff;margin:0 0 2px;display:block;cursor:default;clear:both;';
+    specs.textContent = `File: ${fileName} (${fileSizeKB} KB, ${w}x${h})`;
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.style.cssText = 'float:left;max-width:200px;max-height:200px;margin:0 12px 8px 0;border:1px solid #ffffff;display:block;';
+    const textNode = document.createTextNode(existingText || '\u200B');
+    editor.innerHTML = '';
+    editor.appendChild(specs); editor.appendChild(img); editor.appendChild(textNode);
+    editor.focus();
+    const range = document.createRange();
+    range.setStart(textNode, textNode.length); range.collapse(true);
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    fileDisplay.textContent = truncateFileName(fileName, 22);
+    removeBtn.style.display = 'inline-block';
+    status.textContent = 'Image uploaded!'; status.className = 'ok';
+  } catch (err) {
+    status.textContent = 'Upload failed.'; status.className = 'err'; console.error(err);
+  }
+  event.target.value = '';
+  highlightLinks(); updatePreview();
+}
+
+function removeAttachment() {
+  editor.querySelectorAll('img').forEach(el => el.remove());
+  editor.querySelectorAll('.pic-specs').forEach(el => el.remove());
+  document.getElementById('fileNameDisplay').textContent = 'No file chosen';
+  document.getElementById('removeBtn').style.display    = 'none';
+  document.getElementById('statusMsg').textContent      = '';
+  document.getElementById('statusMsg').className        = '';
+  editor.innerHTML = editor.innerHTML.replace(/\u200B/g,'');
+  highlightLinks(); updatePreview(); editor.focus();
+}
+
+function removeEmbeds() {
+  const text = editor.innerText.replace(/\u200B/g,'').trim();
+  detectEmbeds(text).forEach(e => { if (!suppressedEmbeds.has(e.url)) suppressedEmbeds.add(e.url); });
+  document.getElementById('removeEmbedBtn').style.display = 'none';
+  updatePreview(); editor.focus();
+}
+
+async function sendMsg() {
+  const rawText = editor.innerText.replace(/\u200B/g,'').trim();
+  const embeds  = detectEmbeds(rawText);
+  const embedsHTML = embeds.map(e => {
+    if (e.name === 'youtube') return `<div style="margin:8px 0;"><a href="${e.url}" target="_blank"><img src="https://img.youtube.com/vi/${e.id}/hqdefault.jpg" style="max-width:300px;display:block;border:1px solid #000000;"></a><div style="font-size:11px;color:#111111;">YouTube</div></div>`;
+    if (e.name === 'spotify') return `<div style="margin:8px 0;"><a href="${e.url}" target="_blank" style="color:#000000;">&#9654; Open on Spotify</a></div>`;
+    if (e.name === 'soundcloud') return `<div style="margin:8px 0;"><a href="${e.url}" target="_blank" style="color:#000000;">&#9654; Open on SoundCloud</a></div>`;
+    return '';
+  }).join('');
+  const hasImg  = !!editor.querySelector('img');
+  const status  = document.getElementById('statusMsg');
+  const btn     = document.getElementById('sendBtn');
+  if (!rawText && !hasImg) { status.textContent = 'Write something first.'; status.className = 'err'; return; }
+  if (btn.disabled) return;
+  btn.disabled = true; status.className = ''; status.textContent = 'Sending...';
+  const timeStr   = getChanTime();
+  const finalHTML = buildEmailHTML(editor.innerHTML);
+  try {
+    await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+      name:'Anonymous', from_email:'anonymous@noreply.com',
+      subject:'anonymous message - watanagashi archive',
+      message:rawText, message_html:finalHTML, time:timeStr,
+    });
+    status.textContent = 'Post sent!'; status.className = 'ok';
+    editor.innerHTML = '';
+    previewMsg.innerHTML = '<span style="color:#555555;">your message will appear here...</span>';
+    document.getElementById('fileNameDisplay').textContent = 'No file chosen';
+    document.getElementById('removeBtn').style.display    = 'none';
+    document.getElementById('removeEmbedBtn').style.display = 'none';
+    suppressedEmbeds.clear();
+  } catch (err) {
+    status.textContent = 'Failed - trenchgun1337@gmail.com'; status.className = 'err'; console.error(err);
+  }
+  btn.disabled = false;
+}
+</script>
+<script>
+window.WaTooltip = (function(){
+  var el = document.getElementById('wa-tooltip');
+  function show(anchor, html) {
+    if (!el) return;
+    el.innerHTML = html; el.style.display = 'block';
+    var r = anchor.getBoundingClientRect();
+    var tw = el.offsetWidth || 240, th = el.offsetHeight || 80;
+    var left = r.left + r.width / 2 - tw / 2;
+    var top  = r.top - th - 8;
+    if (top  < 4) top  = r.bottom + 8;
+    if (left < 4) left = 4;
+    if (left + tw > window.innerWidth - 4) left = window.innerWidth - tw - 4;
+    el.style.left = left + 'px'; el.style.top = top + 'px';
+  }
+  function hide() { if (el) el.style.display = 'none'; }
+  return { show: show, hide: hide };
+})();
+</script>
+</body>
+</html>
