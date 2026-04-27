@@ -2,487 +2,441 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>Sketchbook — Watanagashi Archive</title>
-<link rel="icon" href="../images/favicon/miyoico.ico">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:;">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sketchbook — Archive Shinigami</title>
+<link rel="icon" href="../images/favicon/favicon.ico">
+
+<link rel="preload" href="../fonts/cloister_black/CloisterBlack.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="../fonts/deathnote_font/DEATH_NOTE1.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="../fonts/Special_Elite/SpecialElite-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+
 <style>
-/* ── RESET / GLOBAL ── identical to musicplayer / videoplayer */
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-*{-webkit-tap-highlight-color:transparent}
-::selection{background:rgba(80,80,80,.45);color:#fff}
-*:focus{outline:none!important}
-button:active,button:focus,button:focus-visible{outline:none!important;box-shadow:none!important}
-
-
-:root{
-  --accent:#cc1a1a;
-  --text:#111;
-  --text-dim:#2c2c2c;
-  --green:#1a9c2a;
-  --grad-bar: #d8d8d8;
---grad-dark: #3a3a3a;
-  --shadow-bar:0 2px 5px rgba(0,0,0,.15);
-  --star-on:#f0a500;
+@font-face {
+  font-family: 'cloister';
+  src: url('../fonts/cloister_black/CloisterBlack.ttf') format('truetype');
+  font-display: block;
+}
+@font-face {
+  font-family: 'DeathNote';
+  src: url('../fonts/deathnote_font/DEATH_NOTE1.ttf') format('truetype');
+  font-display: block;
+}
+@font-face {
+  font-family: 'SpecialElite';
+  src: url('../fonts/Special_Elite/SpecialElite-Regular.ttf') format('truetype');
+  font-display: block;
 }
 
-html{scrollbar-width:thin;scrollbar-color:rgba(120,120,120,.50) transparent}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(120,120,120,.50);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:rgba(54,54,54,.8)}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*:focus { outline: none !important; }
+img { -webkit-user-drag: none; user-select: none; }
 
-body{
-  font-family:'Sawarabi Gothic','Sazanami Gothic',Tahoma,'Segoe UI',sans-serif;
-  font-size:12px;
-  background:#000 center/78% fixed no-repeat;
-  background-image:url('../images/backgrounds/sketchbook.jpg');
-    color:var(--text);
-  padding:12px 6px 60px;
-  display:flex;flex-direction:column;align-items:center;
-  min-height:100vh;
+::selection { background: #ffffff; color: #000000; }
+::-moz-selection { background: #ffffff; color: #000000; }
+
+::-webkit-scrollbar { width: 16px; }
+::-webkit-scrollbar-track { background: #080808; border-left: 3px solid #ffffff; }
+::-webkit-scrollbar-thumb {
+  background-image: url('../images/scrollbar1.webp');
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  border: 1px dashed #000000;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-image: url('../images/scrollbar2.webp');
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  filter: brightness(100);
+}
+::-webkit-scrollbar-corner { background: #111; }
+
+body {
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 13px;
+  color: #ffffff;
+  background-color: #000;
+  background-image: url('../images/backgrounds/sketchbookbg.jpeg');
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
 }
 
-img{-webkit-user-drag:none;user-select:none}
-a{color:#000;text-decoration:none}
-a:hover{color:var(--accent);text-decoration:underline}
-p{font-size:12.5px;line-height:18px;color:var(--text);margin:0}
-strong{color:var(--accent);font-weight:400}
+a { color: #ffffff; text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-#_pageShell{width:800px;max-width:100%;display:flex;flex-direction:column}
+#wrapper { width: 560px; max-width: 100%; }
 
-#cornerLogo{position:fixed;top:10px;right:14px;z-index:9998;line-height:0;text-decoration:none}
-#cornerLogo img{height:36px;width:auto;object-fit:contain;display:block;opacity:.82}
-#cornerLogo:hover img{opacity:1}
-
-/* ── AERO BAR — exact copy from musicplayer ── */
-.aero-bar{
-  background:var(--grad-bar);border:2px ridge #727272;
-  box-shadow:var(--shadow-bar);color:var(--text);font-size:13px;
-  padding:4px 8px;display:flex;align-items:center;gap:6px;margin-bottom:7px;
+/* ─── HEADER ─── */
+#siteHeader {
+  background: #000;
+  border-bottom: 2px solid #fff;
+  padding: 16px 14px 11px;
 }
-.aero-bar .back-link{flex-shrink:0;padding:2px 3px;display:flex;align-items:center;line-height:0;text-decoration:none}
-.aero-bar .back-link img{height:28px;width:auto;object-fit:contain;display:block}
-.aero-bar .back-link:hover img{filter:brightness(.85)}
-.aero-bar .bar-title{flex:1;text-align:center;font-size:12px;letter-spacing:.5px}
+#siteIcon {
+  width: 78px; height: 78px;
+  object-fit: contain; object-position: center;
+  display: inline-block;
+  margin-left: 221px;
+}
+#siteLogo {
+  width: 370px; margin-left: 45px; height: 90px;
+  object-position: center; filter: invert();
+}
 
-/* ── GLASS BOX — exact copy ── */
-.glass-box{background:#ebebeb;box-shadow:var(--shadow-bar);border:2px ridge #727272;padding:5px;margin-bottom:7px}
-.aero-inner{border:1px solid rgba(0,0,0,.30);background:#f2f2f2}
-.aero-pad{padding:10px 12px}
+/* ─── NAV ─── */
+#siteNav {
+  background: #000;
+  padding: 6px 12px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 40px;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 12px;
+}
+.nav-sep { color: #444; margin: 0 9px; user-select: none; }
+.nav-item {
+  color: #ffffff; text-decoration: none; cursor: pointer;
+  position: relative; display: inline-block;
+  padding: 2px 18px 2px 4px;
+}
+.nav-item:hover, .nav-item.active {
+  color: #000000; background-color: white; text-decoration: underline;
+}
+.nav-item:hover::after, .nav-item.active::after {
+  content: "";
+  position: absolute; right: -2px; top: 50%;
+  transform: translateY(-50%);
+  width: 22px; height: 12px;
+  background-image: url('../images/navcross.png');
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+  pointer-events: none;
+}
 
-/* ── SECTION BAR — exact copy from musicplayer ── */
+/* ─── MAIN ─── */
+#mainContent {
+  position: relative; background: #000; min-height: 400px;
+}
+#mainContent::before, #mainContent::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 12px;
+  background: url('https://wallpapers.com/images/thumbnail/filigree-samsung-black-9u6vx5ktxvmprgub.webp') repeat-y;
+  filter: brightness(3.4);
+}
+#mainContent::before { left: 0; }
+#mainContent::after { right: 0; }
+
+/* ─── SECTION BAR ─── */
 .section-bar {
-    display: block;
-    background: #000;
-    padding: 5px 8px;
-    margin: 0;
-    line-height: 1.6;
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #fff;
-    border: 2px ridge;
-}
-/* variant with flex for inline controls */
-.section-bar-flex{
-  display:flex;background:#000;padding:5px 8px;margin:0;line-height:1.6;
-  font-size:11px;font-weight:400;letter-spacing:1.5px;text-transform:uppercase;color:#fff;
-  align-items:center;justify-content:space-between;
+  background: #000000; color: #fff;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 22px; font-weight: normal;
+  padding: 8px 0 5px; display: block; text-align: center;
+  border-bottom: 1px solid #e5dada; text-transform: uppercase;
 }
 
-/* ── LOAD BANNER — exact copy from musicplayer ── */
-#galleryLoadBanner{
-  display:none;
-  background:var(--grad-bar);border:1px solid rgba(140,140,140,.50);
-  box-shadow:var(--shadow-bar);padding:5px 10px;margin-bottom:7px;
-  align-items:center;gap:8px;color:var(--text);font-size:11.5px;
-}
-#galleryLoadBanner.visible{display:flex}
-
-/* ── MAIN TABS — exact copy from musicplayer approach ── */
-.main-tab-bar{
-  display:flex;background:var(--grad-bar);border:2px ridge #727272;
-  box-shadow:var(--shadow-bar);gap:0;margin-bottom:7px;
-}
-.main-tab{
-  flex:1;padding:7px 10px;font-size:11.5px;font-family:inherit;letter-spacing:.8px;
-  text-transform:uppercase;border:none;cursor:pointer;background:transparent;
-  color:#666;border-right:1px solid rgba(140,140,140,.40);
-}
-.main-tab:last-child{border-right:none}
-.main-tab:hover{background:rgba(0,0,0,.06);color:#222}
-.main-tab.active{
-  background:rgb(0, 0, 0);
-  border-bottom:2px solid white;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);
-}
-.main-panel{display:none}
-.main-panel.active{display:block}
-
-/* ── CONTROLS ROW — exact copy ── */
-.controls-row{
-  background:var(--grad-bar);border:1px solid rgba(140,140,140,.40);
-  padding:5px 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;
-  box-shadow:var(--shadow-bar);
-}
-.ctrl-label{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
-.ctrl-input{
-  background:#fff;border:1px solid rgba(140,140,140,.55);
-  font-family:inherit;font-size:11px;color:#111;padding:3px 7px;
-}
-.ctrl-input::placeholder{color:#aaa}
-.ctrl-spacer{flex:1}
-
-/* Sort button + dropdown — matches musicplayer style */
-#gallerySortBtn{
-  background:var(--grad-dark);border:1px solid rgba(0,0,0,.55);color:#eee;
-  font-family:inherit;font-size:10.5px;padding:3px 9px;cursor:pointer;letter-spacing:.3px;white-space:nowrap;
-}
-#gallerySortBtn:hover{filter:brightness(1.3)}
-#gallerySortPanel{
-  display:none;position:absolute;right:0;top:100%;z-index:200;
-  background:rgba(4,4,4,.97);border:1px solid rgba(100,20,20,.50);
-  min-width:160px;font-family:Tahoma,sans-serif;font-size:11px;padding:4px 0;
+/* ─── BLACK GAP ─── */
+.black-gap {
+  background-image: url('../images/scrollbar1.webp');
+  height: 8px;
+  border-top: 1px solid #000000; border-bottom: 1px solid #000000;
 }
 
-/* ── GALLERY GRID WRAPPER (with outer arrows) ── */
-.gi-grid-outer{
-  display:flex;align-items:stretch;gap:0;
-  background:#e8e8e8;border:1px solid rgba(0,0,0,.20);
+/* ─── INTRO BOX ─── */
+.intro-box {
+  background: #000000; color: #ffffff;
+  padding: 12px 14px 14px;
+  border-bottom: 2px solid #ffffff; text-align: center;
+}
+.intro-box p {
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 13px; line-height: 1.72; color: #ffffff;
 }
 
-/* outer arrow columns */
-.gi-side-arrow{
-  width:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  background:var(--grad-bar);border:none;
+/* ─── TABS ─── */
+.tab-bar {
+  display: flex; background: #000; border-bottom: 1px solid #333;
 }
-.gi-arrow-btn{
-  background:var(--grad-dark);border:1px solid rgba(0,0,0,.50);
-  color:#eee;font-family:inherit;font-size:16px;
-  width:28px;height:48px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+.tab-btn {
+  flex: 1; background: none;
+  border: none; border-right: 1px solid #333;
+  color: #555;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 12px; padding: 7px 0; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 1px;
 }
-.gi-arrow-btn:hover:not(:disabled){filter:brightness(1.35)}
-.gi-arrow-btn:disabled{filter:brightness(.45);cursor:not-allowed}
+.tab-btn:last-child { border-right: none; }
+.tab-btn:hover { color: #fff; background: #111; }
+.tab-btn.active { color: #000; background: #fff; }
 
-/* ── GALLERY GRID ── */
-.gi-grid{
-  flex:1;display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(165px,1fr));
-  gap:5px;padding:5px;min-height:160px;
-}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-/* ── PAGER BAR ── */
-.gi-pager-bar{
-  background:var(--grad-bar);border:1px solid rgba(140,140,140,.40);
-  border-top:none;padding:4px 8px;
-  display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;
-  box-shadow:var(--shadow-bar);
+/* ─── GALLERY ─── */
+.gallery-wrap {
+  background: #000;
+  padding: 14px 20px 6px;
 }
-.gi-pager-num{
-  background:var(--grad-bar);border:1px solid rgba(140,140,140,.50);
-  min-width:22px;height:22px;padding:0 5px;
-  display:inline-flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:11px;color:#555;font-family:inherit;
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
 }
-.gi-pager-num:hover{background:#fff;color:var(--accent)}
-.gi-pager-num.active{
-  background:linear-gradient(to bottom,#2a2a2a,#111);
-  border-color:rgba(255, 255, 255, 0.6);color:#fff;
+.gallery-card {
+  aspect-ratio: 1 / 1; overflow: hidden;
+  border: 1px solid #333; background: #111;
+  cursor: zoom-in; position: relative;
 }
-#galleryPagerInfo{font-size:10px;color:#888;margin-left:6px;white-space:nowrap}
-
-/* ── CARD ── */
-.gi-card{
-  background:#fff;border:1px solid rgba(0,0,0,.20);
-  box-shadow:0 1px 3px rgba(0,0,0,.12);
-  overflow:hidden;display:flex;flex-direction:column;
+.gallery-card img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
 }
-.gi-card:hover{box-shadow:0 3px 10px rgba(0,0,0,.25);transform:translateY(-1px);border-color:rgba(100,100,100,.45)}
-.gi-card-awarded{border-color: #000000 !important;}
-
-.gi-card-imgwrap{
-  width:100%;aspect-ratio:1/1;overflow:hidden;
-  background:#d8d8d8;border-bottom:1px solid rgba(0,0,0,.12);
-  cursor:zoom-in;flex-shrink:0;position:relative;
+.gallery-card:hover img { filter: brightness(1.1); }
+.gallery-card-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex; align-items: flex-end;
+  padding: 6px 8px; opacity: 0; transition: opacity 0.2s;
 }
-.gi-card-imgwrap img{
-  width:100%;height:100%;object-fit:cover;display:block;
-}
-.gi-card:hover .gi-card-imgwrap img{filter:brightness(1.06) contrast(1.03)}
-
-.gi-card-overlay{
-  position:absolute;inset:0;
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:8px;
-}
-.gi-card-imgwrap:hover .gi-card-overlay{opacity:1}
-.gi-card-overlay span{
-  color:#fff;font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;
-  background:rgba(0,0,0,.55);padding:2px 8px;
+.gallery-card:hover .gallery-card-overlay { opacity: 1; }
+.gallery-card-title {
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 10px; color: #fff;
+  letter-spacing: 0.5px; text-transform: uppercase;
 }
 
-.gi-card-body{padding:5px 7px 7px;flex:1;display:flex;flex-direction:column;gap:2px}
-.gi-card-title{
-  font-size:11px;color:#111;overflow:hidden;text-overflow:ellipsis;
-  white-space:nowrap;font-weight:400;letter-spacing:.2px;
+/* ─── PAGER ─── */
+.pager-row {
+  display: flex; justify-content: center; align-items: center;
+  gap: 6px; padding: 12px 0 8px;
 }
-.gi-card-desc{
-  font-size:10px;color:#777;line-height:1.5;overflow:hidden;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+.pager-btn {
+  background: #000; border: 1px solid #444; color: #fff;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 13px; min-width: 28px; height: 28px;
+  padding: 0 8px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
 }
-.gi-rating-label{font-size:9px;color:#aaa;letter-spacing:.8px;text-transform:uppercase;margin-top:3px}
-
-/* ── STARS ── */
-.gi-stars-row{display:flex;align-items:center;gap:1px;flex-wrap:nowrap;padding:2px 0}
-.gi-star{display:inline-block;cursor:default;user-select:none;-webkit-user-select:none;line-height:1;flex-shrink:0}
-.gi-star img{display:block;pointer-events:none}
-.gi-star-interactive{cursor:pointer!important}
-.gi-star-interactive img{pointer-events:auto!important}
-.gi-avg{font-size:10px;color:#888;margin-left:4px}
-.gi-cnt{font-size:9px;color:#aaa;margin-left:2px}
-
-/* ── AWARDED SECTION ── */
-#galleryAwarded {
-    margin: 0;
-    background: black;}
-    
-.gi-awarded-layout{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px}
-.gi-awarded-title-top{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#fff;text-align:center}
-.gi-awarded-imgbox{position:relative;cursor:zoom-in}
-.gi-awarded-img {
-    max-height: 640px;
-    max-width: 100%;
-    border: 2px ridge #ffffff;
-    /* box-shadow: 0 4px 18px rgb(0 0 0); */
-    display: block;}
-.gi-awarded-desc{font-size:11px;color:#ddd;text-align:center;max-width:400px}
-.gi-awarded-stars-wrap{display:flex;justify-content:center}
-.gi-awarded-empty{padding:16px;text-align:center;color:#888;font-size:11px}
-.gi-awarded-stars-wrap .gi-star img{width:26px;height:26px}
-
-.gi-empty{
-  grid-column:1/-1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:8px;
-  padding:40px 20px;color:#aaa;font-size:12px;text-align:center;min-height:120px;
+.pager-btn:hover, .pager-btn.active {
+  background: #fff; color: #000; border-color: #fff;
 }
 
-/* gi-link */
-.gi-link{color:var(--accent);text-decoration:underline}
-.gi-link:hover{color:#e05050}
+/* ─── PAINT ─── */
+#paintEmbedWrap { width: 100%; height: 480px; background: #000; }
+#paintEmbedWrap iframe { width: 100%; height: 100%; border: none; display: block; }
 
-/* ── LIGHTBOX ── */
-.gi-lb-overlay{
-  display:none;position:fixed;inset:0;z-index:10000;
-  background:rgba(0,0,0,.90);align-items:center;justify-content:center;
+/* ─── LIGHTBOX ─── */
+#lightbox {
+  display: none; position: fixed; inset: 0; z-index: 99999;
+  background: rgba(0,0,0,0.95);
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 12px;
 }
-.gi-lb-overlay.gi-lb-active{display:flex}
-.gi-lb-box{
-  background:#181818;border:2px ridge #666;
-  width:min(94vw,860px);max-height:94vh;
-  display:flex;flex-direction:column;overflow:hidden;
-  box-shadow:0 8px 40px rgba(0,0,0,.9);
+#lightbox.active { display: flex; }
+#lbImgWrap { max-width: 90vw; max-height: 80vh; display: flex; align-items: center; justify-content: center; }
+#lbImg { max-width: 100%; max-height: 80vh; object-fit: contain; border: 1px solid #444; display: block; }
+#lbTitle {
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 12px; color: #aaa;
+  text-transform: uppercase; letter-spacing: 1px; text-align: center;
 }
+#lbClose {
+  position: fixed; top: 16px; right: 20px;
+  background: #000; border: 1px solid #fff; color: #fff;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 11px; padding: 3px 10px; cursor: pointer; letter-spacing: 1px;
+}
+#lbClose:hover { background: #fff; color: #000; }
+.lbNav {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  background: rgba(0,0,0,0.7); border: 1px solid #555; color: #fff;
+  font-size: 20px; width: 36px; height: 60px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.lbNav:hover { background: #fff; color: #000; }
+#lbPrev { left: 12px; }
+#lbNext { right: 12px; }
 
-/* titlebar — same style as section-bar */
-.gi-lb-titlebar{
-  background:#000;padding:5px 10px;
-  display:flex;align-items:center;justify-content:space-between;
-  font-size:11px;color:#ccc;letter-spacing:1px;text-transform:uppercase;flex-shrink:0;
-  border-bottom:1px solid rgba(0, 0, 0, 0.08);
+/* ─── FOOTER ─── */
+#pageFooter {
+  padding: 1px 1px 10px; background: #000;
+  border-top: 1px solid #222;
+  font-family: 'SpecialElite', Georgia, serif;
+  font-size: 11.5px; color: #555; text-align: center;
 }
-/* close button — NOT red, matches admin-btn style */
-.gi-lb-close{
-  background:black;border:1px solid rgb(255, 255, 255);
-  color:#eee;font-family:inherit;font-size:10px;
-  padding:2px 8px;cursor:pointer;letter-spacing:.3px;
-}
-.gi-lb-close:hover{filter:brightness(1.35)}
+#pageFooter .footer-author { color: #777; cursor: default; border-bottom: 1px dotted #444; }
+#pageFooter .footer-author:hover { color: #ccc; border-bottom-style: solid; }
 
-.gi-lb-imgarea{
-  flex:1;display:flex;align-items:stretch;overflow:hidden;min-height:0;
-}
-.gi-lb-imgwrap{
-  flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  background:#111;cursor:zoom-in;
-}
-#giLbImg{
-  max-width:100%;max-height:100%;object-fit:contain;
-  display:block;user-select:none;-webkit-user-drag:none;
-  background-image: url('https://static.vecteezy.com/system/resources/previews/003/542/126/non_2x/png-image-squares-background-free-vector.jpg');
-}
-.gi-lb-arrow{
-  background:rgba(0,0,0,.60);border:none;border-left:1px solid rgba(255,255,255,.08);
-  color:#bbb;font-size:20px;padding:0 10px;cursor:pointer;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-}
-.gi-lb-arrow:first-child{border-left:none;border-right:1px solid rgba(255,255,255,.08)}
-.gi-lb-arrow:hover{background:rgba(60,80,110,.75);color:#fff}
-
-.gi-lb-bottom{
-  background:#0d0d0d;border-top:1px solid rgba(255,255,255,.08);
-  padding:7px 12px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;flex-shrink:0;
-}
-.gi-lb-desc{font-size:11px;color:#999;flex:1;line-height:1.6}
-.gi-lb-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-#giLbCounter{font-size:10px;color:#666}
-
-/* ── PAINT ── */
-#paintEmbedWrap{width:100%;height:500px;background:#e0e0e0;border:1px solid rgba(0,0,0,.20);overflow:hidden;}
-#paintEmbedWrap iframe{width:100%;height:100%;border:none;display:block;}
-.paint-hint{font-size:10.5px;color:#888;padding:5px 8px;background:#f9f9f9;border:1px solid rgba(0,0,0,.10);margin-top:4px;display:flex;align-items:center;gap:6px;}
-
-/* ── SOUND TOGGLE — exact copy ── */
-#soundToggle{
-  position:fixed;bottom:8px;left:10px;z-index:9999;
-  font-family:'Sawarabi Gothic',Tahoma,sans-serif;font-size:10px;
-  color:#fff;cursor:pointer;user-select:none;padding:2px 0;background:none;border:none;
-}
-#soundToggle:hover{color:rgba(255,255,255,.85)}
-#soundToggle.off{color:rgba(255,255,255,.28)}
-
-/* ── MOBILE ── */
-@media(max-width:620px){
-  body{padding:6px 3px 48px;background-attachment:scroll}
-  #_pageShell{width:100%}
-  .gi-grid{grid-template-columns:repeat(2,1fr);gap:3px;padding:3px}
-  .gi-side-arrow{width:26px}
-  .gi-arrow-btn{width:22px;font-size:14px}
-}
-@media(max-width:400px){
-  .gi-grid{grid-template-columns:1fr}
-  .main-tab{font-size:10px;padding:6px 5px;letter-spacing:.4px}
+/* ─── RESPONSIVE ─── */
+@media (max-width: 700px) {
+  body { background-image: none; justify-content: flex-start; }
+  #wrapper { width: 100%; }
+  #siteIcon { margin-left: 0; display: block; margin: 0 auto 8px; }
+  #siteLogo { width: min(100%, 280px); margin: 0 auto; display: block; height: auto; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
 <body>
 
-<a id="cornerLogo" href="../../index.html" title="Watanagashi Archive — Home">
-  <img src="../images/watanagashilogo2.png" alt="Watanagashi Archive" onerror="this.style.display='none'">
-</a>
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button id="lbClose" onclick="closeLb()">✕ close</button>
+  <button class="lbNav" id="lbPrev" onclick="lbShift(-1)">&#8592;</button>
+  <div id="lbImgWrap"><img id="lbImg" src="" alt=""></div>
+  <div id="lbTitle"></div>
+  <button class="lbNav" id="lbNext" onclick="lbShift(1)">&#8594;</button>
+</div>
 
-<div id="_pageShell">
+<div id="wrapper">
 
-  <!-- Top bar -->
-  <div class="aero-bar">
-<a class="back-link" href="../../index.html" style="color:var(--accent);font-size:11px;letter-spacing:1px;text-transform:uppercase;">Back</a>    <span class="bar-title">SKETCHBOOK</span>
-  </div>
+  <header id="siteHeader">
+    <img id="siteIcon" src="../images/skull1.jpg" alt="">
+    <img id="siteLogo" src="../images/deathlogo.png" alt="logo">
+  </header>
 
-  <!-- Loading banner — exact same structure as music player -->
-  <div id="galleryLoadBanner" class="visible">
-    <img src="https://img1.picmix.com/output/stamp/thumb/9/4/8/1/2841849_403b7.gif" alt=""
-      style="height:18px;width:18px;flex-shrink:0;" onerror="this.style.display='none'">
-    <span id="galleryLoadMsg">Loading gallery&hellip;</span>
-  </div>
+  <nav id="siteNav">
+    <a class="nav-item" href="../../index.html#introduction">introduction</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-item" href="../../index.html#resources">resources</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-item" href="contact.html">contact</a>
+  </nav>
 
-  <!-- Main tabs -->
-  <div class="main-tab-bar">
-    <button class="main-tab active" onclick="switchMainTab('gallery')">Gallery</button>
-    <button class="main-tab" onclick="switchMainTab('paint')">JS Paint</button>
-  </div>
+  <main id="mainContent">
 
-  <!-- ═══════ GALLERY PANEL ═══════ -->
-  <div id="panel-gallery" class="main-panel active">
+    <span class="section-bar">sketchbook</span>
 
-    <!-- Best Rated -->
-    <div class="glass-box" style="background:#111;border-color:#000000">
-      <div class="section-bar" style="background:#0a0a0a;color:#ccc;letter-spacing:1.5px">
-        BEST RATED
-      </div>
-      <div id="galleryAwarded"></div>
+    <div class="intro-box">
+      <p>drawings, sketches &amp; experiments.</p>
     </div>
 
-    <!-- Gallery -->
-    <div class="glass-box">
-      <div class="section-bar-flex">
-        <span>GALLERY</span>
-        <div style="display:flex;align-items:center;gap:8px;position:relative">
-          <span id="galleryCount" style="font-size:10px;letter-spacing:.5px;font-weight:400;opacity:.65">0 UPLOADS </span>
-          <div id="gallerySortPanel"></div>
-        </div>
-      </div>
+    <div class="black-gap"></div>
 
-      <div class="aero-inner">
-        <!-- Controls row -->
-        <div class="controls-row">
-          <span class="ctrl-label">Search:</span>
-          <input type="text" class="ctrl-input" id="searchInput" placeholder="Search&#x2026;"
-            style="width:130px" oninput="GallerySystem && GallerySystem.renderGrid()">
-          <div class="ctrl-spacer"></div>
-          <span id="ratingStatus" style="font-size:9.5px;color:#888;font-style:bold"></span>
-        </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('gallery')">Gallery</button>
+      <button class="tab-btn" onclick="switchTab('paint')">JS Paint</button>
+    </div>
 
-        <!-- Grid + outer arrows wrapper -->
-        <div style="display:flex;align-items:stretch">
-
-          <!-- Left arrow — outside grid -->
-          <div class="gi-side-arrow" id="galleryArrowLeft" style="background:var(--grad-bar);border-right:1px solid rgba(0,0,0,.12)"></div>
-
-          <!-- Grid -->
-          <div class="gi-grid" id="galleryGrid" style="flex:1">
-            <div class="gi-empty">Loading&hellip;</div>
-          </div>
-
-          <!-- Right arrow — outside grid -->
-          <div class="gi-side-arrow" id="galleryArrowRight" style="background:var(--grad-bar);border-left:1px solid rgba(0,0,0,.12)"></div>
-
-        </div>
-
-        <!-- Pager numbers bar -->
-        <div class="gi-pager-bar">
-          <div id="galleryPagerNums" style="display:flex;gap:3px;flex-wrap:wrap"></div>
-          <span id="galleryPagerInfo"></span>
-        </div>
+    <div id="tab-gallery" class="tab-panel active">
+      <div class="gallery-wrap">
+        <div class="gallery-grid" id="galleryGrid"></div>
+        <div class="pager-row" id="pagerRow"></div>
       </div>
     </div>
-  </div>
 
-  <!-- ═══════ PAINT PANEL ═══════ -->
-  <div id="panel-paint" class="main-panel">
-    <div class="glass-box">
-      <div class="section-bar-flex">
-        JS PAINT
-        <a href="https://jspaint.app" target="_blank" rel="noopener noreferrer"
-           style="font-size:9.5px;color:#aaa;letter-spacing:.5px;text-transform:uppercase;text-decoration:none;"
-           onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#aaa'">
-          Open in new tab &#x2197;
-        </a>
-      </div>
-      <div class="aero-inner" style="padding:5px">
-        <div id="paintEmbedWrap"></div>
-        <div class="paint-hint">Draw something and save it to share!</div>
-      </div>
+    <div id="tab-paint" class="tab-panel">
+      <div id="paintEmbedWrap"></div>
     </div>
-  </div>
 
-</div><!-- /#_pageShell -->
+    <div class="black-gap"></div>
 
+    <footer id="pageFooter">
+      2026 | Death Archive / Created by
+      <span class="footer-author">Settembre19th</span>
+    </footer>
 
-<!-- gallery.js — static images + Firebase ratings -->
-<script src="../scripts/js/gallery.js"></script>
+  </main>
 
-<!-- Tab switch + Paint + Sounds -->
+</div>
+
 <script>
-window.switchMainTab = function (tab) {
-  document.querySelectorAll('.main-tab').forEach((b, i) =>
+const IMAGES = [
+  { src: '../images/sketches/alienmaldito.png',             title: 'alien maldito' },
+  { src: '../images/sketches/choppedmyself.png',            title: 'chopped myself' },
+  { src: '../images/sketches/coelho1.png',                  title: 'coelho 1' },
+  { src: '../images/sketches/coelho2.png',                  title: 'coelho 2' },
+  { src: '../images/sketches/coelho3.png',                  title: 'coelho 3' },
+  { src: '../images/sketches/coelho4.png',                  title: 'coelho 4' },
+  { src: '../images/sketches/coelho5.png',                  title: 'coelho 5' },
+  { src: '../images/sketches/dante2.png',                   title: 'dante' },
+  { src: '../images/sketches/dante3.png',                   title: 'dante 3' },
+  { src: '../images/sketches/demon.png',                    title: 'demon' },
+  { src: '../images/sketches/easter.jpg',                   title: 'easter' },
+  { src: '../images/sketches/lerolero.png',                 title: 'lero lero' },
+  { src: '../images/sketches/mishanshizune.jpg',            title: 'misha & shizune' },
+  { src: '../images/sketches/nowyouknowhowitfeelslike.png', title: 'now you know' },
+  { src: '../images/sketches/princessunicorn.png',          title: 'princess unicorn' },
+  { src: '../images/sketches/rikafurude.png',               title: 'rika furude' },
+];
+
+const PER_PAGE = 9;
+let currentPage = 0;
+let lbIndex = 0;
+
+function renderGallery() {
+  const grid  = document.getElementById('galleryGrid');
+  const pager = document.getElementById('pagerRow');
+  const start = currentPage * PER_PAGE;
+  const imgs  = IMAGES.slice(start, start + PER_PAGE);
+  const totalPages = Math.ceil(IMAGES.length / PER_PAGE);
+
+  grid.innerHTML = imgs.map((img, i) => `
+    <div class="gallery-card" onclick="openLb(${start + i})">
+      <img src="${img.src}" alt="${img.title}" loading="lazy">
+      <div class="gallery-card-overlay">
+        <span class="gallery-card-title">${img.title}</span>
+      </div>
+    </div>
+  `).join('');
+
+  pager.innerHTML = '';
+  for (let i = 0; i < totalPages; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'pager-btn' + (i === currentPage ? ' active' : '');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentPage = i; renderGallery(); window.scrollTo({top:0,behavior:'smooth'}); };
+    pager.appendChild(btn);
+  }
+}
+
+function openLb(index) {
+  lbIndex = index; updateLb();
+  document.getElementById('lightbox').classList.add('active');
+  document.addEventListener('keydown', lbKey);
+}
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.removeEventListener('keydown', lbKey);
+}
+function lbShift(dir) {
+  lbIndex = (lbIndex + dir + IMAGES.length) % IMAGES.length;
+  updateLb();
+}
+function updateLb() {
+  document.getElementById('lbImg').src = IMAGES[lbIndex].src;
+  document.getElementById('lbTitle').textContent = IMAGES[lbIndex].title;
+}
+function lbKey(e) {
+  if (e.key === 'ArrowLeft')  lbShift(-1);
+  if (e.key === 'ArrowRight') lbShift(1);
+  if (e.key === 'Escape')     closeLb();
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLb();
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) =>
     b.classList.toggle('active', ['gallery','paint'][i] === tab));
-  document.querySelectorAll('.main-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
   if (tab === 'paint') initPaint();
-};
+}
 
 var paintInited = false;
-function initPaint () {
+function initPaint() {
   if (paintInited) return;
   paintInited = true;
   var wrap   = document.getElementById('paintEmbedWrap');
-  if (!wrap) return;
   var iframe = document.createElement('iframe');
   iframe.src = 'https://jspaint.app';
-  iframe.setAttribute('allowfullscreen', '');
-  iframe.setAttribute('allow', 'clipboard-read; clipboard-write; display-capture');
+  iframe.setAttribute('allow', 'clipboard-read; clipboard-write; display-capture; fullscreen');
   wrap.appendChild(iframe);
 }
 
+renderGallery();
 </script>
 
 </body>
