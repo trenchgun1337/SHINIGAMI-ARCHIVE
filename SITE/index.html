@@ -751,6 +751,8 @@ body {
     </div><!-- /#pg-resources -->
 
     <footer id="pageFooter">
+        <span id="musicBtn" onclick="toggleMusic()" style="cursor:pointer;margin-right:10px;border-bottom:1px dotted #444;color:#777;">Music: On</span>
+
       2026 | Death Archive / Created by
       <span
         class="footer-author"
@@ -885,6 +887,37 @@ window.WaTooltip = (function(){
   }
   function hide() { if (el) el.style.display = 'none'; }
   return { show: show, hide: hide };
+})();
+</script>
+
+<iframe id="ytPlayer"
+  src="https://www.youtube.com/embed/iwh_CyQrWNo?autoplay=1&loop=1&playlist=iwh_CyQrWNo&controls=0&mute=0"
+  style="display:none;" allow="autoplay" frameborder="0">
+</iframe>
+
+<script>
+(function(){
+  var muted = localStorage.getItem('musicOff') === '1';
+  var btn   = document.getElementById('musicBtn');
+  var frame = document.getElementById('ytPlayer');
+
+  function applyState() {
+    if (muted) {
+      frame.src = '';
+      btn.textContent = 'Music: Off';
+    } else {
+      frame.src = 'https://www.youtube.com/embed/iwh_CyQrWNo?autoplay=1&loop=1&playlist=iwh_CyQrWNo&controls=0&mute=0';
+      btn.textContent = 'Music: On';
+    }
+  }
+
+  window.toggleMusic = function() {
+    muted = !muted;
+    localStorage.setItem('musicOff', muted ? '1' : '0');
+    applyState();
+  };
+
+  applyState();
 })();
 </script>
 
