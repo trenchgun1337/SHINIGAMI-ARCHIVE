@@ -82,10 +82,35 @@ a:hover{text-decoration:underline;}
 /* ── POSTS ── */
 .posts-area{background:#000;padding:0 14px 14px;}
 .post-card{background:#f6f6f6;border:1px solid #ccc;margin-top:14px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#111;}
-.post-card-header{background:#f0f0f0;border-bottom:1px solid #ccc;padding:5px 10px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
-.post-author{font-weight:bold;font-size:14px;color:#000;}
-.post-date{font-size:11px;color:#555;}
-.post-no{font-size:11px;color:#888;margin-left:auto;}
+.post-card-header{
+  background:#f0f0f0;
+  border-bottom:1px solid #ccc;
+  padding:4px 8px;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:12px;
+  display:flex;
+  gap:6px;
+  align-items:center;
+}
+
+.post-author{
+  color:#ff0000; /* verde clássico */
+  font-weight:bold;
+}
+
+.post-date{
+  color:#000;
+}
+
+.post-no{
+  color:#000;
+}
+
+.post-no:hover{
+  text-decoration:underline;
+  cursor:pointer;
+}
+
 .post-body{padding:10px 12px;}
 .post-img-file-info{font-family:monospace;font-size:11px;color:#555;margin-bottom:4px;display:block;clear:both;}
 .post-img-wrap{margin-bottom:8px;display:inline-block;position:relative;}
@@ -112,7 +137,7 @@ a:hover{text-decoration:underline;}
 .admin-section-bar{background:#000;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:16px;font-weight:normal;padding:6px 0 4px;display:block;text-align:center;border-bottom:1px solid #333;text-transform:uppercase;margin-bottom:10px;}
 
 /* Admin login */
-.admin-login{padding:20px 0;}
+.admin-login{padding:20px 0; text-align: -webkit-center;}
 .admin-login input{background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:13px;padding:5px 10px;width:200px;}
 .admin-login button{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:5px 14px;cursor:pointer;margin-left:6px;}
 .admin-login button:hover{background:#000;color:#fff;}
@@ -327,13 +352,20 @@ const _embedLinks = [];
 // DATE FORMATTING
 // ═══════════════════════════════════════════════════════════════════════════
 function fmtDate(ts) {
-  const d   = new Date(ts);
-  const DAY = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${DAY[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} ${MON[d.getMonth()]} ${d.getFullYear()} — `
-       + `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+  const d = new Date(ts);
+
+  const DAY = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  const MM = String(d.getMonth() + 1).padStart(2,'0');
+  const DD = String(d.getDate()).padStart(2,'0');
+  const YY = String(d.getFullYear()).slice(-2);
+
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  const ss = String(d.getSeconds()).padStart(2,'0');
+
+  return `${MM}/${DD}/${YY}(${DAY[d.getDay()]})${hh}:${mm}:${ss}`;
 }
-function isoDate(ts) { return new Date(ts).toISOString().slice(0,10); }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // EMBED DETECTION
@@ -405,7 +437,7 @@ function buildCard(p, num, adminMode) {
 
   return `<div class="post-card" id="post-${p.id}">
     <div class="post-card-header">
-      <span class="post-author">Settembre</span>
+      <span class="post-author">${'Settembre'}</span>
       <span class="post-date">${fmtDate(p.ts)}</span>
       <span class="post-no">No.${num}</span>
     </div>
