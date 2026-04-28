@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sketchbook — Archive Shinigami</title>
+<title>‎ </title>
 <link rel="icon" href="../images/favicon/favicon.ico">
 
 <link rel="preload" href="../fonts/cloister_black/CloisterBlack.ttf" as="font" type="font/ttf" crossorigin="anonymous">
@@ -434,6 +434,66 @@ function initPaint() {
 }
 
 renderGallery();
+
+
+(function() {
+  const fullTitle = "Sketchbook - Archive Shinigami";
+  let i = 0;
+
+  // ✍️ efeito digitando
+  const typing = setInterval(() => {
+    document.title = fullTitle.slice(0, i);
+    i++;
+
+    if (i > fullTitle.length) {
+      clearInterval(typing);
+      document.title = fullTitle; // garante título completo
+      startBlink();
+    }
+  }, 120);
+
+  function startBlink() {
+    function loop() {
+
+      const delay = 3000 + Math.random() * 800; // ✅ 3s–3.8s
+
+      setTimeout(() => {
+        const original = fullTitle; // ✅ usa sempre o correto
+
+        const blinkCount = Math.random() < 0.5 ? 1 : 2;
+        let done = 0;
+
+        function doBlink() {
+          let j = 0;
+
+          const blink = setInterval(() => {
+            document.title = (j % 2 === 0) ? "デスノート" : original;
+            j++;
+
+            // ⏱️ ~0.6s
+            if (j > 5) {
+              clearInterval(blink);
+              document.title = original;
+              done++;
+
+              if (done < blinkCount) {
+                setTimeout(doBlink, 120);
+              } else {
+                loop();
+              }
+            }
+          }, 120);
+        }
+
+        doBlink();
+
+      }, delay);
+    }
+
+    loop();
+  }
+})();
+
 </script>
 
 </body>
