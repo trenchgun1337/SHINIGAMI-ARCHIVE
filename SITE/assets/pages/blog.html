@@ -48,13 +48,21 @@ img{-webkit-user-drag:none;user-select:none;}
   transition:opacity 0.5s ease;
 }
 
-/* ── MUSIC BUTTON (footer span, identical to index) ── */
+/* ── MUSIC BUTTON ── */
 #musicBtn{
   cursor:pointer;
   margin-right:10px;
   border-bottom:1px dotted #444;
   color:#777;
 }
+
+#musicBtn:hover{background:#fff;color:#000;}
+#musicBtn .music-icon{
+  font-size:13px;
+  transition:opacity 0.2s;
+}
+#musicBtn.muted .music-icon::before{content:"🔇";}
+#musicBtn:not(.muted) .music-icon::before{content:"🔊";}
 
 /* ── LAYOUT ── */
 body{font-family:'SpecialElite',Georgia,serif;font-size:13px;color:#fff;background:transparent;min-height:100vh;overflow-x:hidden;display:flex;justify-content:center;}
@@ -246,13 +254,10 @@ a:hover{text-decoration:underline;}
 </head>
 <body>
 
-<!-- VIDEO BACKGROUND -->
 <div id="videoBg">
-  <video id="vid1" src="../video/blogbg2.mp4" playsinline preload="auto" muted loop></video>
-  <video id="vid2" src="../video/blogbg1.mp4" playsinline preload="auto" muted loop></video>
+  <video id="vid1" src="../video/blogbg2.mp4" muted playsinline preload="auto"></video>
+  <video id="vid2" src="../video/blogbg1.mp4" muted playsinline preload="auto"></video>
 </div>
-
-
 
 <div id="wa-tooltip"></div>
 <div id="lightbox">
@@ -294,14 +299,15 @@ a:hover{text-decoration:underline;}
     <div id="adminContainer"></div>
 
     <div class="black-gap"></div>
-    <footer id="pageFooter">
-      <span id="musicBtn" onclick="toggleMusic()">Music: On</span>
-      2026 | Death Archive / Created by
-      <span
-        class="footer-author"
-        onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
-        onmouseout="WaTooltip.hide()">Settembre19th</span>
-    </footer>
+   <footer id="pageFooter">
+  <span id="musicBtn" onclick="toggleMusic()">Music: On</span>
+  2026 | Death Archive / Created by
+  <span
+    class="footer-author"
+    onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
+    onmouseout="WaTooltip.hide()">Settembre19th</span>
+</footer>
+
   </main>
 </div>
 
@@ -1042,30 +1048,34 @@ window.closeLb=closeLb;
     document.addEventListener('DOMContentLoaded', startFirst);
   }
 
-  // ── MUSIC TOGGLE — identical to index.html ──
-  _isMuted = localStorage.getItem('musicOff') !== '0';
-
-  function applyMuteState() {
-    const btn = document.getElementById('musicBtn');
-    const activeVid = current === 1 ? v1 : v2;
-    if (_isMuted) {
-      activeVid.muted  = true;
-      activeVid.volume = 0;
-      if (btn) btn.textContent = 'Music: Off';
-    } else {
-      activeVid.muted  = false;
-      activeVid.volume = 1;
-      if (activeVid.paused) activeVid.play().catch(()=>{});
-      if (btn) btn.textContent = 'Music: On';
-    }
-  }
-
-  applyMuteState();
+  // ── MUSIC TOGGLE ──
+  // Must be triggered by user gesture to unmute
+  window._videoMuteState = true; // start muted
 
   window.toggleMusic = function() {
     _isMuted = !_isMuted;
-    localStorage.setItem('musicOff', _isMuted ? '1' : '0');
-    applyMuteState();
+    window._videoMuteState = _isMuted;
+
+    const btn = document.getElementById('musicBtn');
+
+    // Apply to currently active video
+    const activeVid = current === 1 ? v1 : v2;
+
+    if (_isMuted) {
+      activeVid.muted  = true;
+      activeVid.volume = 0;
+      btn.textContent = 'Music: Off';
+      btn.classList.add('muted');
+    } else {
+      // Unmute requires user gesture — this click IS the gesture
+      activeVid.muted  = false;
+      activeVid.volume = 1;
+            btn.textContent = 'Music: On';
+
+      // If video isn't playing for some reason, restart
+      if (activeVid.paused) activeVid.play().catch(()=>{});
+      btn.classList.remove('muted');
+    }
   };
 })();
 
