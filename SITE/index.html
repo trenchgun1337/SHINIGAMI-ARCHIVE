@@ -31,6 +31,22 @@
   font-display: block;
 }
 
+#musicBtn {
+  cursor: pointer;
+  margin-right: 10px;
+  border-bottom: 1px dotted #444;
+  color: #777;
+}
+
+#bgMusicFrame {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  left: -9999px;
+  top: -9999px;
+}
 
 #cursor-layer {
   position: fixed;
@@ -599,6 +615,13 @@ body {
 </style>
 </head>
 <body>
+<iframe
+  id="bgMusicFrame"
+  title="background music"
+  src="https://www.youtube.com/embed/videoseries?list=PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0&autoplay=1&loop=1&playlist=PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0&controls=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1"
+  allow="autoplay; encrypted-media"
+></iframe>
+
 
 <!-- hover card -->
 <div id="shlimazl-card">
@@ -1231,6 +1254,34 @@ ctx.fill();
   });
 })();
 
+</script>
+
+
+<script>
+(function(){
+  var btn = document.getElementById('musicBtn');
+  var frame = document.getElementById('bgMusicFrame');
+  if (!btn || !frame) return;
+
+  var playlist = 'PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0';
+  var playing = true;
+
+  function setMusic(on) {
+    playing = on;
+    var url = 'https://www.youtube.com/embed/videoseries?list=' + playlist +
+      '&autoplay=' + (on ? '1' : '0') +
+      '&loop=1&playlist=' + playlist +
+      '&controls=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1';
+    frame.src = url;
+    btn.textContent = on ? 'Music: On' : 'Music: Off';
+  }
+
+  window.toggleMusic = function() {
+    setMusic(!playing);
+  };
+
+  setMusic(true);
+})();
 </script>
 
 </body>
