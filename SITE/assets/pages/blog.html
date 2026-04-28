@@ -74,8 +74,8 @@ img{-webkit-user-drag:none;user-select:none;}
   font-size:13px;
   transition:opacity 0.2s;
 }
-#musicBtn.muted .music-icon::before{content:"🔇";}
-#musicBtn:not(.muted) .music-icon::before{content:"🔊";}
+#musicBtn.muted .music-icon::before{content:"Music: Off";}
+#musicBtn:not(.muted) .music-icon::before{content:"Music: On";}
 
 /* ── LAYOUT ── */
 body{font-family:'SpecialElite',Georgia,serif;font-size:13px;color:#fff;background:transparent;min-height:100vh;overflow-x:hidden;display:flex;justify-content:center;}
@@ -273,11 +273,8 @@ a:hover{text-decoration:underline;}
   <video id="vid2" src="../video/blogbg1.mp4" playsinline preload="auto" muted loop></video>
 </div>
 
-<!-- MUSIC TOGGLE BUTTON -->
-<button id="musicBtn" class="muted" title="toggle video sound" onclick="toggleMusic()">
-  <span class="music-icon"></span>
-  music
-</button>
+
+
 
 <div id="wa-tooltip"></div>
 <div id="lightbox">
@@ -319,9 +316,12 @@ a:hover{text-decoration:underline;}
     <div id="adminContainer"></div>
 
     <div class="black-gap"></div>
-    <footer id="pageFooter">
-      2026 | Death Archive / Created by
+    <footer id="pageFooter" >
+      
+              <span id="musicBtn" class="muted" onclick="toggleMusic()" style="cursor:pointer; border-bottom:1px dotted #444;color:#777;">Music: On</span>
+ 2026 | Death Archive / Created by
       <span
+
         class="footer-author"
         onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
         onmouseout="WaTooltip.hide()">Settembre19th</span>
