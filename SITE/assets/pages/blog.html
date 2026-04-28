@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>‎ </title>
+<title>Blog - Archive Shinigami</title>
 
-<link rel="icon" href="../images/favicon/favicon.ico">
 <link rel="preload" href="../fonts/cloister_black/CloisterBlack.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 <link rel="preload" href="../fonts/deathnote_font/DEATH_NOTE1.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 <link rel="preload" href="../fonts/Special_Elite/SpecialElite-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
@@ -33,18 +32,50 @@ img{-webkit-user-drag:none;user-select:none;}
 ::-webkit-scrollbar-corner{background:#111;}
 
 /* ── VIDEO BG ── */
-#videoBg{position:fixed;inset:0;z-index:-1;background:#000;overflow:hidden;pointer-events:none;}
+#videoBg{
+  position:fixed;inset:0;z-index:-1;
+  background:#000;overflow:hidden;pointer-events:none;
+}
 #videoBg video{
   position:absolute;
   width:100%;height:100%;
   object-fit:cover;
   opacity:0;
   pointer-events:none;
-  /* fill on mobile too */
   min-width:100%;min-height:100%;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
+  transition:opacity 0.5s ease;
 }
+
+/* ── MUSIC BUTTON ── */
+#musicBtn{
+  position:fixed;
+  bottom:18px;
+  right:18px;
+  z-index:9999;
+  background:#000;
+  border:1px solid #fff;
+  color:#fff;
+  font-family:'SpecialElite',Georgia,serif;
+  font-size:11px;
+  padding:5px 12px;
+  cursor:pointer;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transition:background 0.15s, color 0.15s;
+  user-select:none;
+}
+#musicBtn:hover{background:#fff;color:#000;}
+#musicBtn .music-icon{
+  font-size:13px;
+  transition:opacity 0.2s;
+}
+#musicBtn.muted .music-icon::before{content:"🔇";}
+#musicBtn:not(.muted) .music-icon::before{content:"🔊";}
 
 /* ── LAYOUT ── */
 body{font-family:'SpecialElite',Georgia,serif;font-size:13px;color:#fff;background:transparent;min-height:100vh;overflow-x:hidden;display:flex;justify-content:center;}
@@ -93,60 +124,30 @@ a:hover{text-decoration:underline;}
 .posts-area{background:#000;padding:0 14px 14px;}
 .post-card{background:#f6f6f6;border:1px solid #ccc;margin-top:14px;font-family:SpecialElite,Helvetica,sans-serif;font-size:13px;color:#111;}
 .post-card-header{
-  background:#f0f0f0;
-  border-bottom:1px solid #ccc;
-  padding:4px 8px;
-  font-family:SpecialElite, Helvetica, sans-serif;
-  font-size:12px;
-  display:flex;
-  gap:6px;
-  align-items:center;
+  background:#f0f0f0;border-bottom:1px solid #ccc;
+  padding:4px 8px;font-family:SpecialElite,Helvetica,sans-serif;
+  font-size:12px;display:flex;gap:6px;align-items:center;
 }
 .post-author{color:#ff0000;font-weight:bold;}
 .post-date{color:#000;}
 .post-no{color:#000;}
 .post-no:hover{text-decoration:underline;cursor:pointer;}
-
 .post-body{padding:6px 12px 8px;}
 .post-img-file-info{font-family:monospace;font-size:11px;color:#000000;margin-bottom:4px;display:block;clear:both;}
 .post-img-wrap{margin-bottom:8px;display:inline-block;position:relative;}
 .post-img-wrap img{max-width:220px;max-height:220px;object-fit:contain;border:1px solid #ccc;display:block;cursor:zoom-in;}
 
-.spoiler-text{
-  background:#111;color:transparent;cursor:pointer;padding:0 2px;
-  border-radius:2px;transition:color 0.15s, background 0.15s;
-  user-select:none;
-}
+.spoiler-text{background:#111;color:transparent;cursor:pointer;padding:0 2px;border-radius:2px;transition:color 0.15s,background 0.15s;user-select:none;}
 .spoiler-text:hover,.spoiler-text.revealed{background:#333;color:#fff;}
 
 .spoiler-img-wrap{position:relative;display:inline-block;cursor:pointer;}
-.spoiler-img-wrap::after{
-  content:"This image may contain sensitive content.";
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;text-align:center;
-  padding:10px;
-  background:rgba(0,0,0,.92);color:#fff;
-  font-family:'SpecialElite', Georgia, serif;
-  font-size:12px;line-height:1.4;letter-spacing:1px;text-transform:uppercase;
-}
+.spoiler-img-wrap::after{content:"This image may contain sensitive content.";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;background:rgba(0,0,0,.92);color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:12px;line-height:1.4;letter-spacing:1px;text-transform:uppercase;}
 .spoiler-img-wrap.revealed::after{display:none;}
 .spoiler-img-wrap.revealed img{filter:blur(0);}
 .spoiler-img-wrap img{max-width:220px;max-height:220px;object-fit:contain;display:block;filter:blur(10px);}
 
-/* Post content — prevent horizontal overflow */
-.post-content{
-  line-height:1.65;
-  word-break:break-word;
-  overflow-wrap:break-word;
-  overflow-x:hidden;
-  max-width:100%;
-}
-.post-content pre{
-  font-family:monospace;white-space:pre-wrap;word-break:break-all;
-  font-size:12px;line-height:1.3;background:#1a1a1a;color:#0f0;
-  padding:8px;margin:4px 0;overflow-x:auto;border:1px solid #333;
-  max-width:100%;
-}
+.post-content{line-height:1.65;word-break:break-word;overflow-wrap:break-word;overflow-x:hidden;max-width:100%;}
+.post-content pre{font-family:monospace;white-space:pre-wrap;word-break:break-all;font-size:12px;line-height:1.3;background:#1a1a1a;color:#0f0;padding:8px;margin:4px 0;overflow-x:auto;border:1px solid #333;max-width:100%;}
 .post-content blockquote{border-left:3px solid #bbb;margin:4px 0;padding:4px 8px;color:#555;font-style:italic;}
 .post-content table{max-width:100%;border-collapse:collapse;display:block;overflow-x:auto;}
 .post-content img{max-width:100%;height:auto;}
@@ -162,260 +163,57 @@ a:hover{text-decoration:underline;}
 #adminContainer{background:#000;}
 .admin-inner{padding:0 14px 20px;}
 .admin-section-bar{background:#000;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:16px;font-weight:normal;padding:6px 0 4px;display:block;text-align:center;border-bottom:1px solid #333;text-transform:uppercase;margin-bottom:10px;}
-
 .admin-login{padding:20px 0;text-align:-webkit-center;}
 .admin-login input{background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:13px;padding:5px 10px;width:200px;}
 .admin-login button{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:5px 14px;cursor:pointer;margin-left:6px;}
 .admin-login button:hover{background:#000;color:#fff;}
 
-/* ── POST FORM — word-processor style ── */
-.post-form-wrap{
-  background:#f6f6f6;border:1px solid #ccc;
-  font-family:SpecialElite,Helvetica,sans-serif;font-size:13px;color:#111;
-  overflow:hidden; /* prevent horizontal blowout */
-}
+/* ── POST FORM ── */
+.post-form-wrap{background:#f6f6f6;border:1px solid #ccc;font-family:SpecialElite,Helvetica,sans-serif;font-size:13px;color:#111;overflow:hidden;}
 .chan-table{width:100%;border-collapse:collapse;background:#f9f9f9;table-layout:fixed;}
-.chan-label{
-  background:#f0f0f0;border:1px solid #ccc;
-  font-size:12px;font-weight:bold;color:#111;
-  padding:5px 8px;white-space:nowrap;vertical-align:top;padding-top:7px;
-  width:70px;
-}
+.chan-label{background:#f0f0f0;border:1px solid #ccc;font-size:12px;font-weight:bold;color:#111;padding:5px 8px;white-space:nowrap;vertical-align:top;padding-top:7px;width:70px;}
 .chan-field{background:#f8f8f8;border:1px solid #ccc;padding:3px 5px;vertical-align:middle;overflow:hidden;}
-.chan-input-text{
-  width:100%;box-sizing:border-box;
-  background:#fff;border:1px solid #ccc;
-  font-family:SpecialElite,sans-serif;font-size:13px;color:#111;padding:3px 5px;
-}
+.chan-input-text{width:100%;box-sizing:border-box;background:#fff;border:1px solid #ccc;font-family:SpecialElite,sans-serif;font-size:13px;color:#111;padding:3px 5px;}
 
-/* ═══ TOOLBAR — Word-like ═══ */
 .editor-wrap{border:1px solid #ccc;overflow:hidden;}
-
-.toolbar-main{
-  background:#f0eeec;
-  border-bottom:1px solid #ccc;
-  padding:2px;
-  display:flex;
-  flex-direction:column;
-  gap:1px;
-  overflow:hidden;
-}
-
-/* each row of buttons */
-.tb-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:1px;
-  align-items:center;
-  padding:2px 3px;
-  background:#f0eeec;
-  min-width:0;
-}
-
-/* Button groups separated visually */
-.tb-group{
-  display:flex;
-  flex-wrap:nowrap;
-  align-items:center;
-  gap:1px;
-  flex-shrink:0;
-}
-
-.tb-sep{
-  width:1px;height:18px;
-  background:#bbb;
-  margin:0 3px;
-  flex-shrink:0;
-}
-
-/* Word-style buttons */
-.tb-btn{
-  background:transparent;
-  border:1px solid transparent;
-  color:#222;
-  font-size:11px;
-  padding:3px 5px;
-  cursor:pointer;
-  font-family:SpecialElite,sans-serif;
-  min-width:24px;
-  text-align:center;
-  line-height:1.4;
-  white-space:nowrap;
-  border-radius:2px;
-  flex-shrink:0;
-  transition:background 0.08s, border-color 0.08s;
-}
+.toolbar-main{background:#f0eeec;border-bottom:1px solid #ccc;padding:2px;display:flex;flex-direction:column;gap:1px;overflow:hidden;}
+.tb-row{display:flex;flex-wrap:wrap;gap:1px;align-items:center;padding:2px 3px;background:#f0eeec;min-width:0;}
+.tb-group{display:flex;flex-wrap:nowrap;align-items:center;gap:1px;flex-shrink:0;}
+.tb-sep{width:1px;height:18px;background:#bbb;margin:0 3px;flex-shrink:0;}
+.tb-btn{background:transparent;border:1px solid transparent;color:#222;font-size:11px;padding:3px 5px;cursor:pointer;font-family:SpecialElite,sans-serif;min-width:24px;text-align:center;line-height:1.4;white-space:nowrap;border-radius:2px;flex-shrink:0;transition:background 0.08s,border-color 0.08s;}
 .tb-btn:hover{background:#ddd8d0;border-color:#bbb;}
-.tb-btn:active,
-.tb-btn.active{background:#c8c0b8;border-color:#999;}
-
-/* Dropdowns */
-.tb-sel{
-  background:#fff;
-  border:1px solid #ccc;
-  color:#111;
-  font-size:11px;
-  font-family:SpecialElite,sans-serif;
-  padding:2px 4px;
-  cursor:pointer;
-  max-width:90px;
-  min-width:0;
-  flex-shrink:1;
-  border-radius:2px;
-}
+.tb-btn:active,.tb-btn.active{background:#c8c0b8;border-color:#999;}
+.tb-sel{background:#fff;border:1px solid #ccc;color:#111;font-size:11px;font-family:SpecialElite,sans-serif;padding:2px 4px;cursor:pointer;max-width:90px;min-width:0;flex-shrink:1;border-radius:2px;}
 .tb-sel:hover,.tb-sel:focus{border-color:#888;}
-
-/* Color pickers inline */
-.tb-color-group{
-  display:flex;align-items:center;gap:3px;
-  font-size:10px;color:#555;
-  font-family:SpecialElite,sans-serif;
-  white-space:nowrap;
-  flex-shrink:0;
-}
-.tb-color-swatch{
-  width:26px;height:18px;
-  border:1px solid #bbb;
-  cursor:pointer;padding:0;
-  border-radius:2px;
-  overflow:hidden;
-  position:relative;
-  flex-shrink:0;
-}
-.tb-color-swatch input[type=color]{
-  position:absolute;inset:-4px;
-  width:calc(100% + 8px);height:calc(100% + 8px);
-  border:none;padding:0;cursor:pointer;opacity:0;
-}
-.tb-color-bar{
-  position:absolute;bottom:0;left:0;right:0;
-  height:5px;pointer-events:none;
-}
-.tb-color-letter{
-  position:absolute;top:0;left:0;right:0;bottom:5px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:bold;color:#222;pointer-events:none;
-  font-family:Georgia,serif;line-height:1;
-}
-
-/* Embed toggle row */
-.tb-embed-toggle{
-  background:#e8e6e2;
-  border-top:1px solid #ddd;
-  padding:3px 6px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  font-size:11px;
-  color:#555;
-  font-family:SpecialElite,sans-serif;
-}
-.tb-embed-toggle label{
-  display:flex;align-items:center;gap:4px;cursor:pointer;
-}
+.tb-color-group{display:flex;align-items:center;gap:3px;font-size:10px;color:#555;font-family:SpecialElite,sans-serif;white-space:nowrap;flex-shrink:0;}
+.tb-color-swatch{width:26px;height:18px;border:1px solid #bbb;cursor:pointer;padding:0;border-radius:2px;overflow:hidden;position:relative;flex-shrink:0;}
+.tb-color-swatch input[type=color]{position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);border:none;padding:0;cursor:pointer;opacity:0;}
+.tb-color-bar{position:absolute;bottom:0;left:0;right:0;height:5px;pointer-events:none;}
+.tb-color-letter{position:absolute;top:0;left:0;right:0;bottom:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#222;pointer-events:none;font-family:Georgia,serif;line-height:1;}
+.tb-embed-toggle{background:#e8e6e2;border-top:1px solid #ddd;padding:3px 6px;display:flex;align-items:center;gap:6px;font-size:11px;color:#555;font-family:SpecialElite,sans-serif;}
+.tb-embed-toggle label{display:flex;align-items:center;gap:4px;cursor:pointer;}
 .tb-embed-toggle input[type=checkbox]{cursor:pointer;}
 
-/* THE EDITOR */
-#postEditor{
-  background:#fff;
-  min-height:160px;max-height:320px;
-  overflow-y:auto;
-  overflow-x:hidden; /* never expand horizontally */
-  padding:8px 10px;
-  font-family:SpecialElite,Helvetica,sans-serif;
-  font-size:13px;color:#111;
-  line-height:1.65;
-  word-break:break-word;
-  overflow-wrap:break-word;
-  width:100%;
-  box-sizing:border-box;
-}
-#postEditor:empty::before{
-  content:"write your post… (ctrl+v pastes images)";
-  color:#aaa;pointer-events:none;font-style:italic;
-}
+#postEditor{background:#fff;min-height:160px;max-height:320px;overflow-y:auto;overflow-x:hidden;padding:8px 10px;font-family:SpecialElite,Helvetica,sans-serif;font-size:13px;color:#111;line-height:1.65;word-break:break-word;overflow-wrap:break-word;width:100%;box-sizing:border-box;}
+#postEditor:empty::before{content:"write your post… (ctrl+v pastes images)";color:#aaa;pointer-events:none;font-style:italic;}
+#postEditor pre{font-family:monospace;white-space:pre-wrap;word-break:break-all;font-size:12px;line-height:1.3;background:#f4f4f4;color:#111;padding:6px 8px;margin:4px 0;border:1px solid #ddd;overflow-x:hidden;display:block;max-width:100%;box-sizing:border-box;}
+#postEditor blockquote{border-left:3px solid #bbb;margin:3px 0;padding:3px 8px;color:#555;font-style:italic;}
+#postEditor .spoiler-text{background:#111;color:transparent;cursor:pointer;padding:0 2px;border-radius:2px;user-select:none;}
+#postEditor .spoiler-text:hover,#postEditor .spoiler-text.revealed{background:#333;color:#fff;}
+#postEditor img.ed-img{float:left;max-width:min(180px,40%);max-height:180px;margin:0 10px 6px 0;border:1px solid #ccc;display:block;cursor:default;}
+#postEditor .ed-img-info{font-family:monospace;font-size:11px;color:#555;display:block;clear:both;margin-bottom:3px;cursor:default;}
 
-/* Content inside editor — no overflow */
-#postEditor pre{
-  font-family:monospace;
-  white-space:pre-wrap;
-  word-break:break-all;
-  font-size:12px;line-height:1.3;
-  background:#f4f4f4;color:#111;
-  padding:6px 8px;margin:4px 0;
-  border:1px solid #ddd;
-  overflow-x:hidden;
-  display:block;
-  max-width:100%;
-  box-sizing:border-box;
-}
-#postEditor blockquote{
-  border-left:3px solid #bbb;
-  margin:3px 0;padding:3px 8px;
-  color:#555;font-style:italic;
-}
-#postEditor .spoiler-text{
-  background:#111;color:transparent;
-  cursor:pointer;padding:0 2px;border-radius:2px;
-  user-select:none;
-}
-#postEditor .spoiler-text:hover,
-#postEditor .spoiler-text.revealed{background:#333;color:#fff;}
-
-#postEditor img.ed-img{
-  float:left;
-  max-width:min(180px,40%);
-  max-height:180px;
-  margin:0 10px 6px 0;
-  border:1px solid #ccc;
-  display:block;
-  cursor:default;
-}
-#postEditor .ed-img-info{
-  font-family:monospace;font-size:11px;color:#555;
-  display:block;clear:both;margin-bottom:3px;cursor:default;
-}
-
-/* Editor footer */
-.ed-footer{
-  background:#e8e8e8;border-top:1px solid #ccc;
-  padding:5px 6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
-  overflow:hidden;
-}
-.ed-file-btn{
-  background:#fff;border:1px solid #bbb;color:#111;
-  font-family:SpecialElite,sans-serif;font-size:11px;
-  padding:3px 8px;cursor:pointer;border-radius:2px;
-  white-space:nowrap;flex-shrink:0;
-}
+.ed-footer{background:#e8e8e8;border-top:1px solid #ccc;padding:5px 6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;overflow:hidden;}
+.ed-file-btn{background:#fff;border:1px solid #bbb;color:#111;font-family:SpecialElite,sans-serif;font-size:11px;padding:3px 8px;cursor:pointer;border-radius:2px;white-space:nowrap;flex-shrink:0;}
 .ed-file-btn:hover{background:#000;color:#fff;border-color:#000;}
-.ed-fname{
-  color:#555;font-size:11px;font-family:SpecialElite,sans-serif;
-  max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  flex:1;min-width:0;
-}
-.ed-check{
-  display:flex;align-items:center;gap:3px;
-  color:#555;font-size:11px;
-  font-family:SpecialElite,sans-serif;cursor:pointer;
-  white-space:nowrap;flex-shrink:0;
-}
-
-/* Submit row */
-.submit-row{
-  background:#f0f0f0;border-top:1px solid #ddd;
-  padding:5px 7px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
-}
-.submit-btn{
-  background:#f0f0f0;border:1px solid #aaa;color:#111;
-  font-family:SpecialElite,sans-serif;font-size:13px;
-  padding:3px 16px;cursor:pointer;
-}
+.ed-fname{color:#555;font-size:11px;font-family:SpecialElite,sans-serif;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;}
+.ed-check{display:flex;align-items:center;gap:3px;color:#555;font-size:11px;font-family:SpecialElite,sans-serif;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.submit-row{background:#f0f0f0;border-top:1px solid #ddd;padding:5px 7px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.submit-btn{background:#f0f0f0;border:1px solid #aaa;color:#111;font-family:SpecialElite,sans-serif;font-size:13px;padding:3px 16px;cursor:pointer;}
 .submit-btn:hover{background:#000;color:#fff;border-color:#000;}
 .submit-btn:disabled{opacity:.4;cursor:default;}
 #edStatus{font-size:11px;color:#555;font-family:SpecialElite,sans-serif;}
 
-/* Admin search */
 .admin-search-row{display:flex;gap:6px;padding:6px 0;flex-wrap:wrap;}
 .admin-search-row input{flex:1;min-width:0;background:#fff;border:1px solid #ccc;color:#111;font-family:SpecialElite,sans-serif;font-size:12px;padding:4px 7px;}
 .admin-search-row button{background:#000;border:1px solid #000;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 12px;cursor:pointer;white-space:nowrap;}
@@ -435,15 +233,7 @@ a:hover{text-decoration:underline;}
 #pageFooter .footer-author:hover{color:#ccc;border-bottom-style:solid;}
 
 /* ── TOOLTIP ── */
-#wa-tooltip{
-  position:fixed;z-index:99999;
-  background:#fff;border:1px solid #aaa;
-  box-shadow:2px 3px 8px rgba(0,0,0,0.30);
-  padding:8px 10px;font-size:11.5px;color:#111;
-  font-family:'SpecialElite',Georgia,serif;
-  pointer-events:none;display:none;
-  max-width:280px;line-height:1.5;
-}
+#wa-tooltip{position:fixed;z-index:99999;background:#fff;border:1px solid #aaa;box-shadow:2px 3px 8px rgba(0,0,0,0.30);padding:8px 10px;font-size:11.5px;color:#111;font-family:'SpecialElite',Georgia,serif;pointer-events:none;display:none;max-width:280px;line-height:1.5;}
 #wa-tooltip a{color:#000;text-decoration:underline;}
 #wa-tooltip td{vertical-align:middle;}
 #wa-tooltip td:last-child{padding-left:10px;}
@@ -454,56 +244,41 @@ a:hover{text-decoration:underline;}
   #wrapper{width:100%;}
   #siteIcon{margin-left:0;display:block;margin:0 auto 8px;}
   #siteLogo{width:min(100%,280px);margin:0 auto;display:block;height:auto;}
-
-  /* Toolbar wraps nicely on mobile */
   .tb-row{gap:2px;}
   .tb-btn{padding:4px 6px;font-size:12px;}
   .tb-sel{max-width:80px;font-size:12px;}
-
-  /* Editor full width */
   #postEditor{min-height:120px;max-height:250px;}
-
-  /* Post image smaller on mobile */
   .post-img-wrap img{max-width:160px;max-height:160px;}
   #postEditor img.ed-img{max-width:min(140px,35%);max-height:140px;}
-
-  /* Video fill on mobile */
-  #videoBg video{
-    width:100vw!important;height:100vh!important;
-    object-fit:cover!important;
-  }
-
-  /* Tooltip disabled on mobile (no hover) */
+  #videoBg video{width:100vw!important;height:100vh!important;object-fit:cover!important;}
   #wa-tooltip{display:none!important;}
+  #musicBtn{bottom:12px;right:12px;font-size:10px;padding:4px 9px;}
 }
 
-/* Prevent table from expanding the page */
-.chan-table td{overflow:hidden;max-width:0;} /* table-layout:fixed does the real work */
+.chan-table td{overflow:hidden;max-width:0;}
 
-#cursor-layer {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9998;
- /* mix-blend-mode: difference; */
-  opacity: 0;
-  transition: opacity 1000ms linear;
+#cursor-layer{
+  position:fixed;inset:0;width:100vw;height:100vh;
+  pointer-events:none;z-index:9998;
+  opacity:0;transition:opacity 1000ms linear;
 }
-
-#cursor-layer.active {
-  opacity: 1;
-}
-
+#cursor-layer.active{opacity:1;}
 </style>
 </head>
 <body>
 
+<!-- VIDEO BACKGROUND -->
 <div id="videoBg">
-  <video id="vid1" src="../video/blogbg2.mp4"  playsinline preload="auto"></video>
-  <video id="vid2" src="../video/blogbg1.mp4"  playsinline preload="auto"></video>
+  <video id="vid1" src="../video/blogbg2.mp4" playsinline preload="auto" muted loop></video>
+  <video id="vid2" src="../video/blogbg1.mp4" playsinline preload="auto" muted loop></video>
 </div>
+
+<!-- MUSIC TOGGLE BUTTON -->
+<button id="musicBtn" class="muted" title="toggle video sound" onclick="toggleMusic()">
+  <span class="music-icon"></span>
+  music
+</button>
+
 <div id="wa-tooltip"></div>
 <div id="lightbox">
   <button id="lbClose" onclick="closeLb()">close</button>
@@ -556,7 +331,7 @@ a:hover{text-decoration:underline;}
 
 <canvas id="cursor-layer" aria-hidden="true"></canvas>
 
-
+<!-- TOOLTIP SCRIPT -->
 <script>
 window.WaTooltip = (function(){
   var el = document.getElementById('wa-tooltip');
@@ -577,6 +352,7 @@ window.WaTooltip = (function(){
 })();
 </script>
 
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, remove, onValue, get, set }
@@ -633,21 +409,19 @@ if (IS_ADMIN_URL) {
 </script>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // GLOBALS
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 window._allPosts = [];
 let _isAdmin = false;
 let _imgUrl  = null;
 let _imgInfo = null;
-
-// text color state
 let _fgColor = '#000000';
 let _hlColor = '#ffff00';
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // DATE
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function fmtDate(ts) {
   const d = new Date(ts);
   const DAY = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -660,9 +434,9 @@ function fmtDate(ts) {
   return `${MM}/${DD}/${YY}(${DAY[d.getDay()]})${hh}:${mm}:${ss}`;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// EMBED DETECTION — auto-detect links in post HTML
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// EMBED DETECTION
+// ═══════════════════════════════════════════════════════════════
 const EPATS = [
   { re: /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?[^\s"<]*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/g,
     build: m => ({ src:`https://www.youtube.com/embed/${m[1]}?rel=0&modestbranding=1`, url:m[0], h:95 }) },
@@ -685,9 +459,9 @@ function detectEmbeds(text) {
   return found;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // RENDER POSTS
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function filterPosts() {
   const sort = document.getElementById('sortSelect')?.value || 'newest';
   let posts = [...window._allPosts];
@@ -710,7 +484,6 @@ function renderPosts(posts, container, adminMode) {
 }
 
 function buildCard(p, num, adminMode) {
-  // Auto-detect embeds from content HTML + any stored embedUrls
   const textForEmbed = (p.contentHtml || '') + (p.embedUrls ? '\n' + p.embedUrls.join('\n') : '');
   const embeds = p.noEmbeds ? [] : detectEmbeds(textForEmbed.replace(/<[^>]*>/g,' '));
   const embedHTML = embeds.map(e =>
@@ -755,9 +528,9 @@ async function deletePost(id) {
 }
 window.deletePost = deletePost;
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // ADMIN UI INJECTION
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function injectAdminUI() {
   const container = document.getElementById('adminContainer');
   if (!container) return;
@@ -793,11 +566,7 @@ function injectAdminUI() {
             <td class="chan-label" style="vertical-align:top;">Content</td>
             <td class="chan-field" style="padding:0;">
               <div class="editor-wrap">
-
-                <!-- ══ TOOLBAR ══ -->
                 <div class="toolbar-main">
-
-                  <!-- Row 1: text style + font + size -->
                   <div class="tb-row">
                     <div class="tb-group">
                       <button class="tb-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
@@ -807,8 +576,8 @@ function injectAdminUI() {
                     </div>
                     <div class="tb-sep"></div>
                     <div class="tb-group">
-                      <button class="tb-btn" title="Superscript" onclick="fmt('superscript')" style="font-size:9px;letter-spacing:-0.5px;">x²</button>
-                      <button class="tb-btn" title="Subscript" onclick="fmt('subscript')" style="font-size:9px;letter-spacing:-0.5px;">x₂</button>
+                      <button class="tb-btn" title="Superscript" onclick="fmt('superscript')" style="font-size:9px;">x²</button>
+                      <button class="tb-btn" title="Subscript" onclick="fmt('subscript')" style="font-size:9px;">x₂</button>
                     </div>
                     <div class="tb-sep"></div>
                     <select class="tb-sel" title="Font" onchange="applyFont(this.value);this.value='';">
@@ -833,7 +602,6 @@ function injectAdminUI() {
                       <option value="36px">huge (36)</option>
                     </select>
                     <div class="tb-sep"></div>
-                    <!-- Text color -->
                     <span class="tb-color-group" title="Text color">
                       <div class="tb-color-swatch" id="swatchFg">
                         <span class="tb-color-letter">A</span>
@@ -842,7 +610,6 @@ function injectAdminUI() {
                       </div>
                       <button class="tb-btn" onclick="applyFgColor()" title="Apply text color" style="font-size:10px;padding:2px 5px;">A</button>
                     </span>
-                    <!-- Highlight -->
                     <span class="tb-color-group" title="Highlight">
                       <div class="tb-color-swatch" id="swatchHl">
                         <span class="tb-color-letter" style="font-size:9px;">HL</span>
@@ -852,8 +619,6 @@ function injectAdminUI() {
                       <button class="tb-btn" onclick="applyHlColor()" title="Apply highlight" style="font-size:10px;padding:2px 5px;">HL</button>
                     </span>
                   </div>
-
-                  <!-- Row 2: align + structure + special -->
                   <div class="tb-row">
                     <div class="tb-group">
                       <button class="tb-btn" onclick="fmt('justifyLeft')" title="Align left">⬅</button>
@@ -865,21 +630,19 @@ function injectAdminUI() {
                       <button class="tb-btn" onclick="fmt('insertUnorderedList')" title="Bullet list">• list</button>
                       <button class="tb-btn" onclick="fmt('insertOrderedList')" title="Numbered list">1. list</button>
                       <button class="tb-btn" onclick="edInsertBlockquote()" title="Blockquote">❝ quote</button>
-                      <button class="tb-btn" onclick="edInsertPre()" title="Preformatted / code block" style="font-family:monospace;">PRE</button>
+                      <button class="tb-btn" onclick="edInsertPre()" title="Code block" style="font-family:monospace;">PRE</button>
                       <button class="tb-btn" onclick="fmt('insertHorizontalRule')" title="Horizontal rule">───</button>
                     </div>
                     <div class="tb-sep"></div>
                     <div class="tb-group">
-                      <button class="tb-btn" onclick="edInsertSpoiler()" title="Wrap selection as spoiler" style="background:#111;color:#fff;border-color:#555;">SPOILER</button>
+                      <button class="tb-btn" onclick="edInsertSpoiler()" title="Spoiler" style="background:#111;color:#fff;border-color:#555;">SPOILER</button>
                     </div>
                     <div class="tb-sep"></div>
                     <div class="tb-group" style="margin-left:auto;">
-                      <button class="tb-btn" onclick="fmt('removeFormat')" title="Remove all formatting" style="color:#888;">✕ fmt</button>
-                      <button class="tb-btn" onclick="clearEditor()" title="Clear everything" style="color:#c00;border-color:#c00;">CLR</button>
+                      <button class="tb-btn" onclick="fmt('removeFormat')" title="Remove formatting" style="color:#888;">✕ fmt</button>
+                      <button class="tb-btn" onclick="clearEditor()" title="Clear all" style="color:#c00;border-color:#c00;">CLR</button>
                     </div>
                   </div>
-
-                  <!-- Row 3: embed toggle -->
                   <div class="tb-embed-toggle">
                     <label>
                       <input type="checkbox" id="edEnableEmbeds" checked>
@@ -887,13 +650,9 @@ function injectAdminUI() {
                     </label>
                     <span id="edEmbedHint" style="color:#999;font-size:10px;">— paste a link to auto-detect</span>
                   </div>
-
-                </div><!-- /.toolbar-main -->
-
-                <!-- THE EDITOR -->
+                </div>
                 <div id="postEditor" contenteditable="true" spellcheck="true"></div>
-
-              </div><!-- /.editor-wrap -->
+              </div>
             </td>
           </tr>
           <tr>
@@ -914,7 +673,7 @@ function injectAdminUI() {
         <button class="submit-btn" id="submitBtn" onclick="submitPost()">Post</button>
         <span id="edStatus"></span>
       </div>
-    </div><!-- /.post-form-wrap -->
+    </div>
 
     <hr class="admin-sep">
     <span class="admin-section-bar">delete post</span>
@@ -923,14 +682,11 @@ function injectAdminUI() {
       <button onclick="adminSearch()">search</button>
     </div>
     <div id="adminResults" class="admin-results-area"></div>
-
-  </div><!-- /#adminPanel -->
-</div><!-- /.admin-inner -->
+  </div>
+</div>
 `;
 
-  // Paste handler
   document.getElementById('postEditor').addEventListener('paste', onEditorPaste);
-  // Block image drop
   document.getElementById('postEditor').addEventListener('drop', e => {
     const hasImg = [...(e.dataTransfer?.items||[])].some(i => i.type.startsWith('image/'));
     if (hasImg) e.preventDefault();
@@ -938,9 +694,9 @@ function injectAdminUI() {
 }
 window.injectAdminUI = injectAdminUI;
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // AUTH
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 async function tryLogin() {
   const input = document.getElementById('pwInput').value;
   const errEl = document.getElementById('loginErr');
@@ -953,9 +709,7 @@ async function tryLogin() {
       document.getElementById('adminLogin').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
       errEl.textContent = '';
-    } else {
-      errEl.textContent = 'wrong password.';
-    }
+    } else { errEl.textContent = 'wrong password.'; }
   } catch(e) { errEl.textContent = 'error: ' + e.message; }
 }
 function logout() {
@@ -968,22 +722,16 @@ function logout() {
 window.tryLogin = tryLogin;
 window.logout   = logout;
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // EDITOR HELPERS
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function ed() { return document.getElementById('postEditor'); }
-
-function fmt(cmd, val) {
-  ed().focus();
-  document.execCommand(cmd, false, val || null);
-}
+function fmt(cmd, val) { ed().focus(); document.execCommand(cmd, false, val || null); }
 window.fmt = fmt;
 
-// Font: wrap selection in span
 function applyFont(family) {
   if (!family) return;
-  const editor = ed();
-  editor.focus();
+  const editor = ed(); editor.focus();
   const sel = window.getSelection();
   if (!sel || !sel.rangeCount) return;
   const range = sel.getRangeAt(0);
@@ -994,141 +742,92 @@ function applyFont(family) {
   try {
     span.appendChild(range.extractContents());
     range.insertNode(span);
-    const r2 = document.createRange();
-    r2.selectNodeContents(span);
+    const r2 = document.createRange(); r2.selectNodeContents(span);
     sel.removeAllRanges(); sel.addRange(r2);
   } catch(_) { document.execCommand('fontName', false, family); }
 }
 window.applyFont = applyFont;
 
-// Font size: use inline span with px value (not execCommand fontSize which uses 1-7)
 function applyFontSize(px) {
   if (!px) return;
-  const editor = ed();
-  editor.focus();
+  const editor = ed(); editor.focus();
   const sel = window.getSelection();
   if (!sel || !sel.rangeCount) return;
   const range = sel.getRangeAt(0);
   if (!editor.contains(range.commonAncestorContainer)) return;
   if (range.collapsed) {
-    // Insert zero-width span with size, so next typed text inherits it
     const span = document.createElement('span');
     span.style.fontSize = px;
     span.appendChild(document.createTextNode('\u200b'));
     range.insertNode(span);
-    const r2 = document.createRange();
-    r2.setStartAfter(span); r2.collapse(true);
-    sel.removeAllRanges(); sel.addRange(r2);
-    return;
+    const r2 = document.createRange(); r2.setStartAfter(span); r2.collapse(true);
+    sel.removeAllRanges(); sel.addRange(r2); return;
   }
   const span = document.createElement('span');
   span.style.fontSize = px;
   span.appendChild(range.extractContents());
   range.insertNode(span);
-  const r2 = document.createRange();
-  r2.selectNodeContents(span);
+  const r2 = document.createRange(); r2.selectNodeContents(span);
   sel.removeAllRanges(); sel.addRange(r2);
 }
 window.applyFontSize = applyFontSize;
 
-// Color pickers — two-step: pick then apply
-function setFgColor(v) {
-  _fgColor = v;
-  document.getElementById('barFg').style.background = v;
-}
-function setHlColor(v) {
-  _hlColor = v;
-  document.getElementById('barHl').style.background = v;
-}
-function applyFgColor() {
-  ed().focus();
-  document.execCommand('foreColor', false, _fgColor);
-}
-function applyHlColor() {
-  ed().focus();
-  document.execCommand('hiliteColor', false, _hlColor);
-}
-window.setFgColor = setFgColor;
-window.setHlColor = setHlColor;
-window.applyFgColor = applyFgColor;
-window.applyHlColor = applyHlColor;
+function setFgColor(v){ _fgColor=v; document.getElementById('barFg').style.background=v; }
+function setHlColor(v){ _hlColor=v; document.getElementById('barHl').style.background=v; }
+function applyFgColor(){ ed().focus(); document.execCommand('foreColor',false,_fgColor); }
+function applyHlColor(){ ed().focus(); document.execCommand('hiliteColor',false,_hlColor); }
+window.setFgColor=setFgColor; window.setHlColor=setHlColor;
+window.applyFgColor=applyFgColor; window.applyHlColor=applyHlColor;
 
-// Spoiler — wrap selected text only, no fallback text
 function edInsertSpoiler() {
-  const editor = ed();
-  editor.focus();
-  const sel = window.getSelection();
-  if (!sel || !sel.rangeCount) return;
-  const range = sel.getRangeAt(0);
-  if (!editor.contains(range.commonAncestorContainer)) return;
-  if (range.collapsed) return; // need a selection
-
-  const span = document.createElement('span');
-  span.className = 'spoiler-text';
-  // extract the selected content (preserving inner HTML)
-  const frag = range.extractContents();
+  const editor=ed(); editor.focus();
+  const sel=window.getSelection();
+  if(!sel||!sel.rangeCount) return;
+  const range=sel.getRangeAt(0);
+  if(!editor.contains(range.commonAncestorContainer)) return;
+  if(range.collapsed) return;
+  const span=document.createElement('span');
+  span.className='spoiler-text';
+  const frag=range.extractContents();
   span.appendChild(frag);
-  span.addEventListener('click', () => span.classList.toggle('revealed'));
+  span.addEventListener('click',()=>span.classList.toggle('revealed'));
   range.insertNode(span);
-
-  // collapse cursor after
-  const r2 = document.createRange();
-  r2.setStartAfter(span); r2.collapse(true);
+  const r2=document.createRange(); r2.setStartAfter(span); r2.collapse(true);
   sel.removeAllRanges(); sel.addRange(r2);
 }
-window.edInsertSpoiler = edInsertSpoiler;
+window.edInsertSpoiler=edInsertSpoiler;
 
 function edInsertBlockquote() {
-  const editor = ed();
-  editor.focus();
-  const sel = window.getSelection();
-  const bq = document.createElement('blockquote');
-  bq.style.cssText = 'border-left:3px solid #bbb;margin:4px 0;padding:4px 8px;color:#555;font-style:italic;';
-  if (sel && !sel.isCollapsed && sel.rangeCount && editor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-    const range = sel.getRangeAt(0);
-    bq.appendChild(range.extractContents());
-    range.insertNode(bq);
-  } else {
-    // insert empty blockquote with a placeholder BR so cursor can enter
-    bq.appendChild(document.createElement('br'));
-    editor.appendChild(bq);
-  }
-  // move cursor inside
-  const r2 = document.createRange();
-  r2.selectNodeContents(bq); r2.collapse(false);
+  const editor=ed(); editor.focus();
+  const sel=window.getSelection();
+  const bq=document.createElement('blockquote');
+  bq.style.cssText='border-left:3px solid #bbb;margin:4px 0;padding:4px 8px;color:#555;font-style:italic;';
+  if(sel&&!sel.isCollapsed&&sel.rangeCount&&editor.contains(sel.getRangeAt(0).commonAncestorContainer)){
+    const range=sel.getRangeAt(0); bq.appendChild(range.extractContents()); range.insertNode(bq);
+  } else { bq.appendChild(document.createElement('br')); editor.appendChild(bq); }
+  const r2=document.createRange(); r2.selectNodeContents(bq); r2.collapse(false);
   sel.removeAllRanges(); sel.addRange(r2);
 }
-window.edInsertBlockquote = edInsertBlockquote;
+window.edInsertBlockquote=edInsertBlockquote;
 
 function edInsertPre() {
-  const editor = ed();
-  editor.focus();
-  const sel = window.getSelection();
-  const pre = document.createElement('pre');
-  if (sel && !sel.isCollapsed && sel.rangeCount && editor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-    const range = sel.getRangeAt(0);
-    pre.textContent = range.toString();
-    range.deleteContents();
-    range.insertNode(pre);
-  } else {
-    pre.appendChild(document.createElement('br'));
-    editor.appendChild(pre);
-  }
-  const r2 = document.createRange();
-  r2.selectNodeContents(pre); r2.collapse(false);
+  const editor=ed(); editor.focus();
+  const sel=window.getSelection();
+  const pre=document.createElement('pre');
+  if(sel&&!sel.isCollapsed&&sel.rangeCount&&editor.contains(sel.getRangeAt(0).commonAncestorContainer)){
+    const range=sel.getRangeAt(0); pre.textContent=range.toString(); range.deleteContents(); range.insertNode(pre);
+  } else { pre.appendChild(document.createElement('br')); editor.appendChild(pre); }
+  const r2=document.createRange(); r2.selectNodeContents(pre); r2.collapse(false);
   sel.removeAllRanges(); sel.addRange(r2);
 }
-window.edInsertPre = edInsertPre;
+window.edInsertPre=edInsertPre;
 
-function clearEditor() {
-  ed().innerHTML = '';
-  removeEditorImg();
-}
-window.clearEditor = clearEditor;
+function clearEditor(){ ed().innerHTML=''; removeEditorImg(); }
+window.clearEditor=clearEditor;
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // IMAGE HANDLING
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 async function onEditorPaste(e) {
   const items = e.clipboardData?.items || [];
   for (const item of items) {
@@ -1139,7 +838,6 @@ async function onEditorPaste(e) {
       return;
     }
   }
-  // plain text only
   e.preventDefault();
   const text = e.clipboardData.getData('text/plain');
   if (text) document.execCommand('insertText', false, text);
@@ -1152,246 +850,258 @@ async function handleFileSelect(event) {
   if (file.size > 600 * 1024) { alert('max 600 KB'); return; }
   await uploadAndInsert(file);
 }
-window.handleFileSelect = handleFileSelect;
+window.handleFileSelect=handleFileSelect;
 
 async function uploadAndInsert(file) {
-  const statusEl = document.getElementById('edStatus');
-  const fnameEl  = document.getElementById('edFileName');
-  const rmBtn    = document.getElementById('edRemoveImg');
-  if (statusEl) statusEl.textContent = 'uploading…';
-
-  const tmpUrl = URL.createObjectURL(file);
-  const tmpImg = new Image();
-  tmpImg.src = tmpUrl;
-  await new Promise(res => { tmpImg.onload = tmpImg.onerror = res; });
-  const w = tmpImg.naturalWidth, h = tmpImg.naturalHeight;
+  const statusEl=document.getElementById('edStatus');
+  const fnameEl=document.getElementById('edFileName');
+  const rmBtn=document.getElementById('edRemoveImg');
+  if(statusEl) statusEl.textContent='uploading…';
+  const tmpUrl=URL.createObjectURL(file);
+  const tmpImg=new Image(); tmpImg.src=tmpUrl;
+  await new Promise(res=>{tmpImg.onload=tmpImg.onerror=res;});
+  const w=tmpImg.naturalWidth, h=tmpImg.naturalHeight;
   URL.revokeObjectURL(tmpUrl);
-  const sizeKB = (file.size / 1024).toFixed(1);
-
+  const sizeKB=(file.size/1024).toFixed(1);
   try {
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('upload_preset', 'unsigned_upload');
-    const res  = await fetch('https://api.cloudinary.com/v1_1/dagsxkazw/image/upload', { method:'POST', body:fd });
-    const data = await res.json();
-    if (!data.secure_url) throw new Error('upload failed');
-
-    _imgUrl  = data.secure_url;
-    _imgInfo = { name: file.name, sizeKB, w, h };
-
-    if (fnameEl) fnameEl.textContent = file.name;
-    if (rmBtn)   rmBtn.style.display  = 'inline-block';
-    if (statusEl) statusEl.textContent = 'image ready.';
-    insertImgPreview(data.secure_url, file.name, sizeKB, w, h);
+    const fd=new FormData(); fd.append('file',file); fd.append('upload_preset','unsigned_upload');
+    const res=await fetch('https://api.cloudinary.com/v1_1/dagsxkazw/image/upload',{method:'POST',body:fd});
+    const data=await res.json();
+    if(!data.secure_url) throw new Error('upload failed');
+    _imgUrl=data.secure_url; _imgInfo={name:file.name,sizeKB,w,h};
+    if(fnameEl) fnameEl.textContent=file.name;
+    if(rmBtn) rmBtn.style.display='inline-block';
+    if(statusEl) statusEl.textContent='image ready.';
+    insertImgPreview(data.secure_url,file.name,sizeKB,w,h);
   } catch(err) {
-    if (statusEl) statusEl.textContent = 'upload failed.';
+    if(statusEl) statusEl.textContent='upload failed.';
     console.error(err);
   }
 }
 
-function insertImgPreview(src, name, sizeKB, w, h) {
-  const editor = ed();
-  editor.querySelectorAll('img.ed-img, .ed-img-info').forEach(el => el.remove());
-
-  const info = document.createElement('div');
-  info.className = 'ed-img-info';
-  info.contentEditable = 'false';
-  info.textContent = `File: ${name} (${sizeKB} KB, ${w}×${h})`;
-
-  const img = document.createElement('img');
-  img.src = src;
-  img.className = 'ed-img';
-  img.contentEditable = 'false';
-  img.draggable = false;
-
-  editor.insertBefore(img,  editor.firstChild);
+function insertImgPreview(src,name,sizeKB,w,h) {
+  const editor=ed();
+  editor.querySelectorAll('img.ed-img, .ed-img-info').forEach(el=>el.remove());
+  const info=document.createElement('div');
+  info.className='ed-img-info'; info.contentEditable='false';
+  info.textContent=`File: ${name} (${sizeKB} KB, ${w}×${h})`;
+  const img=document.createElement('img');
+  img.src=src; img.className='ed-img'; img.contentEditable='false'; img.draggable=false;
+  editor.insertBefore(img, editor.firstChild);
   editor.insertBefore(info, editor.firstChild);
-  editor.scrollTop = 0;
+  editor.scrollTop=0;
 }
 
 function removeEditorImg() {
-  _imgUrl = null; _imgInfo = null;
-  ed()?.querySelectorAll('img.ed-img, .ed-img-info').forEach(el => el.remove());
-  const fn = document.getElementById('edFileName');
-  const rb = document.getElementById('edRemoveImg');
-  if (fn) fn.textContent = 'no file';
-  if (rb) rb.style.display = 'none';
+  _imgUrl=null; _imgInfo=null;
+  ed()?.querySelectorAll('img.ed-img, .ed-img-info').forEach(el=>el.remove());
+  const fn=document.getElementById('edFileName');
+  const rb=document.getElementById('edRemoveImg');
+  if(fn) fn.textContent='no file';
+  if(rb) rb.style.display='none';
 }
-window.removeEditorImg = removeEditorImg;
+window.removeEditorImg=removeEditorImg;
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // SUBMIT POST
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 async function submitPost() {
-  if (!_isAdmin) return;
-  const btn    = document.getElementById('submitBtn');
-  const status = document.getElementById('edStatus');
-  const editor = ed();
-  const enableEmbeds = document.getElementById('edEnableEmbeds')?.checked ?? true;
-
-  const clone = editor.cloneNode(true);
-  clone.querySelectorAll('img.ed-img, .ed-img-info').forEach(el => el.remove());
-  const html = clone.innerHTML.trim();
-
-  if (!html && !_imgUrl) {
-    if (status) status.textContent = 'write something first.';
-    return;
-  }
-
-  btn.disabled = true;
-  if (status) status.textContent = 'posting…';
-
+  if(!_isAdmin) return;
+  const btn=document.getElementById('submitBtn');
+  const status=document.getElementById('edStatus');
+  const editor=ed();
+  const enableEmbeds=document.getElementById('edEnableEmbeds')?.checked??true;
+  const clone=editor.cloneNode(true);
+  clone.querySelectorAll('img.ed-img, .ed-img-info').forEach(el=>el.remove());
+  const html=clone.innerHTML.trim();
+  if(!html&&!_imgUrl){ if(status) status.textContent='write something first.'; return; }
+  btn.disabled=true;
+  if(status) status.textContent='posting…';
   try {
-    await window._push(window._ref(window._db, 'blog/posts'), {
-      contentHtml: html,
-      imageSrc:    _imgUrl  || null,
-      imageInfo:   _imgInfo || null,
-      spoilerImg:  document.getElementById('edSpoilerImg')?.checked || false,
-      noEmbeds:    !enableEmbeds,
-      ts: Date.now()
+    await window._push(window._ref(window._db,'blog/posts'),{
+      contentHtml:html, imageSrc:_imgUrl||null, imageInfo:_imgInfo||null,
+      spoilerImg:document.getElementById('edSpoilerImg')?.checked||false,
+      noEmbeds:!enableEmbeds, ts:Date.now()
     });
-
     clearEditor();
-    const si = document.getElementById('edSpoilerImg');
-    if (si) si.checked = false;
-    const ee = document.getElementById('edEnableEmbeds');
-    if (ee) ee.checked = true;
-    if (status) { status.textContent = 'posted!'; setTimeout(() => { status.textContent = ''; }, 3000); }
-  } catch(e) {
-    if (status) status.textContent = 'error: ' + e.message;
-  }
-  btn.disabled = false;
+    const si=document.getElementById('edSpoilerImg'); if(si) si.checked=false;
+    const ee=document.getElementById('edEnableEmbeds'); if(ee) ee.checked=true;
+    if(status){ status.textContent='posted!'; setTimeout(()=>{status.textContent='';},3000); }
+  } catch(e){ if(status) status.textContent='error: '+e.message; }
+  btn.disabled=false;
 }
-window.submitPost = submitPost;
+window.submitPost=submitPost;
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // ADMIN SEARCH
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function adminSearch() {
-  const q = document.getElementById('adminSearch').value.toLowerCase().trim();
-  const c = document.getElementById('adminResults');
-  if (!q) { c.innerHTML = ''; return; }
-  const m = window._allPosts.filter(p => {
-    const t = (p.contentHtml || '').replace(/<[^>]*>/g, '').toLowerCase();
-    return t.includes(q) || fmtDate(p.ts).toLowerCase().includes(q);
+  const q=document.getElementById('adminSearch').value.toLowerCase().trim();
+  const c=document.getElementById('adminResults');
+  if(!q){ c.innerHTML=''; return; }
+  const m=window._allPosts.filter(p=>{
+    const t=(p.contentHtml||'').replace(/<[^>]*>/g,'').toLowerCase();
+    return t.includes(q)||fmtDate(p.ts).toLowerCase().includes(q);
   });
-  if (!m.length) { c.innerHTML = '<div class="no-posts" style="color:#555;padding:16px 0;">no matches.</div>'; return; }
-  renderPosts(m, c, true);
+  if(!m.length){ c.innerHTML='<div class="no-posts" style="color:#555;padding:16px 0;">no matches.</div>'; return; }
+  renderPosts(m,c,true);
 }
-window.adminSearch = adminSearch;
+window.adminSearch=adminSearch;
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // LIGHTBOX
-// ═══════════════════════════════════════════════════════════════════════════
-function openLb(src) {
-  document.getElementById('lbImg').src = src;
+// ═══════════════════════════════════════════════════════════════
+function openLb(src){
+  document.getElementById('lbImg').src=src;
   document.getElementById('lightbox').classList.add('active');
-  document.addEventListener('keydown', lbKey);
+  document.addEventListener('keydown',lbKey);
 }
-function closeLb() {
+function closeLb(){
   document.getElementById('lightbox').classList.remove('active');
-  document.removeEventListener('keydown', lbKey);
+  document.removeEventListener('keydown',lbKey);
 }
-function lbKey(e) { if (e.key === 'Escape') closeLb(); }
-document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLb(); });
-window.closeLb = closeLb;
+function lbKey(e){ if(e.key==='Escape') closeLb(); }
+document.getElementById('lightbox').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
+window.closeLb=closeLb;
 
-// ═══════════════════════════════════════════════════════════════════════════
-// VIDEO BACKGROUND
-// ═══════════════════════════════════════════════════════════════════════════
-(function() {
+// ═══════════════════════════════════════════════════════════════
+// VIDEO BACKGROUND — crossfade loop, starts muted
+// ═══════════════════════════════════════════════════════════════
+(function(){
   const v1 = document.getElementById('vid1');
   const v2 = document.getElementById('vid2');
   if (!v1 || !v2) return;
 
-  const TRIGGER_S  = 32;
-  const FADEOUT_MS = 400;
-  const PAUSE_MS   = 3000;
-  const FADEIN_MS  = 1500;
+  const FADE_MS   = 1500;   // crossfade duration
+  const OVERLAP_S = 3;      // seconds before end to start fade
 
-  let current   = 0;
-  let fadingOut = false;
-  let fadeRaf   = null;
+  let current   = 1;   // which video is active (1 or 2)
+  let fading    = false;
+  let _isMuted  = true;  // track mute state
 
-  function setOp(v, o) { v.style.opacity = String(Math.max(0, Math.min(1, o))); }
+  // Start both muted — browser requires muted for autoplay
+  v1.muted = true;
+  v2.muted = true;
+  v1.volume = 0;
+  v2.volume = 0;
 
-  function doFadeIn(v, onDone) {
-    setOp(v, 0);
+  function setOpacity(v, o) {
+    v.style.opacity = String(Math.max(0, Math.min(1, o)));
+  }
+
+  function fadeIn(v, dur, cb) {
     const t0 = performance.now();
     (function step(now) {
-      const p = Math.min((now - t0) / FADEIN_MS, 1);
-      setOp(v, p);
+      const p = Math.min((now - t0) / dur, 1);
+      setOpacity(v, p);
       if (p < 1) requestAnimationFrame(step);
-      else if (onDone) onDone();
+      else if (cb) cb();
     })(t0);
   }
 
-  function doFadeOut(v, duration, onDone) {
-    const s0 = parseFloat(v.style.opacity) || 1;
+  function fadeOut(v, dur, cb) {
+    const start = parseFloat(v.style.opacity) || 1;
     const t0 = performance.now();
-    if (fadeRaf) { cancelAnimationFrame(fadeRaf); fadeRaf = null; }
     (function step(now) {
-      const p = Math.min((now - t0) / duration, 1);
-      setOp(v, s0 * (1 - p));
-      if (p < 1) { fadeRaf = requestAnimationFrame(step); }
-      else { setOp(v, 0); fadeRaf = null; if (onDone) onDone(); }
+      const p = Math.min((now - t0) / dur, 1);
+      setOpacity(v, start * (1 - p));
+      if (p < 1) requestAnimationFrame(step);
+      else { setOpacity(v, 0); if (cb) cb(); }
     })(t0);
   }
 
-  function startVideo(n) {
-    current   = n;
-    fadingOut = false;
-    const cur   = n === 1 ? v1 : v2;
-    const other = n === 1 ? v2 : v1;
-    setOp(other, 0);
-    cur.currentTime = 0;
-    cur.play().catch(() => {});
-    doFadeIn(cur, null);
+  function crossfadeTo(next) {
+    if (fading) return;
+    fading = true;
+
+    const outVid = current === 1 ? v1 : v2;
+    const inVid  = current === 1 ? v2 : v1;
+
+    // Prepare incoming video
+    inVid.currentTime = 0;
+    // Apply current mute state to incoming video
+    inVid.muted  = _isMuted;
+    inVid.volume = _isMuted ? 0 : 1;
+    inVid.play().catch(()=>{});
+
+    setOpacity(inVid, 0);
+    fadeIn(inVid, FADE_MS, () => {
+      // After fade-in, fade out old
+      fadeOut(outVid, FADE_MS / 2, () => {
+        outVid.pause();
+        outVid.currentTime = 0;
+        current = next;
+        fading  = false;
+      });
+    });
   }
 
-  v1.addEventListener('timeupdate', () => {
-    if (current !== 1 || fadingOut || !v1.duration || isNaN(v1.duration)) return;
-    if (v1.duration - v1.currentTime <= TRIGGER_S) { fadingOut = true; doFadeOut(v1, FADEOUT_MS, null); }
-  });
-  v2.addEventListener('timeupdate', () => {
-    if (current !== 2 || fadingOut || !v2.duration || isNaN(v2.duration)) return;
-    if (v2.duration - v2.currentTime <= TRIGGER_S) { fadingOut = true; doFadeOut(v2, FADEOUT_MS, null); }
-  });
+  // Monitor timeupdate to trigger crossfade near end
+  function checkTime(v, vidNum) {
+    if (current !== vidNum || fading) return;
+    if (!v.duration || isNaN(v.duration)) return;
+    if (v.duration - v.currentTime <= OVERLAP_S) {
+      const nextVid = vidNum === 1 ? 2 : 1;
+      crossfadeTo(nextVid);
+    }
+  }
 
-  v1.addEventListener('ended', () => {
-    fadingOut = false;
-    if (fadeRaf) { cancelAnimationFrame(fadeRaf); fadeRaf = null; }
-    setOp(v1, 0); v1.pause();
-    setTimeout(() => startVideo(2), PAUSE_MS);
-  });
-  v2.addEventListener('ended', () => {
-    fadingOut = false;
-    if (fadeRaf) { cancelAnimationFrame(fadeRaf); fadeRaf = null; }
-    setOp(v2, 0); v2.pause();
-    setTimeout(() => startVideo(1), PAUSE_MS);
-  });
+  v1.addEventListener('timeupdate', () => checkTime(v1, 1));
+  v2.addEventListener('timeupdate', () => checkTime(v2, 2));
 
-  function init() { startVideo(1); }
+  // Fallback: if ended before crossfade triggered
+  v1.addEventListener('ended', () => { if (current === 1 && !fading) crossfadeTo(2); });
+  v2.addEventListener('ended', () => { if (current === 2 && !fading) crossfadeTo(1); });
+
+  function startFirst() {
+    v1.currentTime = 0;
+    setOpacity(v1, 0);
+    v1.play().catch(() => {});
+    fadeIn(v1, 1500, null);
+  }
+
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    init();
+    startFirst();
   } else {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', startFirst);
   }
-  document.addEventListener('click', function once() {
-    if (current === 1 && (parseFloat(v1.style.opacity) || 0) < 0.05) startVideo(1);
-    document.removeEventListener('click', once);
-  }, { once: true });
+
+  // ── MUSIC TOGGLE ──
+  // Must be triggered by user gesture to unmute
+  window._videoMuteState = true; // start muted
+
+  window.toggleMusic = function() {
+    _isMuted = !_isMuted;
+    window._videoMuteState = _isMuted;
+
+    const btn = document.getElementById('musicBtn');
+
+    // Apply to currently active video
+    const activeVid = current === 1 ? v1 : v2;
+
+    if (_isMuted) {
+      activeVid.muted  = true;
+      activeVid.volume = 0;
+      btn.classList.add('muted');
+    } else {
+      // Unmute requires user gesture — this click IS the gesture
+      activeVid.muted  = false;
+      activeVid.volume = 1;
+      // If video isn't playing for some reason, restart
+      if (activeVid.paused) activeVid.play().catch(()=>{});
+      btn.classList.remove('muted');
+    }
+  };
 })();
 
-// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 // TITLE ANIMATION
-// ═══════════════════════════════════════════════════════════════════════════
-(function() {
+// ═══════════════════════════════════════════════════════════════
+(function(){
   const fullTitle = "Blog - Archive Shinigami";
   let i = 0;
   const typing = setInterval(() => {
-    document.title = fullTitle.slice(0, i);
-    i++;
+    document.title = fullTitle.slice(0, i); i++;
     if (i > fullTitle.length) {
       clearInterval(typing);
       document.title = fullTitle;
@@ -1408,8 +1118,7 @@ window.closeLb = closeLb;
         function doBlink() {
           let j = 0;
           const blink = setInterval(() => {
-            document.title = (j % 2 === 0) ? "デスノート" : fullTitle;
-            j++;
+            document.title = (j % 2 === 0) ? "デスノート" : fullTitle; j++;
             if (j > 5) {
               clearInterval(blink);
               document.title = fullTitle;
@@ -1424,219 +1133,108 @@ window.closeLb = closeLb;
     }
     loop();
   }
-
-  
 })();
 
-
+// ═══════════════════════════════════════════════════════════════
+// CURSOR TRAIL
+// ═══════════════════════════════════════════════════════════════
 (function(){
   var canvas = document.getElementById('cursor-layer');
   if (!canvas) return;
   if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
-
   var ctx = canvas.getContext('2d', { alpha: true });
   if (!ctx) return;
-
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  var width = 0;
-  var height = 0;
-  var pointer = {
-    x: window.innerWidth * 0.5,
-    y: window.innerHeight * 0.5,
-    px: window.innerWidth * 0.5,
-    py: window.innerHeight * 0.5,
-    visible: false
-  };
-  var ghosts = [];
-  var lastStamp = 0;
+  var width = 0, height = 0;
+  var pointer = { x: window.innerWidth*0.5, y: window.innerHeight*0.5, px: window.innerWidth*0.5, py: window.innerHeight*0.5, visible: false };
+  var ghosts = [], lastStamp = 0;
 
   function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
+    width = window.innerWidth; height = window.innerHeight;
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.max(1, Math.floor(width * dpr));
-    canvas.height = Math.max(1, Math.floor(height * dpr));
-    canvas.style.width = width + 'px';
-    canvas.style.height = height + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    canvas.width = Math.max(1, Math.floor(width*dpr));
+    canvas.height = Math.max(1, Math.floor(height*dpr));
+    canvas.style.width = width+'px'; canvas.style.height = height+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function activate(){ if(!pointer.visible){ pointer.visible=true; canvas.classList.add('active'); } }
+  function deactivate(){ pointer.visible=false; ghosts.length=0; canvas.classList.remove('active'); ctx.clearRect(0,0,width,height); }
+
+  function stampGhost(x,y,strength,dx,dy,spread){
+    ghosts.push({x,y,dx,dy,life:1.1,ttl:0.06+strength*0.03,size:8.1+strength*9.4+spread,spread});
+    if(ghosts.length>14) ghosts.shift();
   }
 
-  function activate() {
-    if (!pointer.visible) {
-      pointer.visible = true;
-      canvas.classList.add('active');
-    }
-  }
-
-  function deactivate() {
-    pointer.visible = false;
-    ghosts.length = 0;
-    canvas.classList.remove('active');
-    ctx.clearRect(0, 0, width, height);
-  }
-
-  function stampGhost(x, y, strength, dx, dy, spread) {
-    ghosts.push({
-      x: x,
-      y: y,
-      dx: dx,
-      dy: dy,
-      life: 1.1,
-      ttl: 0.06 + strength * 0.03,
-      size: 8.1 + strength * 9.4 + spread,
-      spread: spread
-    });
-
-    if (ghosts.length > 14) ghosts.shift();
-  }
-
-  function onMove(e) {
+  function onMove(e){
     activate();
-    var now = performance.now();
-    pointer.px = pointer.x;
-    pointer.py = pointer.y;
-    pointer.x = e.clientX;
-    pointer.y = e.clientY;
-
-    var dx = pointer.x - pointer.px;
-    var dy = pointer.y - pointer.py;
-    var dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < 1.5) return;
-
-    var dirX = dx / dist;
-    var dirY = dy / dist;
-    var strength = Math.min(1, dist / 18);
-    if (now - lastStamp < 6 && dist < 7) return;
-    lastStamp = now;
-
-    stampGhost(
-      pointer.x - dirX * Math.min(4, dist * 0.22),
-      pointer.y - dirY * Math.min(4, dist * 0.22),
-      strength,
-      dx,
-      dy,
-      0
-    );
-
-    if (dist > 7) {
-      stampGhost(
-        pointer.x - dirX * Math.min(7, dist * 0.38),
-        pointer.y - dirY * Math.min(7, dist * 0.38),
-        strength * 0.92,
-        dx,
-        dy,
-        0.45
-      );
-    }
-
-    if (dist > 11) {
-      stampGhost(
-        pointer.x - dirX * Math.min(10, dist * 0.52),
-        pointer.y - dirY * Math.min(10, dist * 0.52),
-        strength * 0.78,
-        dx,
-        dy,
-        0.9
-      );
-    }
-
-    if (dist > 16) {
-      stampGhost(
-        pointer.x - dirX * Math.min(13, dist * 0.72),
-        pointer.y - dirY * Math.min(13, dist * 0.72),
-        strength * 0.58,
-        dx,
-        dy,
-        1.35
-      );
-    }
+    var now=performance.now();
+    pointer.px=pointer.x; pointer.py=pointer.y;
+    pointer.x=e.clientX; pointer.y=e.clientY;
+    var dx=pointer.x-pointer.px, dy=pointer.y-pointer.py;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<1.5) return;
+    var dirX=dx/dist, dirY=dy/dist;
+    var strength=Math.min(1,dist/18);
+    if(now-lastStamp<6&&dist<7) return;
+    lastStamp=now;
+    stampGhost(pointer.x-dirX*Math.min(4,dist*0.22), pointer.y-dirY*Math.min(4,dist*0.22), strength, dx, dy, 0);
+    if(dist>7) stampGhost(pointer.x-dirX*Math.min(7,dist*0.38), pointer.y-dirY*Math.min(7,dist*0.38), strength*0.92, dx, dy, 0.45);
+    if(dist>11) stampGhost(pointer.x-dirX*Math.min(10,dist*0.52), pointer.y-dirY*Math.min(10,dist*0.52), strength*0.78, dx, dy, 0.9);
+    if(dist>16) stampGhost(pointer.x-dirX*Math.min(13,dist*0.72), pointer.y-dirY*Math.min(13,dist*0.72), strength*0.58, dx, dy, 1.35);
   }
-function drawGhost(ghost) {
-  var alpha = ghost.life * 0.62;
-  var size = ghost.size * ghost.life;
-  var dist = Math.sqrt(ghost.dx * ghost.dx + ghost.dy * ghost.dy) || 1;
-  var dirX = ghost.dx / dist;
-  var dirY = ghost.dy / dist;
-  var tailLength = Math.min(24, 7 + dist * 0.42 + ghost.spread * 1.8);
-  var tailX = ghost.x - dirX * tailLength;
-  var tailY = ghost.y - dirY * tailLength;
-  var softWidth = Math.max(2.1, size * 0.42);
 
-  var trailGradient = ctx.createLinearGradient(tailX, tailY, ghost.x, ghost.y);
-  trailGradient.addColorStop(0, 'rgba(255, 0, 0, 0)');
-  trailGradient.addColorStop(0.24, 'rgba(255, 0, 0, ' + (alpha * 0.08) + ')');
-  trailGradient.addColorStop(0.64, 'rgba(255, 0, 0, ' + (alpha * 0.3) + ')');
-  trailGradient.addColorStop(1, 'rgba(255, 0, 0, ' + (alpha * 0.96) + ')');
+  function drawGhost(ghost){
+    var alpha=ghost.life*0.62, size=ghost.size*ghost.life;
+    var dist=Math.sqrt(ghost.dx*ghost.dx+ghost.dy*ghost.dy)||1;
+    var dirX=ghost.dx/dist, dirY=ghost.dy/dist;
+    var tailLength=Math.min(24,7+dist*0.42+ghost.spread*1.8);
+    var tailX=ghost.x-dirX*tailLength, tailY=ghost.y-dirY*tailLength;
+    var softWidth=Math.max(2.1,size*0.42);
+    var trailGradient=ctx.createLinearGradient(tailX,tailY,ghost.x,ghost.y);
+    trailGradient.addColorStop(0,'rgba(255,0,0,0)');
+    trailGradient.addColorStop(0.24,'rgba(255,0,0,'+(alpha*0.08)+')');
+    trailGradient.addColorStop(0.64,'rgba(255,0,0,'+(alpha*0.3)+')');
+    trailGradient.addColorStop(1,'rgba(255,0,0,'+(alpha*0.96)+')');
+    ctx.strokeStyle=trailGradient; ctx.lineWidth=softWidth; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(tailX,tailY); ctx.lineTo(ghost.x,ghost.y); ctx.stroke();
+    var glow=ctx.createRadialGradient(ghost.x,ghost.y,0,ghost.x,ghost.y,Math.max(4.5,size*0.88));
+    glow.addColorStop(0,'rgba(255,0,0,'+(alpha*0.92)+')');
+    glow.addColorStop(0.28,'rgba(255,0,0,'+(alpha*0.18)+')');
+    glow.addColorStop(0.62,'rgba(255,0,0,'+(alpha*0.06)+')');
+    glow.addColorStop(1,'rgba(255,0,0,0)');
+    ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(ghost.x,ghost.y,Math.max(4.5,size*0.88),0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,0,0,'+(alpha*0.9)+')'; ctx.beginPath(); ctx.arc(ghost.x,ghost.y,Math.max(1.1,size*0.14),0,Math.PI*2); ctx.fill();
+  }
 
-  ctx.strokeStyle = trailGradient;
-  ctx.lineWidth = softWidth;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(tailX, tailY);
-  ctx.lineTo(ghost.x, ghost.y);
-  ctx.stroke();
-
-  var glow = ctx.createRadialGradient(ghost.x, ghost.y, 0, ghost.x, ghost.y, Math.max(4.5, size * 0.88));
-  glow.addColorStop(0, 'rgba(255, 0, 0, ' + (alpha * 0.92) + ')');
-  glow.addColorStop(0.28, 'rgba(255, 0, 0, ' + (alpha * 0.18) + ')');
-  glow.addColorStop(0.62, 'rgba(255, 0, 0, ' + (alpha * 0.06) + ')');
-  glow.addColorStop(1, 'rgba(255, 0, 0, 0)');
-  ctx.fillStyle = glow;
-  ctx.beginPath();
-  ctx.arc(ghost.x, ghost.y, Math.max(4.5, size * 0.88), 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.fillStyle = 'rgba(255, 0, 0, ' + (alpha * 0.9) + ')';
-  ctx.beginPath();
-  ctx.arc(ghost.x, ghost.y, Math.max(1.1, size * 0.14), 0, Math.PI * 2);
-  ctx.fill();
-}
-
-  function drawTrail(dt) {
-    ctx.clearRect(0, 0, width, height);
-    if (!pointer.visible || ghosts.length === 0) return;
-
-    for (var i = ghosts.length - 1; i >= 0; i--) {
-      var ghost = ghosts[i];
-      ghost.life -= dt / ghost.ttl;
-      if (ghost.life <= 0) {
-        ghosts.splice(i, 1);
-        continue;
-      }
-      ghost.x -= ghost.dx * 0.0068 * ghost.life;
-      ghost.y -= ghost.dy * 0.0068 * ghost.life;
-      ghost.dx *= 0.88;
-      ghost.dy *= 0.88;
+  function drawTrail(dt){
+    ctx.clearRect(0,0,width,height);
+    if(!pointer.visible||ghosts.length===0) return;
+    for(var i=ghosts.length-1;i>=0;i--){
+      var ghost=ghosts[i];
+      ghost.life-=dt/ghost.ttl;
+      if(ghost.life<=0){ ghosts.splice(i,1); continue; }
+      ghost.x-=ghost.dx*0.0068*ghost.life; ghost.y-=ghost.dy*0.0068*ghost.life;
+      ghost.dx*=0.88; ghost.dy*=0.88;
       drawGhost(ghost);
     }
   }
 
-  var previousTime = performance.now();
-  function tick() {
-    var now = performance.now();
-    var dt = Math.min(0.032, (now - previousTime) / 1000);
-    previousTime = now;
-    drawTrail(dt);
-    window.requestAnimationFrame(tick);
+  var previousTime=performance.now();
+  function tick(){
+    var now=performance.now(), dt=Math.min(0.032,(now-previousTime)/1000);
+    previousTime=now; drawTrail(dt); window.requestAnimationFrame(tick);
   }
 
-  resize();
-  tick();
-
-  window.addEventListener('resize', resize);
-  window.addEventListener('mousemove', onMove, { passive: true });
-  window.addEventListener('mouseenter', activate, { passive: true });
-  window.addEventListener('mouseleave', deactivate, { passive: true });
-  window.addEventListener('mouseout', function(e){
-    if (!e.relatedTarget) deactivate();
-  }, { passive: true });
-  window.addEventListener('blur', deactivate);
-  document.addEventListener('visibilitychange', function(){
-    if (document.hidden) deactivate();
-  });
+  resize(); tick();
+  window.addEventListener('resize',resize);
+  window.addEventListener('mousemove',onMove,{passive:true});
+  window.addEventListener('mouseenter',activate,{passive:true});
+  window.addEventListener('mouseleave',deactivate,{passive:true});
+  window.addEventListener('mouseout',function(e){ if(!e.relatedTarget) deactivate(); },{passive:true});
+  window.addEventListener('blur',deactivate);
+  document.addEventListener('visibilitychange',function(){ if(document.hidden) deactivate(); });
 })();
 </script>
 
-</script>
 </body>
 </html>
