@@ -48,34 +48,13 @@ img{-webkit-user-drag:none;user-select:none;}
   transition:opacity 0.5s ease;
 }
 
-/* ── MUSIC BUTTON ── */
+/* ── MUSIC BUTTON (footer span, identical to index) ── */
 #musicBtn{
-  position:fixed;
-  bottom:18px;
-  right:18px;
-  z-index:9999;
-  background:#000;
-  border:1px solid #fff;
-  color:#fff;
-  font-family:'SpecialElite',Georgia,serif;
-  font-size:11px;
-  padding:5px 12px;
   cursor:pointer;
-  letter-spacing:1px;
-  text-transform:uppercase;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  transition:background 0.15s, color 0.15s;
-  user-select:none;
+  margin-right:10px;
+  border-bottom:1px dotted #444;
+  color:#777;
 }
-#musicBtn:hover{background:#fff;color:#000;}
-#musicBtn .music-icon{
-  font-size:13px;
-  transition:opacity 0.2s;
-}
-#musicBtn.muted .music-icon::before{content:"Music: Off";}
-#musicBtn:not(.muted) .music-icon::before{content:"Music: On";}
 
 /* ── LAYOUT ── */
 body{font-family:'SpecialElite',Georgia,serif;font-size:13px;color:#fff;background:transparent;min-height:100vh;overflow-x:hidden;display:flex;justify-content:center;}
@@ -275,7 +254,6 @@ a:hover{text-decoration:underline;}
 
 
 
-
 <div id="wa-tooltip"></div>
 <div id="lightbox">
   <button id="lbClose" onclick="closeLb()">close</button>
@@ -316,12 +294,10 @@ a:hover{text-decoration:underline;}
     <div id="adminContainer"></div>
 
     <div class="black-gap"></div>
-    <footer id="pageFooter" >
-      
-              <span id="musicBtn" class="muted" onclick="toggleMusic()" style="cursor:pointer; border-bottom:1px dotted #444;color:#777;">Music: On</span>
- 2026 | Death Archive / Created by
+    <footer id="pageFooter">
+      <span id="musicBtn" onclick="toggleMusic()">Music: On</span>
+      2026 | Death Archive / Created by
       <span
-
         class="footer-author"
         onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
         onmouseout="WaTooltip.hide()">Settembre19th</span>
@@ -1066,31 +1042,30 @@ window.closeLb=closeLb;
     document.addEventListener('DOMContentLoaded', startFirst);
   }
 
-  // ── MUSIC TOGGLE ──
-  // Must be triggered by user gesture to unmute
-  window._videoMuteState = true; // start muted
+  // ── MUSIC TOGGLE — identical to index.html ──
+  _isMuted = localStorage.getItem('musicOff') !== '0';
 
-  window.toggleMusic = function() {
-    _isMuted = !_isMuted;
-    window._videoMuteState = _isMuted;
-
+  function applyMuteState() {
     const btn = document.getElementById('musicBtn');
-
-    // Apply to currently active video
     const activeVid = current === 1 ? v1 : v2;
-
     if (_isMuted) {
       activeVid.muted  = true;
       activeVid.volume = 0;
-      btn.classList.add('muted');
+      if (btn) btn.textContent = 'Music: Off';
     } else {
-      // Unmute requires user gesture — this click IS the gesture
       activeVid.muted  = false;
       activeVid.volume = 1;
-      // If video isn't playing for some reason, restart
       if (activeVid.paused) activeVid.play().catch(()=>{});
-      btn.classList.remove('muted');
+      if (btn) btn.textContent = 'Music: On';
     }
+  }
+
+  applyMuteState();
+
+  window.toggleMusic = function() {
+    _isMuted = !_isMuted;
+    localStorage.setItem('musicOff', _isMuted ? '1' : '0');
+    applyMuteState();
   };
 })();
 
