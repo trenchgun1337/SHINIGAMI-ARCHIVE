@@ -500,10 +500,9 @@ a:hover{text-decoration:underline;}
 </head>
 <body>
 
-  <!-- wtf-->
 <div id="videoBg">
-  <video id="vid1" src="../video/blogbg1.mp4" playsinline preload="auto" muted  ></video>
-  <video id="vid2" src="../video/blogbg2.mp4" playsinline preload="auto" muted ></video>
+  <video id="vid1" src="../video/blogbg2.mp4"  playsinline preload="auto"></video>
+  <video id="vid2" src="../video/blogbg1.mp4"  playsinline preload="auto"></video>
 </div>
 <div id="wa-tooltip"></div>
 <div id="lightbox">
@@ -546,13 +545,12 @@ a:hover{text-decoration:underline;}
 
     <div class="black-gap"></div>
     <footer id="pageFooter">
-  <span id="musicBtn" onclick="toggleMusic()" style="cursor:pointer;margin-right:10px;border-bottom:1px dotted #444;color:#777;">Music: On</span>
-  2026 | Death Archive / Created by
-  <span
-    class="footer-author"
-    onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
-    onmouseout="WaTooltip.hide()">Settembre19th</span>
-</footer>
+      2026 | Death Archive / Created by
+      <span
+        class="footer-author"
+        onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
+        onmouseout="WaTooltip.hide()">Settembre19th</span>
+    </footer>
   </main>
 </div>
 
@@ -1297,6 +1295,7 @@ function closeLb() {
 function lbKey(e) { if (e.key === 'Escape') closeLb(); }
 document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLb(); });
 window.closeLb = closeLb;
+
 // ═══════════════════════════════════════════════════════════════════════════
 // VIDEO BACKGROUND
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1313,7 +1312,6 @@ window.closeLb = closeLb;
   let current   = 0;
   let fadingOut = false;
   let fadeRaf   = null;
-  let started   = false;
 
   function setOp(v, o) { v.style.opacity = String(Math.max(0, Math.min(1, o))); }
 
@@ -1340,22 +1338,14 @@ window.closeLb = closeLb;
     })(t0);
   }
 
-  function applyMuteState() {
-    const m = localStorage.getItem('musicOff') === '1';
-    v1.muted = m;
-    v2.muted = m;
-  }
-
   function startVideo(n) {
     current   = n;
     fadingOut = false;
     const cur   = n === 1 ? v1 : v2;
     const other = n === 1 ? v2 : v1;
     setOp(other, 0);
-    applyMuteState();
     cur.currentTime = 0;
-    const p = cur.play();
-    if (p && p.catch) p.catch(() => {});
+    cur.play().catch(() => {});
     doFadeIn(cur, null);
   }
 
@@ -1381,27 +1371,18 @@ window.closeLb = closeLb;
     setTimeout(() => startVideo(1), PAUSE_MS);
   });
 
-  // ── Autoplay bloqueado: espera interação do usuário ──
-  function tryStart() {
-    if (started) return;
-    started = true;
-    startVideo(1);
+  function init() { startVideo(1); }
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    init();
+  } else {
+    document.addEventListener('DOMContentLoaded', init);
   }
-
-  // Tenta imediatamente (funciona se autoplay estiver liberado)
-  v1.addEventListener('canplay', function once() {
-    v1.removeEventListener('canplay', once);
-    tryStart();
-  });
-
-  // Fallback: qualquer clique/tecla na página inicia
-  document.addEventListener('click',   tryStart, { once: true });
-  document.addEventListener('keydown', tryStart, { once: true });
-  document.addEventListener('touchstart', tryStart, { once: true });
-
-  // Se já carregou antes do listener
-  if (v1.readyState >= 3) tryStart();
+  document.addEventListener('click', function once() {
+    if (current === 1 && (parseFloat(v1.style.opacity) || 0) < 0.05) startVideo(1);
+    document.removeEventListener('click', once);
+  }, { once: true });
 })();
+
 // ═══════════════════════════════════════════════════════════════════════════
 // TITLE ANIMATION
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1446,6 +1427,7 @@ window.closeLb = closeLb;
 
   
 })();
+
 
 (function(){
   var canvas = document.getElementById('cursor-layer');
@@ -1524,21 +1506,9 @@ window.closeLb = closeLb;
     var dirX = dx / dist;
     var dirY = dy / dist;
     var strength = Math.min(1, dist / 18);
-if (now - lastStamp < 2 && dist < 12) return;
+    if (now - lastStamp < 6 && dist < 7) return;
     lastStamp = now;
-var steps = Math.floor(dist / 6);
 
-for (var i = 1; i <= steps; i++) {
-  var t = i / (steps + 1);
-  stampGhost(
-    pointer.px + dx * t,
-    pointer.py + dy * t,
-    strength * 0.9,
-    dx,
-    dy,
-    0
-  );
-}
     stampGhost(
       pointer.x - dirX * Math.min(4, dist * 0.22),
       pointer.y - dirY * Math.min(4, dist * 0.22),
@@ -1582,7 +1552,7 @@ for (var i = 1; i <= steps; i++) {
     }
   }
 function drawGhost(ghost) {
-  var alpha = ghost.life * 0.28;
+  var alpha = ghost.life * 0.62;
   var size = ghost.size * ghost.life;
   var dist = Math.sqrt(ghost.dx * ghost.dx + ghost.dy * ghost.dy) || 1;
   var dirX = ghost.dx / dist;
@@ -1596,11 +1566,11 @@ function drawGhost(ghost) {
   trailGradient.addColorStop(0, 'rgba(255, 0, 0, 0)');
   trailGradient.addColorStop(0.24, 'rgba(255, 0, 0, ' + (alpha * 0.08) + ')');
   trailGradient.addColorStop(0.64, 'rgba(255, 0, 0, ' + (alpha * 0.3) + ')');
-trailGradient.addColorStop(1, 'rgba(120, 0, 0, ' + (alpha * 0.6) + ')');
+  trailGradient.addColorStop(1, 'rgba(255, 0, 0, ' + (alpha * 0.96) + ')');
 
   ctx.strokeStyle = trailGradient;
   ctx.lineWidth = softWidth;
-  ctx.lineCap ='round';
+  ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(tailX, tailY);
   ctx.lineTo(ghost.x, ghost.y);
@@ -1612,15 +1582,9 @@ trailGradient.addColorStop(1, 'rgba(120, 0, 0, ' + (alpha * 0.6) + ')');
   glow.addColorStop(0.62, 'rgba(255, 0, 0, ' + (alpha * 0.06) + ')');
   glow.addColorStop(1, 'rgba(255, 0, 0, 0)');
   ctx.fillStyle = glow;
- var rectSize = Math.max(4.5, size * 0.88);
-
-ctx.beginPath();
-ctx.moveTo(ghost.x - rectSize/2, ghost.y - rectSize/2);
-ctx.lineTo(ghost.x + rectSize/2 + Math.random()*2, ghost.y - rectSize/2);
-ctx.lineTo(ghost.x + rectSize/2, ghost.y + rectSize/2 + Math.random()*2);
-ctx.lineTo(ghost.x - rectSize/2 - Math.random()*2, ghost.y + rectSize/2);
-ctx.closePath();
-ctx.fill();
+  ctx.beginPath();
+  ctx.arc(ghost.x, ghost.y, Math.max(4.5, size * 0.88), 0, Math.PI * 2);
+  ctx.fill();
 
   ctx.fillStyle = 'rgba(255, 0, 0, ' + (alpha * 0.9) + ')';
   ctx.beginPath();
@@ -1671,43 +1635,7 @@ ctx.fill();
     if (document.hidden) deactivate();
   });
 })();
-
-// ═══════════════════════════════════════════════════════════════════════════
-// MUSIC TOGGLE — muta vídeos de fundo, sincronizado com index via localStorage
-// ═══════════════════════════════════════════════════════════════════════════
-(function(){
-  var v1  = document.getElementById('vid1');
-  var v2  = document.getElementById('vid2');
-  var btn = document.getElementById('musicBtn');
-
-  var muted = localStorage.getItem('musicOff') === '1';
-
-  function applyMute() {
-    if (v1) v1.muted = muted;
-    if (v2) v2.muted = muted;
-    if (btn) btn.textContent = muted ? 'Music: Off' : 'Music: On';
-  }
-
-  // aplica assim que o DOM estiver pronto
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyMute);
-  } else {
-    applyMute();
-  }
-
-  // também aplica quando os vídeos carregarem (caso já estejam tocando)
-  [v1, v2].forEach(function(v){
-    if (!v) return;
-    v.addEventListener('loadedmetadata', applyMute);
-    v.addEventListener('play', applyMute);
-  });
-
-  window.toggleMusic = function() {
-    muted = !muted;
-    localStorage.setItem('musicOff', muted ? '1' : '0');
-    applyMute();
-  };
-})();
+</script>
 
 </script>
 </body>

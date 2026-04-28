@@ -513,6 +513,7 @@ renderGallery();
 })();
 
 
+
 (function(){
   var canvas = document.getElementById('cursor-layer');
   if (!canvas) return;
@@ -590,21 +591,9 @@ renderGallery();
     var dirX = dx / dist;
     var dirY = dy / dist;
     var strength = Math.min(1, dist / 18);
-if (now - lastStamp < 2 && dist < 12) return;
+    if (now - lastStamp < 6 && dist < 7) return;
     lastStamp = now;
-var steps = Math.floor(dist / 6);
 
-for (var i = 1; i <= steps; i++) {
-  var t = i / (steps + 1);
-  stampGhost(
-    pointer.px + dx * t,
-    pointer.py + dy * t,
-    strength * 0.9,
-    dx,
-    dy,
-    0
-  );
-}
     stampGhost(
       pointer.x - dirX * Math.min(4, dist * 0.22),
       pointer.y - dirY * Math.min(4, dist * 0.22),
@@ -648,7 +637,7 @@ for (var i = 1; i <= steps; i++) {
     }
   }
 function drawGhost(ghost) {
-  var alpha = ghost.life * 0.28;
+  var alpha = ghost.life * 0.62;
   var size = ghost.size * ghost.life;
   var dist = Math.sqrt(ghost.dx * ghost.dx + ghost.dy * ghost.dy) || 1;
   var dirX = ghost.dx / dist;
@@ -662,11 +651,11 @@ function drawGhost(ghost) {
   trailGradient.addColorStop(0, 'rgba(255, 0, 0, 0)');
   trailGradient.addColorStop(0.24, 'rgba(255, 0, 0, ' + (alpha * 0.08) + ')');
   trailGradient.addColorStop(0.64, 'rgba(255, 0, 0, ' + (alpha * 0.3) + ')');
-trailGradient.addColorStop(1, 'rgba(120, 0, 0, ' + (alpha * 0.6) + ')');
+  trailGradient.addColorStop(1, 'rgba(255, 0, 0, ' + (alpha * 0.96) + ')');
 
   ctx.strokeStyle = trailGradient;
   ctx.lineWidth = softWidth;
-  ctx.lineCap ='round';
+  ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(tailX, tailY);
   ctx.lineTo(ghost.x, ghost.y);
@@ -678,15 +667,9 @@ trailGradient.addColorStop(1, 'rgba(120, 0, 0, ' + (alpha * 0.6) + ')');
   glow.addColorStop(0.62, 'rgba(255, 0, 0, ' + (alpha * 0.06) + ')');
   glow.addColorStop(1, 'rgba(255, 0, 0, 0)');
   ctx.fillStyle = glow;
- var rectSize = Math.max(4.5, size * 0.88);
-
-ctx.beginPath();
-ctx.moveTo(ghost.x - rectSize/2, ghost.y - rectSize/2);
-ctx.lineTo(ghost.x + rectSize/2 + Math.random()*2, ghost.y - rectSize/2);
-ctx.lineTo(ghost.x + rectSize/2, ghost.y + rectSize/2 + Math.random()*2);
-ctx.lineTo(ghost.x - rectSize/2 - Math.random()*2, ghost.y + rectSize/2);
-ctx.closePath();
-ctx.fill();
+  ctx.beginPath();
+  ctx.arc(ghost.x, ghost.y, Math.max(4.5, size * 0.88), 0, Math.PI * 2);
+  ctx.fill();
 
   ctx.fillStyle = 'rgba(255, 0, 0, ' + (alpha * 0.9) + ')';
   ctx.beginPath();
@@ -737,6 +720,7 @@ ctx.fill();
     if (document.hidden) deactivate();
   });
 })();
+
 </script>
 
 </body>
