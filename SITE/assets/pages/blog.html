@@ -479,13 +479,30 @@ a:hover{text-decoration:underline;}
 
 /* Prevent table from expanding the page */
 .chan-table td{overflow:hidden;max-width:0;} /* table-layout:fixed does the real work */
+
+#cursor-layer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+ /* mix-blend-mode: difference; */
+  opacity: 0;
+  transition: opacity 1000ms linear;
+}
+
+#cursor-layer.active {
+  opacity: 1;
+}
+
 </style>
 </head>
 <body>
 
 <div id="videoBg">
-  <video id="vid1" src="../video/blogbg2.mp4" muted playsinline preload="auto"></video>
-  <video id="vid2" src="../video/blogbg1.mp4" muted playsinline preload="auto"></video>
+  <video id="vid1" src="../video/blogbg1.mp4" playsinline preload="auto" muted  ></video>
+  <video id="vid2" src="../video/blogbg2.mp4" playsinline preload="auto" muted ></video>
 </div>
 <div id="wa-tooltip"></div>
 <div id="lightbox">
@@ -528,14 +545,17 @@ a:hover{text-decoration:underline;}
 
     <div class="black-gap"></div>
     <footer id="pageFooter">
-      2026 | Death Archive / Created by
-      <span
-        class="footer-author"
-        onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
-        onmouseout="WaTooltip.hide()">Settembre19th</span>
-    </footer>
+  <span id="musicBtn" onclick="toggleMusic()" style="cursor:pointer;margin-right:10px;border-bottom:1px dotted #444;color:#777;">Music: On</span>
+  2026 | Death Archive / Created by
+  <span
+    class="footer-author"
+    onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
+    onmouseout="WaTooltip.hide()">Settembre19th</span>
+</footer>
   </main>
 </div>
+
+<canvas id="cursor-layer" aria-hidden="true"></canvas>
 
 
 <script>
@@ -1276,7 +1296,6 @@ function closeLb() {
 function lbKey(e) { if (e.key === 'Escape') closeLb(); }
 document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLb(); });
 window.closeLb = closeLb;
-
 // ═══════════════════════════════════════════════════════════════════════════
 // VIDEO BACKGROUND
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1293,6 +1312,7 @@ window.closeLb = closeLb;
   let current   = 0;
   let fadingOut = false;
   let fadeRaf   = null;
+  let started   = false;
 
   function setOp(v, o) { v.style.opacity = String(Math.max(0, Math.min(1, o))); }
 
@@ -1319,14 +1339,22 @@ window.closeLb = closeLb;
     })(t0);
   }
 
+  function applyMuteState() {
+    const m = localStorage.getItem('musicOff') === '1';
+    v1.muted = m;
+    v2.muted = m;
+  }
+
   function startVideo(n) {
     current   = n;
     fadingOut = false;
     const cur   = n === 1 ? v1 : v2;
     const other = n === 1 ? v2 : v1;
     setOp(other, 0);
+    applyMuteState();
     cur.currentTime = 0;
-    cur.play().catch(() => {});
+    const p = cur.play();
+    if (p && p.catch) p.catch(() => {});
     doFadeIn(cur, null);
   }
 
@@ -1352,18 +1380,27 @@ window.closeLb = closeLb;
     setTimeout(() => startVideo(1), PAUSE_MS);
   });
 
-  function init() { startVideo(1); }
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    init();
-  } else {
-    document.addEventListener('DOMContentLoaded', init);
+  // ── Autoplay bloqueado: espera interação do usuário ──
+  function tryStart() {
+    if (started) return;
+    started = true;
+    startVideo(1);
   }
-  document.addEventListener('click', function once() {
-    if (current === 1 && (parseFloat(v1.style.opacity) || 0) < 0.05) startVideo(1);
-    document.removeEventListener('click', once);
-  }, { once: true });
-})();
 
+  // Tenta imediatamente (funciona se autoplay estiver liberado)
+  v1.addEventListener('canplay', function once() {
+    v1.removeEventListener('canplay', once);
+    tryStart();
+  });
+
+  // Fallback: qualquer clique/tecla na página inicia
+  document.addEventListener('click',   tryStart, { once: true });
+  document.addEventListener('keydown', tryStart, { once: true });
+  document.addEventListener('touchstart', tryStart, { once: true });
+
+  // Se já carregou antes do listener
+  if (v1.readyState >= 3) tryStart();
+})();
 // ═══════════════════════════════════════════════════════════════════════════
 // TITLE ANIMATION
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1405,7 +1442,272 @@ window.closeLb = closeLb;
     }
     loop();
   }
+
+  
 })();
+
+(function(){
+  var canvas = document.getElementById('cursor-layer');
+  if (!canvas) return;
+  if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
+
+  var ctx = canvas.getContext('2d', { alpha: true });
+  if (!ctx) return;
+
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var width = 0;
+  var height = 0;
+  var pointer = {
+    x: window.innerWidth * 0.5,
+    y: window.innerHeight * 0.5,
+    px: window.innerWidth * 0.5,
+    py: window.innerHeight * 0.5,
+    visible: false
+  };
+  var ghosts = [];
+  var lastStamp = 0;
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.max(1, Math.floor(width * dpr));
+    canvas.height = Math.max(1, Math.floor(height * dpr));
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function activate() {
+    if (!pointer.visible) {
+      pointer.visible = true;
+      canvas.classList.add('active');
+    }
+  }
+
+  function deactivate() {
+    pointer.visible = false;
+    ghosts.length = 0;
+    canvas.classList.remove('active');
+    ctx.clearRect(0, 0, width, height);
+  }
+
+  function stampGhost(x, y, strength, dx, dy, spread) {
+    ghosts.push({
+      x: x,
+      y: y,
+      dx: dx,
+      dy: dy,
+      life: 1.1,
+      ttl: 0.06 + strength * 0.03,
+      size: 8.1 + strength * 9.4 + spread,
+      spread: spread
+    });
+
+    if (ghosts.length > 14) ghosts.shift();
+  }
+
+  function onMove(e) {
+    activate();
+    var now = performance.now();
+    pointer.px = pointer.x;
+    pointer.py = pointer.y;
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+
+    var dx = pointer.x - pointer.px;
+    var dy = pointer.y - pointer.py;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 1.5) return;
+
+    var dirX = dx / dist;
+    var dirY = dy / dist;
+    var strength = Math.min(1, dist / 18);
+if (now - lastStamp < 2 && dist < 12) return;
+    lastStamp = now;
+var steps = Math.floor(dist / 6);
+
+for (var i = 1; i <= steps; i++) {
+  var t = i / (steps + 1);
+  stampGhost(
+    pointer.px + dx * t,
+    pointer.py + dy * t,
+    strength * 0.9,
+    dx,
+    dy,
+    0
+  );
+}
+    stampGhost(
+      pointer.x - dirX * Math.min(4, dist * 0.22),
+      pointer.y - dirY * Math.min(4, dist * 0.22),
+      strength,
+      dx,
+      dy,
+      0
+    );
+
+    if (dist > 7) {
+      stampGhost(
+        pointer.x - dirX * Math.min(7, dist * 0.38),
+        pointer.y - dirY * Math.min(7, dist * 0.38),
+        strength * 0.92,
+        dx,
+        dy,
+        0.45
+      );
+    }
+
+    if (dist > 11) {
+      stampGhost(
+        pointer.x - dirX * Math.min(10, dist * 0.52),
+        pointer.y - dirY * Math.min(10, dist * 0.52),
+        strength * 0.78,
+        dx,
+        dy,
+        0.9
+      );
+    }
+
+    if (dist > 16) {
+      stampGhost(
+        pointer.x - dirX * Math.min(13, dist * 0.72),
+        pointer.y - dirY * Math.min(13, dist * 0.72),
+        strength * 0.58,
+        dx,
+        dy,
+        1.35
+      );
+    }
+  }
+function drawGhost(ghost) {
+  var alpha = ghost.life * 0.28;
+  var size = ghost.size * ghost.life;
+  var dist = Math.sqrt(ghost.dx * ghost.dx + ghost.dy * ghost.dy) || 1;
+  var dirX = ghost.dx / dist;
+  var dirY = ghost.dy / dist;
+  var tailLength = Math.min(24, 7 + dist * 0.42 + ghost.spread * 1.8);
+  var tailX = ghost.x - dirX * tailLength;
+  var tailY = ghost.y - dirY * tailLength;
+  var softWidth = Math.max(2.1, size * 0.42);
+
+  var trailGradient = ctx.createLinearGradient(tailX, tailY, ghost.x, ghost.y);
+  trailGradient.addColorStop(0, 'rgba(255, 0, 0, 0)');
+  trailGradient.addColorStop(0.24, 'rgba(255, 0, 0, ' + (alpha * 0.08) + ')');
+  trailGradient.addColorStop(0.64, 'rgba(255, 0, 0, ' + (alpha * 0.3) + ')');
+trailGradient.addColorStop(1, 'rgba(120, 0, 0, ' + (alpha * 0.6) + ')');
+
+  ctx.strokeStyle = trailGradient;
+  ctx.lineWidth = softWidth;
+  ctx.lineCap ='round';
+  ctx.beginPath();
+  ctx.moveTo(tailX, tailY);
+  ctx.lineTo(ghost.x, ghost.y);
+  ctx.stroke();
+
+  var glow = ctx.createRadialGradient(ghost.x, ghost.y, 0, ghost.x, ghost.y, Math.max(4.5, size * 0.88));
+  glow.addColorStop(0, 'rgba(255, 0, 0, ' + (alpha * 0.92) + ')');
+  glow.addColorStop(0.28, 'rgba(255, 0, 0, ' + (alpha * 0.18) + ')');
+  glow.addColorStop(0.62, 'rgba(255, 0, 0, ' + (alpha * 0.06) + ')');
+  glow.addColorStop(1, 'rgba(255, 0, 0, 0)');
+  ctx.fillStyle = glow;
+ var rectSize = Math.max(4.5, size * 0.88);
+
+ctx.beginPath();
+ctx.moveTo(ghost.x - rectSize/2, ghost.y - rectSize/2);
+ctx.lineTo(ghost.x + rectSize/2 + Math.random()*2, ghost.y - rectSize/2);
+ctx.lineTo(ghost.x + rectSize/2, ghost.y + rectSize/2 + Math.random()*2);
+ctx.lineTo(ghost.x - rectSize/2 - Math.random()*2, ghost.y + rectSize/2);
+ctx.closePath();
+ctx.fill();
+
+  ctx.fillStyle = 'rgba(255, 0, 0, ' + (alpha * 0.9) + ')';
+  ctx.beginPath();
+  ctx.arc(ghost.x, ghost.y, Math.max(1.1, size * 0.14), 0, Math.PI * 2);
+  ctx.fill();
+}
+
+  function drawTrail(dt) {
+    ctx.clearRect(0, 0, width, height);
+    if (!pointer.visible || ghosts.length === 0) return;
+
+    for (var i = ghosts.length - 1; i >= 0; i--) {
+      var ghost = ghosts[i];
+      ghost.life -= dt / ghost.ttl;
+      if (ghost.life <= 0) {
+        ghosts.splice(i, 1);
+        continue;
+      }
+      ghost.x -= ghost.dx * 0.0068 * ghost.life;
+      ghost.y -= ghost.dy * 0.0068 * ghost.life;
+      ghost.dx *= 0.88;
+      ghost.dy *= 0.88;
+      drawGhost(ghost);
+    }
+  }
+
+  var previousTime = performance.now();
+  function tick() {
+    var now = performance.now();
+    var dt = Math.min(0.032, (now - previousTime) / 1000);
+    previousTime = now;
+    drawTrail(dt);
+    window.requestAnimationFrame(tick);
+  }
+
+  resize();
+  tick();
+
+  window.addEventListener('resize', resize);
+  window.addEventListener('mousemove', onMove, { passive: true });
+  window.addEventListener('mouseenter', activate, { passive: true });
+  window.addEventListener('mouseleave', deactivate, { passive: true });
+  window.addEventListener('mouseout', function(e){
+    if (!e.relatedTarget) deactivate();
+  }, { passive: true });
+  window.addEventListener('blur', deactivate);
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) deactivate();
+  });
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MUSIC TOGGLE — muta vídeos de fundo, sincronizado com index via localStorage
+// ═══════════════════════════════════════════════════════════════════════════
+(function(){
+  var v1  = document.getElementById('vid1');
+  var v2  = document.getElementById('vid2');
+  var btn = document.getElementById('musicBtn');
+
+  var muted = localStorage.getItem('musicOff') === '1';
+
+  function applyMute() {
+    if (v1) v1.muted = muted;
+    if (v2) v2.muted = muted;
+    if (btn) btn.textContent = muted ? 'Music: Off' : 'Music: On';
+  }
+
+  // aplica assim que o DOM estiver pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyMute);
+  } else {
+    applyMute();
+  }
+
+  // também aplica quando os vídeos carregarem (caso já estejam tocando)
+  [v1, v2].forEach(function(v){
+    if (!v) return;
+    v.addEventListener('loadedmetadata', applyMute);
+    v.addEventListener('play', applyMute);
+  });
+
+  window.toggleMusic = function() {
+    muted = !muted;
+    localStorage.setItem('musicOff', muted ? '1' : '0');
+    applyMute();
+  };
+})();
+
 </script>
 </body>
 </html>
