@@ -633,6 +633,7 @@ function lbKey(e){ if(e.key==='Escape') closeLb(); }
 document.getElementById('lightbox').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
 window.closeLb=closeLb;
 
+// ── VIDEO BACKGROUND + MUSIC TOGGLE ──
 (function(){
   const v1=document.getElementById('vid1');
   const v2=document.getElementById('vid2');
@@ -642,80 +643,38 @@ window.closeLb=closeLb;
   let current=1, fading=false;
   let _isMuted=true;
 
-  // Sempre começam mutados
-  v1.muted=true; v2.muted=true;
-  v1.volume=0;   v2.volume=0;
+  v1.muted=true; v2.muted=true; v1.volume=0; v2.volume=0;
 
-  /* ── helpers de fade ── */
   function setOp(v,o){ v.style.opacity=String(Math.max(0,Math.min(1,o))); }
-  function fadeIn(v,dur,cb){
-    const t0=performance.now();
-    (function s(now){ const p=Math.min((now-t0)/dur,1); setOp(v,p);
-      if(p<1) requestAnimationFrame(s); else if(cb) cb(); })(t0);
-  }
-  function fadeOut(v,dur,cb){
-    const s0=parseFloat(v.style.opacity)||1, t0=performance.now();
-    (function s(now){ const p=Math.min((now-t0)/dur,1); setOp(v,s0*(1-p));
-      if(p<1) requestAnimationFrame(s);
-      else{ setOp(v,0); if(cb) cb(); } })(t0);
-  }
+  function fadeIn(v,dur,cb){ const t0=performance.now(); (function s(now){ const p=Math.min((now-t0)/dur,1); setOp(v,p); if(p<1) requestAnimationFrame(s); else if(cb) cb(); })(t0); }
+  function fadeOut(v,dur,cb){ const s0=parseFloat(v.style.opacity)||1, t0=performance.now(); (function s(now){ const p=Math.min((now-t0)/dur,1); setOp(v,s0*(1-p)); if(p<1) requestAnimationFrame(s); else{ setOp(v,0); if(cb) cb(); } })(t0); }
 
-  /* ── crossfade ── */
   function crossfadeTo(next){
     if(fading) return; fading=true;
     const out=current===1?v1:v2, inn=current===1?v2:v1;
-    inn.currentTime=0;
-    inn.muted=true; inn.volume=0;          // crossfade sempre mutado
+    inn.currentTime=0; inn.muted=_isMuted; inn.volume=_isMuted?0:1;
     inn.play().catch(()=>{});
     setOp(inn,0);
     fadeIn(inn,FADE_MS,()=>{
-      fadeOut(out,FADE_MS/2,()=>{
-        out.pause(); out.currentTime=0; current=next; fading=false;
-      });
+      fadeOut(out,FADE_MS/2,()=>{ out.pause(); out.currentTime=0; current=next; fading=false; });
     });
   }
 
-  function chk(v,n){
-    if(current!==n||fading||!v.duration||isNaN(v.duration)) return;
-    if(v.duration-v.currentTime<=OVERLAP_S) crossfadeTo(n===1?2:1);
-  }
+  function chk(v,n){ if(current!==n||fading||!v.duration||isNaN(v.duration)) return; if(v.duration-v.currentTime<=OVERLAP_S) crossfadeTo(n===1?2:1); }
   v1.addEventListener('timeupdate',()=>chk(v1,1));
   v2.addEventListener('timeupdate',()=>chk(v2,2));
   v1.addEventListener('ended',()=>{ if(current===1&&!fading) crossfadeTo(2); });
   v2.addEventListener('ended',()=>{ if(current===2&&!fading) crossfadeTo(1); });
 
-  /* ── inicia o primeiro vídeo ── */
   function startFirst(){
     setOp(v1,0); v1.currentTime=0;
-    v1.play().catch(()=>{
-      // Autoplay bloqueado → mostra overlay "clique para entrar"
-      showOverlay();
-    });
+    v1.play().catch(()=>{});
     fadeIn(v1,1500,null);
   }
-
-  /* ── overlay de desbloqueio (aparece só se o browser bloquear) ── */
-  function showOverlay(){
-    const ov=document.createElement('div');
-    ov.id='bg-overlay';
-    Object.assign(ov.style,{
-      position:'fixed',inset:'0',zIndex:'9000',
-      background:'#000',display:'flex',
-      alignItems:'center',justifyContent:'center',
-      cursor:'pointer',flexDirection:'column',gap:'12px'
-    });
-    ov.innerHTML='<span style="color:#fff;font-family:SpecialElite,serif;font-size:18px;letter-spacing:2px;">ENTER</span>';
-    ov.addEventListener('click',function(){
-      v1.play().then(()=>{ fadeIn(v1,1500,null); }).catch(()=>{});
-      ov.remove();
-    },{once:true});
-    document.body.appendChild(ov);
-  }
-
   if(document.readyState==='complete'||document.readyState==='interactive') startFirst();
   else document.addEventListener('DOMContentLoaded',startFirst);
 
-  /* ── music toggle ── */
+  // MUSIC TOGGLE — identical logic to index.html
   _isMuted = localStorage.getItem('musicOff') !== '0';
 
   function applyMute(){
@@ -725,16 +684,7 @@ window.closeLb=closeLb;
       av.muted=true; av.volume=0;
       if(btn) btn.textContent='Music: Off';
     } else {
-      // Remove o mute do vídeo ATIVO — funciona pois o vídeo já está rodando
-      av.muted=false;
-      // Rampa de volume suave para evitar clique no áudio
-      av.volume=0;
-      let vol=0;
-      const ramp=setInterval(()=>{
-        vol=Math.min(1,vol+0.05);
-        av.volume=vol;
-        if(vol>=1) clearInterval(ramp);
-      },30);
+      av.muted=false; av.volume=1;
       if(av.paused) av.play().catch(()=>{});
       if(btn) btn.textContent='Music: On';
     }
@@ -748,6 +698,7 @@ window.closeLb=closeLb;
     applyMute();
   };
 })();
+
 // ── TITLE ANIMATION ──
 (function(){
   const T="Blog - Archive Shinigami"; let i=0;

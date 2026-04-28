@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:;">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Links - Archive Shinigami</title>
+<link rel="icon" href="../images/favicon/favicon.ico">
+
+<link rel="preload" href="../fonts/cloister_black/CloisterBlack.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="../fonts/deathnote_font/DEATH_NOTE1.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+<link rel="preload" href="../fonts/Special_Elite/SpecialElite-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+
+<style>
+@font-face { font-family:'cloister'; src:url('../fonts/cloister_black/CloisterBlack.ttf') format('truetype'); font-display:block; }
+@font-face { font-family:'DeathNote'; src:url('../fonts/deathnote_font/DEATH_NOTE1.ttf') format('truetype'); font-display:block; }
+@font-face { font-family:'SpecialElite'; src:url('../fonts/Special_Elite/SpecialElite-Regular.ttf') format('truetype'); font-display:block; }
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+*:focus { outline:none!important; }
+img { -webkit-user-drag:none; user-select:none; }
+
+::selection      { background:#fff; color:#000; }
+::-moz-selection { background:#fff; color:#000; }
+
+::-webkit-scrollbar { width:16px; }
+::-webkit-scrollbar-track { background:#080808; border-left:3px solid #000; }
+::-webkit-scrollbar-thumb {
+  background-image:url('../images/scrollbar1.webp');
+  background-size:cover; background-position:center; background-repeat:no-repeat;
+  border:1px dashed #000;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-image:url('../images/scrollbar2.webp');
+  filter:brightness(100);
+}
+::-webkit-scrollbar-corner { background:#111; }
+
+/* ── BODY ── */
+body {
+  font-family:'SpecialElite', Georgia, serif;
+  font-size:13px;
+  color:#fff;
+  background-color:#000;
+  background-image:url('../images/backgrounds/linksbg.jpg');
+  background-attachment:fixed;
+  background-repeat:no-repeat;
+  background-position:right center;
+  background-size:contain;
+  min-height:100vh;
+  overflow-x:hidden;
+  display:flex;
+  justify-content:flex-start;
+  align-items:stretch;
+}
+
+a { color:#fff; text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+/* ── WRAPPER — left-aligned, not touching edge ── */
+#wrapper {
+  width:580px;
+  max-width:100%;
+  margin-left:18px;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+/* ── HEADER ── */
+#siteHeader {
+  background:#000;
+  border-bottom:2px solid #fff;
+  padding:16px 14px 11px;
+  flex-shrink:0;
+}
+#siteIcon {
+  width:78px; height:78px;
+  object-fit:contain; object-position:center;
+  display:inline-block;
+  margin-left:221px;
+}
+#siteLogo {
+  width:370px; margin-left:95px; height:90px;
+  object-position:center; filter:invert();
+}
+
+/* ── NAV ── */
+#siteNav {
+  background:#000;
+  padding:6px 12px;
+  display:flex; align-items:center; justify-content:center;
+  gap:40px;
+  font-family:'SpecialElite', Georgia, serif;
+  font-size:12px;
+  flex-shrink:0;
+}
+.nav-sep { color:#444; margin:0 9px; user-select:none; }
+.nav-item {
+  color:#fff; text-decoration:none; cursor:pointer;
+  position:relative; display:inline-block;
+  padding:2px 18px 2px 4px;
+}
+.nav-item:hover, .nav-item.active {
+  color:#000; background-color:#fff; text-decoration:underline;
+}
+.nav-item:hover::after, .nav-item.active::after {
+  content:"";
+  position:absolute; right:-2px; top:50%;
+  transform:translateY(-50%);
+  width:22px; height:12px;
+  background-image:url('../images/navcross.png');
+  background-size:contain; background-repeat:no-repeat; background-position:center;
+  pointer-events:none;
+}
+
+/* ── MAIN ── */
+#mainContent {
+  position:relative;
+  background:#000;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+#mainContent::before, #mainContent::after {
+  content:""; position:absolute; top:0; bottom:0; width:12px;
+  background:url('https://wallpapers.com/images/thumbnail/filigree-samsung-black-9u6vx5ktxvmprgub.webp') repeat-y;
+  filter:brightness(3.4);
+  z-index:1; pointer-events:none;
+}
+#mainContent::before { left:0; }
+#mainContent::after  { right:0; }
+
+/* ── SECTION BAR ── */
+.section-bar {
+  background:#000; color:#fff;
+  font-family:'SpecialElite', Georgia, serif;
+  font-size:22px; font-weight:normal;
+  padding:8px 0 5px; display:block; text-align:center;
+  border-bottom:1px solid #e5dada; text-transform:uppercase;
+}
+
+/* ── BLACK GAP ── */
+.black-gap {
+  background-image:url('../images/scrollbar1.webp');
+  height:8px;
+  border-top:1px solid #000; border-bottom:1px solid #000;
+}
+
+/* ── INTRO BOX ── */
+.intro-box {
+  background:#000; color:#fff;
+  padding:12px 14px 14px;
+  border-bottom:2px solid #fff;
+  text-align:center;
+}
+.intro-box p {
+  font-family:'SpecialElite', Georgia, serif;
+  font-size:13px; line-height:1.72; color:#fff;
+}
+
+/* ── CATEGORY TABS ── */
+.tab-bar {
+  display:flex;
+  background:#000;
+  border-bottom:1px solid #333;
+}
+.tab-btn {
+  flex:1;
+  background:none; border:none; border-right:1px solid #333;
+  color:#fff;
+  font-family:'SpecialElite', Georgia, serif;
+  font-size:12px; padding:7px 0; cursor:pointer;
+  text-transform:uppercase; letter-spacing:1px;
+}
+.tab-btn:last-child { border-right:none; }
+.tab-btn:hover  { background:#111; }
+.tab-btn.active { color:#000; background:#fff; }
+
+/* ── TAB PANELS ── */
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ── DESCRIPTION SCROLLBOX ── */
+.cat-desc-wrap {
+  background:#0a0a0a;
+  border-bottom:1px solid #222;
+  padding:10px 20px;
+  max-height:80px;
+  overflow-y:auto;
+}
+.cat-desc-wrap::-webkit-scrollbar { width:8px; }
+.cat-desc-wrap::-webkit-scrollbar-track { background:#111; }
+.cat-desc-wrap::-webkit-scrollbar-thumb { background:#333; border:1px dashed #555; }
+.cat-desc-wrap p {
+  font-family:'SpecialElite', Georgia, serif;
+  font-size:12px; color:#888; line-height:1.7;
+}
+
+/* ── LINKS LIST ── */
+.links-list {
+  background:#000;
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+.link-item {
+  padding:8px 20px;
+  border-bottom:1px dotted #222;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.link-item:last-child { border-bottom:none; }
+.link-item:hover { background:#0d0d0d; }
+
+.link-item a {
+  color:#ccc;
+  text-decoration:none;
+  font-family:'SpecialElite', Georgia, serif;
+  font-size:12.5px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:1;
+  min-width:0;
+}
+.link-item a::before {
+  content:'>';
+  color:#555;
+  font-size:11px;
+  flex-shrink:0;
+}
+.link-item a:hover .link-name {
+  color:#000;
+  background:#fff;
+  text-decoration:underline;
+}
+.link-name {
+  flex-shrink:0;
+}
+.link-desc {
+  font-size:10.5px;
+  color:#555;
+  font-family:'SpecialElite', Georgia, serif;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* ── FOOTER ── */
+#pageFooter {
+  padding:1px 1px 10px;
+  background:#000;
+  border-top:1px solid #222;
+  font-family:'SpecialElite', Georgia, serif;
+  font-size:11.5px; color:#555; text-align:center;
+  flex-shrink:0;
+}
+#pageFooter .footer-author { color:#777; cursor:default; border-bottom:1px dotted #444; }
+#pageFooter .footer-author:hover { color:#ccc; border-bottom-style:solid; }
+
+/* ── TOOLTIP ── */
+#wa-tooltip {
+  position:fixed; z-index:99999;
+  background:#fff; border:1px solid #aaa;
+  box-shadow:2px 3px 8px rgba(0,0,0,0.30);
+  padding:8px 10px; font-size:11.5px; color:#111;
+  font-family:'SpecialElite', Georgia, serif;
+  pointer-events:none; display:none; max-width:280px; line-height:1.5;
+}
+#wa-tooltip a { color:#000; text-decoration:underline; }
+#wa-tooltip td { vertical-align:middle; }
+#wa-tooltip td:last-child { padding-left:10px; }
+
+/* ── CURSOR ── */
+#cursor-layer {
+  position:fixed; inset:0; width:100vw; height:100vh;
+  pointer-events:none; z-index:9998;
+  opacity:0; transition:opacity 1000ms linear;
+}
+#cursor-layer.active { opacity:1; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  body { justify-content:flex-start; }
+  #wrapper { width:100%; margin-left:0; }
+  #siteIcon { margin-left:0; display:block; margin:0 auto 8px; }
+  #siteLogo { width:min(100%,280px); margin:0 auto; display:block; height:auto; }
+  .cat-desc-wrap { max-height:none; }
+}
+</style>
+</head>
+<body>
+
+<div id="wa-tooltip"></div>
+<canvas id="cursor-layer" aria-hidden="true"></canvas>
+
+<div id="wrapper">
+
+  <header id="siteHeader">
+    <img id="siteIcon" src="../images/skull1.jpg" alt="">
+    <img id="siteLogo" src="../images/deathlogo.png" alt="logo">
+  </header>
+
+  <nav id="siteNav">
+    <a class="nav-item" href="../../index.html#introduction">introduction</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-item" href="../../index.html#resources">resources</a>
+    <span class="nav-sep">|</span>
+    <a class="nav-item" href="contact.html">contact</a>
+  </nav>
+
+  <main id="mainContent">
+
+    <span class="section-bar">links</span>
+    <div class="intro-box"><p>sites, tools &amp; things i keep coming back to.</p></div>
+    <div class="black-gap"></div>
+
+    <!-- CATEGORY TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchCat('interesting')">interesting</button>
+      <button class="tab-btn"        onclick="switchCat('assets')">assets</button>
+      <button class="tab-btn"        onclick="switchCat('random')">random</button>
+    </div>
+
+    <!-- ── INTERESTING ── -->
+    <div id="cat-interesting" class="tab-panel active">
+      <div class="cat-desc-wrap">
+        <p>sites, articles, rabbit holes and things i find genuinely worth reading or exploring. no particular order.</p>
+      </div>
+      <ul class="links-list">
+        <li class="link-item">
+          <a href="https://example.com" target="_blank" rel="noopener noreferrer">
+            <span class="link-name">example site</span>
+            <span class="link-desc">short description of the site goes here</span>
+          </a>
+        </li>
+        <li class="link-item">
+          <a href="https://example.com" target="_blank" rel="noopener noreferrer">
+            <span class="link-name">another site</span>
+            <span class="link-desc">another short description</span>
+          </a>
+        </li>
+        <!-- add more links here -->
+      </ul>
+    </div>
+
+    <!-- ── ASSETS ── -->
+    <div id="cat-assets" class="tab-panel">
+      <div class="cat-desc-wrap">
+        <p>resources, tools, fonts, images, sound packs and anything useful for making things. stuff i actually use.</p>
+      </div>
+      <ul class="links-list">
+        <li class="link-item">
+          <a href="https://example.com" target="_blank" rel="noopener noreferrer">
+            <span class="link-name">example resource</span>
+            <span class="link-desc">what it is and why it's useful</span>
+          </a>
+        </li>
+        <!-- add more links here -->
+      </ul>
+    </div>
+
+    <!-- ── RANDOM ── -->
+    <div id="cat-random" class="tab-panel">
+      <div class="cat-desc-wrap">
+        <p>everything else. stuff that doesn't fit anywhere, things i stumbled upon, weird corners of the web.</p>
+      </div>
+      <ul class="links-list">
+        <li class="link-item">
+          <a href="https://example.com" target="_blank" rel="noopener noreferrer">
+            <span class="link-name">example random</span>
+            <span class="link-desc">no explanation needed</span>
+          </a>
+        </li>
+        <!-- add more links here -->
+      </ul>
+    </div>
+
+    <div class="black-gap"></div>
+
+    <footer id="pageFooter">
+      2026 | Death Archive / Created by
+      <span
+        class="footer-author"
+        onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
+        onmouseout="WaTooltip.hide()">Settembre19th</span>
+    </footer>
+
+  </main>
+
+</div><!-- /#wrapper -->
+
+<script>
+/* ── TOOLTIP ── */
+window.WaTooltip = (function(){
+  var el = document.getElementById('wa-tooltip');
+  function show(anchor, html) {
+    if (!el) return;
+    el.innerHTML = html; el.style.display = 'block';
+    var r = anchor.getBoundingClientRect();
+    var tw = el.offsetWidth || 240, th = el.offsetHeight || 80;
+    var left = r.left + r.width / 2 - tw / 2;
+    var top  = r.top - th - 8;
+    if (top  < 4) top  = r.bottom + 8;
+    if (left < 4) left = 4;
+    if (left + tw > window.innerWidth - 4) left = window.innerWidth - tw - 4;
+    el.style.left = left + 'px'; el.style.top = top + 'px';
+  }
+  function hide() { if (el) el.style.display = 'none'; }
+  return { show: show, hide: hide };
+})();
+
+/* ── CATEGORY SWITCH ── */
+function switchCat(name) {
+  document.querySelectorAll('.tab-btn').forEach(function(btn, i) {
+    btn.classList.toggle('active', ['interesting','assets','random'][i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  var panel = document.getElementById('cat-' + name);
+  if (panel) panel.classList.add('active');
+}
+
+/* ── TITLE ANIMATION ── */
+(function(){
+  var T = "Links - Archive Shinigami"; var i = 0;
+  var ti = setInterval(function(){
+    document.title = T.slice(0, i); i++;
+    if (i > T.length) {
+      clearInterval(ti); document.title = T; blink();
+    }
+  }, 120);
+  function blink() {
+    setTimeout(function(){
+      var j = 0;
+      var bi = setInterval(function(){
+        document.title = (j % 2 === 0) ? "デスノート" : T; j++;
+        if (j > 5) { clearInterval(bi); document.title = T; blink(); }
+      }, 120);
+    }, 3000 + Math.random() * 800);
+  }
+})();
+
+/* ── CURSOR TRAIL ── */
+(function(){
+  var canvas = document.getElementById('cursor-layer');
+  if (!canvas || (window.matchMedia && window.matchMedia('(pointer:coarse)').matches)) return;
+  var ctx = canvas.getContext('2d', { alpha:true });
+  if (!ctx) return;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2), w = 0, h = 0;
+  var ptr = { x:innerWidth*.5, y:innerHeight*.5, px:innerWidth*.5, py:innerHeight*.5, vis:false };
+  var ghosts = [], ls = 0;
+  function resize(){ w=innerWidth; h=innerHeight; dpr=Math.min(window.devicePixelRatio||1,2); canvas.width=Math.max(1,Math.floor(w*dpr)); canvas.height=Math.max(1,Math.floor(h*dpr)); canvas.style.width=w+'px'; canvas.style.height=h+'px'; ctx.setTransform(dpr,0,0,dpr,0,0); }
+  function on(){ if(!ptr.vis){ ptr.vis=true; canvas.classList.add('active'); } }
+  function off(){ ptr.vis=false; ghosts.length=0; canvas.classList.remove('active'); ctx.clearRect(0,0,w,h); }
+  function sg(x,y,str,dx,dy,sp){ ghosts.push({x,y,dx,dy,life:1.1,ttl:.06+str*.03,size:8.1+str*9.4+sp,spread:sp}); if(ghosts.length>14) ghosts.shift(); }
+  function mv(e){
+    on(); var now=performance.now();
+    ptr.px=ptr.x; ptr.py=ptr.y; ptr.x=e.clientX; ptr.y=e.clientY;
+    var dx=ptr.x-ptr.px, dy=ptr.y-ptr.py, dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<1.5) return;
+    var dirX=dx/dist, dirY=dy/dist, str=Math.min(1,dist/18);
+    if(now-ls<6&&dist<7) return; ls=now;
+    sg(ptr.x-dirX*Math.min(4,dist*.22),ptr.y-dirY*Math.min(4,dist*.22),str,dx,dy,0);
+    if(dist>7)  sg(ptr.x-dirX*Math.min(7,dist*.38), ptr.y-dirY*Math.min(7,dist*.38), str*.92,dx,dy,.45);
+    if(dist>11) sg(ptr.x-dirX*Math.min(10,dist*.52),ptr.y-dirY*Math.min(10,dist*.52),str*.78,dx,dy,.9);
+    if(dist>16) sg(ptr.x-dirX*Math.min(13,dist*.72),ptr.y-dirY*Math.min(13,dist*.72),str*.58,dx,dy,1.35);
+  }
+  function dg(g){
+    var a=g.life*.62, sz=g.size*g.life;
+    var d=Math.sqrt(g.dx*g.dx+g.dy*g.dy)||1, dX=g.dx/d, dY=g.dy/d;
+    var tl=Math.min(24,7+d*.42+g.spread*1.8), tx=g.x-dX*tl, ty=g.y-dY*tl, sw=Math.max(2.1,sz*.42);
+    var tg=ctx.createLinearGradient(tx,ty,g.x,g.y);
+    tg.addColorStop(0,'rgba(255,0,0,0)'); tg.addColorStop(.24,'rgba(255,0,0,'+(a*.08)+')');
+    tg.addColorStop(.64,'rgba(255,0,0,'+(a*.3)+')'); tg.addColorStop(1,'rgba(255,0,0,'+(a*.96)+')');
+    ctx.strokeStyle=tg; ctx.lineWidth=sw; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(g.x,g.y); ctx.stroke();
+    var gl=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,Math.max(4.5,sz*.88));
+    gl.addColorStop(0,'rgba(255,0,0,'+(a*.92)+')'); gl.addColorStop(.28,'rgba(255,0,0,'+(a*.18)+')');
+    gl.addColorStop(.62,'rgba(255,0,0,'+(a*.06)+')'); gl.addColorStop(1,'rgba(255,0,0,0)');
+    ctx.fillStyle=gl; ctx.beginPath(); ctx.arc(g.x,g.y,Math.max(4.5,sz*.88),0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,0,0,'+(a*.9)+')'; ctx.beginPath(); ctx.arc(g.x,g.y,Math.max(1.1,sz*.14),0,Math.PI*2); ctx.fill();
+  }
+  function draw(dt){
+    ctx.clearRect(0,0,w,h); if(!ptr.vis||!ghosts.length) return;
+    for(var i=ghosts.length-1;i>=0;i--){
+      var g=ghosts[i]; g.life-=dt/g.ttl;
+      if(g.life<=0){ ghosts.splice(i,1); continue; }
+      g.x-=g.dx*.0068*g.life; g.y-=g.dy*.0068*g.life; g.dx*=.88; g.dy*=.88; dg(g);
+    }
+  }
+  var prev=performance.now();
+  function tick(){ var now=performance.now(), dt=Math.min(.032,(now-prev)/1000); prev=now; draw(dt); requestAnimationFrame(tick); }
+  resize(); tick();
+  window.addEventListener('resize',resize);
+  window.addEventListener('mousemove',mv,{passive:true});
+  window.addEventListener('mouseenter',on,{passive:true});
+  window.addEventListener('mouseleave',off,{passive:true});
+  window.addEventListener('mouseout',function(e){if(!e.relatedTarget)off();},{passive:true});
+  window.addEventListener('blur',off);
+  document.addEventListener('visibilitychange',function(){if(document.hidden)off();});
+})();
+</script>
+
+</body>
+</html>
