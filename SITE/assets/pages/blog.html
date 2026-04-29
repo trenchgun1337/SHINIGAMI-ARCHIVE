@@ -388,7 +388,7 @@ function buildCard(p,num,adminMode){
   const isSpoilerPost=!!p.spoilerPost;
 
   let badges='';
-  if(isLocked) badges+='<span class="post-badge badge-lock'+(p.locked==='custom'?'-plus':'')+'">🔒'+(p.locked==='custom'?'+':'')+'</span>';
+  if(isLocked) badges+='<span class="post-badge badge-lock'+(p.locked==='custom'?'-plus':'')+'">content locked'+(p.locked==='custom'?'+':'')+'</span>';
   if(isSpoilerPost) badges+='<span class="post-badge badge-spoiler">spoiler</span>';
 
   const header=`<div class="post-card-header">
@@ -405,7 +405,7 @@ function buildCard(p,num,adminMode){
     return `<div class="post-card" id="post-${p.id}">
       ${header}
       <div class="lock-wall">
-        <span class="lock-icon">🔒</span>
+        <span class="lock-icon" style="font-size:13px;font-family:'SpecialElite',Georgia,serif;">content locked</span>
         <p>Password protected post</p>
         <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
           <input type="password" class="lock-pw-input" placeholder="password..."
@@ -421,7 +421,7 @@ function buildCard(p,num,adminMode){
     return `<div class="post-card" id="post-${p.id}">
       ${header}
       <div class="lock-wall-admin">
-        <span style="color:#999;font-size:11px;font-family:'SpecialElite',Georgia,serif;">🔒 locked content</span>
+        <span style="color:#999;font-size:11px;font-family:'SpecialElite',Georgia,serif;">content locked</span>
         <button class="lock-load-btn" id="lockbtn-${p.id}" onclick="adminShowLocked('${p.id}')">load content</button>
         <div id="lockcontent-${p.id}"></div>
       </div>
@@ -1015,9 +1015,7 @@ get(passRef).then(snap=>{if(!snap.exists()) sha256('shlimazl').then(hash=>set(pa
 onValue(ref(db,'blog/posts'),snap=>{
   const raw=[];
   snap.forEach(c=>raw.push({id:c.key,...c.val()}));
-  // FIX: usa slice().reverse() para não modificar o array original in-place
-  // O Firebase já retorna em ordem crescente de key (mais antigo primeiro)
-  // então invertemos para mostrar o mais novo primeiro por padrão
+  console.log('[onValue] total posts recebidos do Firebase:', raw.length, raw.map(p=>p.id));
   window._allPosts=raw.slice().reverse();
   filterPosts();
   if(window._isAdmin) renderAdminPostList();
