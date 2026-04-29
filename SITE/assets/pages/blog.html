@@ -290,11 +290,6 @@ a:hover{text-decoration:underline;}
 })();
 </script>
 
-<!-- ══════════════════════════════════════════
-     MAIN SCRIPT — must come BEFORE the Firebase
-     module so all functions exist on window when
-     the module calls injectAdminUI / filterPosts
-     ══════════════════════════════════════════ -->
 <script>
 window._allPosts=[];
 window._isAdmin=false;
@@ -368,10 +363,13 @@ function detectEmbeds(text){
 
 /* ── FILTER / RENDER ── */
 function filterPosts(){
+  // FIX: guard para container null (chamado antes do DOM estar pronto)
+  const container=document.getElementById('postsContainer');
+  if(!container) return;
   const sort=document.getElementById('sortSelect')?.value||'newest';
   let posts=[...window._allPosts];
   if(sort==='oldest') posts.reverse();
-  renderPosts(posts,document.getElementById('postsContainer'),false);
+  renderPosts(posts,container,false);
 }
 window.filterPosts=filterPosts;
 
@@ -432,9 +430,31 @@ function buildCard(p,num,adminMode){
   }
 
   const raw=p.contentRaw||'';
-  const parsed=parse4chan(raw);
-  const htmlContent=raw?parsed.html:(p.contentHtml||'');
 
+  // FIX: suporte a posts legados que têm contentHtml com tags <div><br>
+  // em vez de contentRaw (formato antigo do Firebase)
+  let htmlContent;
+  if(raw){
+    htmlContent=parse4chan(raw).html;
+  } else if(p.contentHtml){
+    // Converte HTML legado para texto plano e re-parseia com parse4chan
+    const stripped=p.contentHtml
+      .replace(/<div><br\s*\/?><\/div>/gi,'\n')
+      .replace(/<br\s*\/?>/gi,'\n')
+      .replace(/<\/div>/gi,'\n')
+      .replace(/<div>/gi,'')
+      .replace(/&nbsp;/gi,' ')
+      .replace(/&amp;/gi,'&')
+      .replace(/&lt;/gi,'<')
+      .replace(/&gt;/gi,'>')
+      .trim();
+    htmlContent=parse4chan(stripped).html;
+  } else {
+    htmlContent='';
+  }
+
+  // embeds: só processa a partir de contentRaw (legado sem contentRaw não tem embeds)
+  const parsed=raw?parse4chan(raw):{html:'',embedUrls:[]};
   const embedsFromUrl=parsed.embedUrls.flatMap(url=>{
     const e=detectEmbeds(url);
     return e.length?e:[{src:null,url,h:95}];
@@ -666,9 +686,7 @@ function injectAdminUI(){
   </div>
 </div>`;
 
-  
-setupGreentextAutocomplete(document.getElementById('postTextarea'));
-  // Re-render posts now that the container exists
+  setupGreentextAutocomplete(document.getElementById('postTextarea'));
   filterPosts();
 }
 window.injectAdminUI=injectAdminUI;
@@ -811,6 +829,14 @@ window.removeEditorImg=removeEditorImg;
 async function submitPost(){
   if(!window._isAdmin) return;
 
+  // FIX: guard — Firebase module pode não ter carregado ainda
+  if(typeof window._push !== 'function' || typeof window._ref !== 'function' || !window._db){
+    const status=document.getElementById('edStatus');
+    if(status) status.textContent='aguarde, Firebase ainda carregando…';
+    console.warn('[submitPost] Firebase não está pronto ainda.');
+    return;
+  }
+
   const btn=document.getElementById('submitBtn');
   const status=document.getElementById('edStatus');
   const raw=(document.getElementById('postTextarea')?.value||'').trim();
@@ -863,8 +889,11 @@ async function submitPost(){
     if(status){status.textContent='posted!';setTimeout(()=>{status.textContent='';},3000);}
 
   }catch(e){
-    console.error('[submitPost] error:',e);
-    if(status) status.textContent='error: '+e.message;
+    // FIX: erro fica visível e não desaparece automaticamente
+    console.error('[submitPost] erro completo:',e);
+    if(status) status.textContent='erro ao postar: '+e.message;
+    btn.disabled=false;
+    return;
   }
 
   btn.disabled=false;
@@ -945,7 +974,7 @@ window.closeLb=closeLb;
 })();
 </script>
 
-<!-- ── FIREBASE MODULE — comes AFTER main script ── -->
+<!-- ── FIREBASE MODULE ── -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, remove, onValue, get, set }
@@ -967,6 +996,8 @@ async function sha256(str){
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
+
+// Expõe funções Firebase para o script principal
 window._db=db;
 window._ref=ref;
 window._push=push;
@@ -976,11 +1007,11 @@ window._set=set;
 window._sha256=sha256;
 window._onValue=onValue;
 
-// Init admin pass if not set
+// Init admin pass se não existir
 const passRef=ref(db,'admin/passHash');
 get(passRef).then(snap=>{if(!snap.exists()) sha256('shlimazl').then(hash=>set(passRef,hash));});
 
-// Live posts listener
+// Listener de posts em tempo real
 onValue(ref(db,'blog/posts'),snap=>{
   const raw=[];
   snap.forEach(c=>raw.push({id:c.key,...c.val()}));
@@ -989,7 +1020,7 @@ onValue(ref(db,'blog/posts'),snap=>{
   if(window._isAdmin) renderAdminPostList();
 });
 
-// Inject admin panel if ?admin in URL
+// Injeta painel admin se ?admin na URL
 if(new URLSearchParams(window.location.search).has('admin')){
   window._isAdminUrl=true;
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',injectAdminUI);
