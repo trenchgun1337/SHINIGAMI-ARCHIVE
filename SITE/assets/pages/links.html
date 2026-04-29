@@ -177,17 +177,18 @@ a:hover { text-decoration:underline; }
 .link-item:hover { background:#0d0d0d; }
 
 .link-item a {
-  color:#ccc;
+  color:#ffffff;
   text-decoration:none;
   font-family:'SpecialElite', Georgia, serif;
   font-size:12.5px;
   display:flex;
   align-items:center;
   gap:8px;
+  margin-left: 10px;
 }
 .link-item a::before {
   content:'>';
-  color:#555;
+  color:#ffffff;
   font-size:11px;
   flex-shrink:0;
 }
@@ -201,16 +202,18 @@ a:hover { text-decoration:underline; }
 /* ── TEXT DROPDOWNS ── */
 .link-group {
   background:#000;
-  border-bottom:1px dotted #333;
+  border-bottom:1px dotted #ffffff;
+  margin-left: 10px;
 }
-.link-group[open] { border-bottom:1px solid #333; }
+.link-group[open] { border-bottom:1px solid #ffffff; }
 
 .link-group > summary {
   list-style:none;
   -webkit-appearance:none;
   font-family:'SpecialElite', Georgia, serif;
   font-size:13px;
-  color:#888;
+  background-color: #000;
+  color:#ffffff;
   cursor:pointer;
   padding:9px 20px;
   text-transform:uppercase;
@@ -222,14 +225,19 @@ a:hover { text-decoration:underline; }
 }
 .link-group > summary::-webkit-details-marker { display:none; }
 .link-group > summary::before {
-  content:'[+]';
+  content:'+';
   font-size:10px;
-  color:#555;
+  color:#ffffff;
   transition:none;
+  
 }
-.link-group[open] > summary::before { content:'[-]'; }
-.link-group > summary:hover { color:#ccc; }
+.link-group[open] > summary::before { content:'-'; }
+.link-group > summary:hover { background-color:white ; color:#000000; }
 
+.link-group > summary:hover::before {
+  color:#000000;
+  text-shadow:0 0 2px #fff;
+} 
 /* ── FOOTER ── */
 #pageFooter {
   padding:1px 1px 10px;
@@ -295,12 +303,16 @@ a:hover { text-decoration:underline; }
   <main id="mainContent">
 
     <span class="section-bar">links</span>
-    <div class="intro-box"><p>sites, tools &amp; things i keep coming back to.</p></div>
+    <div class="intro-box"><p>sites, forums, imageboards, rabbit holes, art, creepy, weird, experimental, useful, resources, bookmarkers and collections </p></div>
     <div class="black-gap"></div>
 
     <!-- ── WEBSITES ── -->
     <details class="link-group">
       <summary>websites</summary>
+    <details class="link-group">
+      <summary>weird/interesting</summary>
+      <ul class="links-list">
+
       <ul class="links-list">
         <li class="link-item"><a href="https://www.sbnation.com/a/17776-football" target="_blank" rel="noopener noreferrer"><span class="link-name">17776</span></a></li>
         <li class="link-item"><a href="https://superbad.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">superbad</span></a></li>
@@ -329,40 +341,9 @@ a:hover { text-decoration:underline; }
         <li class="link-item"><a href="https://www.japanforum.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">japan forum</span></a></li>
         <li class="link-item"><a href="https://xboxfan.ru/" target="_blank" rel="noopener noreferrer"><span class="link-name">xbox fan</span></a></li>
         <li class="link-item"><a href="https://starbust-ent.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">starbust ent</span></a></li>
-      </ul>
-    </details>
+        
 
-    <!-- ── ASSETS ── -->
-    <details class="link-group">
-      <summary>assets</summary>
-      <ul class="links-list">
-        <li class="link-item"><a href="https://templaterr.neocities.org/" target="_blank" rel="noopener noreferrer"><span class="link-name">templaterr</span></a></li>
-        <li class="link-item"><a href="https://eggramen.neocities.org/code/css_testpages" target="_blank" rel="noopener noreferrer"><span class="link-name">eggramen css testpages</span></a></li>
-        <li class="link-item"><a href="https://templaterr.neocities.org/felinium/" target="_blank" rel="noopener noreferrer"><span class="link-name">felinium</span></a></li>
-        <li class="link-item"><a href="https://www.shitpostbot.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">shitpostbot</span></a></li>
-        <li class="link-item"><a href="https://patorjk.com/software/taag/" target="_blank" rel="noopener noreferrer"><span class="link-name">ascii art generator</span></a></li>
-        <li class="link-item"><a href="https://danbooru.donmai.us/" target="_blank" rel="noopener noreferrer"><span class="link-name">danbooru</span></a></li>
-        <li class="link-item"><a href="https://www.pixiv.net/en/" target="_blank" rel="noopener noreferrer"><span class="link-name">pixiv</span></a></li>
-        <li class="link-item"><a href="https://spacehey.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">spacehey</span></a></li>
-        <li class="link-item"><a href="https://safebooru.org/" target="_blank" rel="noopener noreferrer"><span class="link-name">safebooru</span></a></li>
-        <li class="link-item"><a href="https://konachan.net/" target="_blank" rel="noopener noreferrer"><span class="link-name">konachan</span></a></li>
-        <li class="link-item"><a href="https://yumeboo.ru/" target="_blank" rel="noopener noreferrer"><span class="link-name">yumeboo</span></a></li>
-        <li class="link-item"><a href="https://magical-girls.carrd.co/" target="_blank" rel="noopener noreferrer"><span class="link-name">magical girls carrd</span></a></li>
-        <li class="link-item"><a href="https://onlywonder.net/themes/" target="_blank" rel="noopener noreferrer"><span class="link-name">onlywonder themes</span></a></li>
-        <li class="link-item"><a href="https://zonelets.net/posts/2020-11-08-Quick-Start-Guide" target="_blank" rel="noopener noreferrer"><span class="link-name">zonelets</span></a></li>
-        <li class="link-item"><a href="https://layouts.angelnetcast.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">angelnetcast layouts</span></a></li>
-        <li class="link-item"><a href="https://nomnomnami.com/templates/" target="_blank" rel="noopener noreferrer"><span class="link-name">nomnomnami templates</span></a></li>
-        <li class="link-item"><a href="https://www.icoconverter.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">ico converter</span></a></li>
-        <li class="link-item"><a href="https://emojidb.org/symbols-emojis" target="_blank" rel="noopener noreferrer"><span class="link-name">emoji db</span></a></li>
-        <li class="link-item"><a href="https://temp-mail.org/pt" target="_blank" rel="noopener noreferrer"><span class="link-name">temp mail</span></a></li>
-        <li class="link-item"><a href="https://dokode.moe/blogs/howto-winamp" target="_blank" rel="noopener noreferrer"><span class="link-name">how to winamp</span></a></li>
-        <li class="link-item"><a href="https://y2meta.is/pt91/youtube-to-mp3/" target="_blank" rel="noopener noreferrer"><span class="link-name">youtube to mp3</span></a></li>
-        <li class="link-item"><a href="https://www.erase.bg" target="_blank" rel="noopener noreferrer"><span class="link-name">erase bg</span></a></li>
-        <li class="link-item"><a href="https://soybooru.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">soybooru</span></a></li>
-      </ul>
-    </details>
-
-    <!-- ── CHANS ── -->
+          <!-- ── CHANS ── -->
     <details class="link-group">
       <summary>chans</summary>
       <ul class="links-list">
@@ -488,15 +469,42 @@ a:hover { text-decoration:underline; }
       </ul>
     </details>
 
+     
+      </ul>
+    </details>
+
+    <!-- ── ASSETS ── -->
+    <details class="link-group">
+      <summary>assets</summary>
+      <ul class="links-list">
+        <li class="link-item"><a href="https://templaterr.neocities.org/" target="_blank" rel="noopener noreferrer"><span class="link-name">templaterr</span></a></li>
+        <li class="link-item"><a href="https://eggramen.neocities.org/code/css_testpages" target="_blank" rel="noopener noreferrer"><span class="link-name">eggramen css testpages</span></a></li>
+        <li class="link-item"><a href="https://templaterr.neocities.org/felinium/" target="_blank" rel="noopener noreferrer"><span class="link-name">felinium</span></a></li>
+        <li class="link-item"><a href="https://www.shitpostbot.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">shitpostbot</span></a></li>
+        <li class="link-item"><a href="https://patorjk.com/software/taag/" target="_blank" rel="noopener noreferrer"><span class="link-name">ascii art generator</span></a></li>
+        <li class="link-item"><a href="https://danbooru.donmai.us/" target="_blank" rel="noopener noreferrer"><span class="link-name">danbooru</span></a></li>
+        <li class="link-item"><a href="https://www.pixiv.net/en/" target="_blank" rel="noopener noreferrer"><span class="link-name">pixiv</span></a></li>
+        <li class="link-item"><a href="https://spacehey.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">spacehey</span></a></li>
+        <li class="link-item"><a href="https://safebooru.org/" target="_blank" rel="noopener noreferrer"><span class="link-name">safebooru</span></a></li>
+        <li class="link-item"><a href="https://konachan.net/" target="_blank" rel="noopener noreferrer"><span class="link-name">konachan</span></a></li>
+        <li class="link-item"><a href="https://yumeboo.ru/" target="_blank" rel="noopener noreferrer"><span class="link-name">yumeboo</span></a></li>
+        <li class="link-item"><a href="https://magical-girls.carrd.co/" target="_blank" rel="noopener noreferrer"><span class="link-name">magical girls carrd</span></a></li>
+        <li class="link-item"><a href="https://onlywonder.net/themes/" target="_blank" rel="noopener noreferrer"><span class="link-name">onlywonder themes</span></a></li>
+        <li class="link-item"><a href="https://zonelets.net/posts/2020-11-08-Quick-Start-Guide" target="_blank" rel="noopener noreferrer"><span class="link-name">zonelets</span></a></li>
+        <li class="link-item"><a href="https://layouts.angelnetcast.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">angelnetcast layouts</span></a></li>
+        <li class="link-item"><a href="https://nomnomnami.com/templates/" target="_blank" rel="noopener noreferrer"><span class="link-name">nomnomnami templates</span></a></li>
+        <li class="link-item"><a href="https://www.icoconverter.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">ico converter</span></a></li>
+        <li class="link-item"><a href="https://emojidb.org/symbols-emojis" target="_blank" rel="noopener noreferrer"><span class="link-name">emoji db</span></a></li>
+        <li class="link-item"><a href="https://temp-mail.org/pt" target="_blank" rel="noopener noreferrer"><span class="link-name">temp mail</span></a></li>
+        <li class="link-item"><a href="https://dokode.moe/blogs/howto-winamp" target="_blank" rel="noopener noreferrer"><span class="link-name">how to winamp</span></a></li>
+        <li class="link-item"><a href="https://y2meta.is/pt91/youtube-to-mp3/" target="_blank" rel="noopener noreferrer"><span class="link-name">youtube to mp3</span></a></li>
+        <li class="link-item"><a href="https://www.erase.bg" target="_blank" rel="noopener noreferrer"><span class="link-name">erase bg</span></a></li>
+      </ul>
+    </details>
+
+  
     <div class="black-gap"></div>
 
-    <footer id="pageFooter">
-      2026 | Death Archive / Created by
-      <span
-        class="footer-author"
-        onmouseover="WaTooltip.show(this,'<table><tr><td><img src=\'../images/tooltipimg.png\' alt=\'pfp\' width=\'72\' height=\'72\'></td><td>If you have any questions, <br>use this email to contact:<br><br><a href=\'mailto:trenchgun1337@gmail.com\'>trenchgun1337@gmail.com</a></td></tr></table>')"
-        onmouseout="WaTooltip.hide()">Settembre19th</span>
-    </footer>
 
   </main>
 
