@@ -928,26 +928,36 @@ window.removeEditorImg=removeEditorImg;
 /* ── SUBMIT POST ── */
 async function submitPost(){
   if(!window._isAdmin) return;
+
   const btn=document.getElementById('submitBtn');
   const status=document.getElementById('edStatus');
   const raw=(document.getElementById('postTextarea')?.value||'').trim();
   const lockType=document.getElementById('lockTypeSelect')?.value||'none';
   const spoilerPost=document.getElementById('edSpoilerPost')?.checked||false;
 
-  if(!raw&&!_imgUrl){if(status)status.textContent='escreva algo primeiro.';return;}
+  if(!raw&&!_imgUrl){if(status)status.textContent='write something first.';return;}
 
   let customLockPass='';
   if(lockType==='custom'){
     customLockPass=(document.getElementById('lockCustomPwInput')?.value||'').trim();
-    if(!customLockPass){if(status)status.textContent='informe a senha custom para lock+.';return;}
+    if(!customLockPass){if(status)status.textContent='enter a custom password for lock+.';return;}
+  }
+
+  // Debug: confirm Firebase functions are available
+  console.log('[submitPost] _push:', typeof window._push, '| _ref:', typeof window._ref, '| _set:', typeof window._set);
+
+  if(!window._push||!window._ref||!window._set){
+    if(status) status.textContent='error: Firebase not ready. Refresh and try again.';
+    console.error('[submitPost] Firebase functions missing on window');
+    return;
   }
 
   btn.disabled=true;
-  if(status) status.textContent='postando…';
+  if(status) status.textContent='posting…';
 
   try{
     const postData={
-      imageSrc: _imgUrl||null,
+      imageSrc:  _imgUrl||null,
       imageInfo: _imgInfo||null,
       spoilerImg: document.getElementById('edSpoilerImg')?.checked||false,
       spoilerPost: spoilerPost,
@@ -955,20 +965,24 @@ async function submitPost(){
     };
 
     if(lockType==='none'){
-  postData.contentRaw=raw;
-} else if(lockType==='admin'){
-  postData.locked='admin';
-  postData.contentRaw=''; // adiciona isso
-} else if(lockType==='custom'){
-  postData.locked='custom';
-  postData.lockHash=await window._sha256(customLockPass);
-  postData.contentRaw=''; // adiciona isso
-}
-    const newRef=await window._push(window._ref(window._db,'blog/posts'),postData);
+      postData.contentRaw=raw;
+    } else if(lockType==='admin'){
+      postData.locked='admin';
+      postData.contentRaw='';
+    } else if(lockType==='custom'){
+      postData.locked='custom';
+      postData.lockHash=await window._sha256(customLockPass);
+      postData.contentRaw='';
+    }
 
-    // Store locked content separately
+    console.log('[submitPost] Writing to blog/posts:', postData);
+    const newRef=await window._push(window._ref(window._db,'blog/posts'),postData);
+    console.log('[submitPost] Post created with key:', newRef.key);
+
     if(lockType!=='none'){
+      console.log('[submitPost] Writing to blog/lockedContent/'+newRef.key);
       await window._set(window._ref(window._db,'blog/lockedContent/'+newRef.key),{contentRaw:raw});
+      console.log('[submitPost] Locked content saved.');
     }
 
     // Reset form
@@ -978,8 +992,13 @@ async function submitPost(){
     const sp=document.getElementById('edSpoilerPost'); if(sp) sp.checked=false;
     const ls=document.getElementById('lockTypeSelect'); if(ls){ls.value='none';onLockTypeChange();}
     const lp=document.getElementById('lockCustomPwInput'); if(lp) lp.value='';
-    if(status){status.textContent='postado!';setTimeout(()=>{status.textContent='';},3000);}
-  }catch(e){if(status)status.textContent='erro: '+e.message;console.error(e);}
+    if(status){status.textContent='posted!';setTimeout(()=>{status.textContent='';},3000);}
+
+  }catch(e){
+    console.error('[submitPost] ERROR:', e);
+    if(status) status.textContent='error: '+e.message;
+  }
+
   btn.disabled=false;
 }
 window.submitPost=submitPost;
