@@ -162,7 +162,7 @@ a:hover{text-decoration:underline;}
 /* SYNTAX DROPDOWN */
 .syntax-row{background:#f0eeec;border-top:1px solid #ddd;padding:4px 8px;display:flex;align-items:center;gap:6px;font-size:10px;color:#888;font-family:'SpecialElite',sans-serif;}
 .syntax-help-wrap{position:relative;display:inline-block;}
-#syntaxToggleBtn{background:none;color:#777;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:1px 6px;cursor:pointer;letter-spacing:.5px;}
+#syntaxToggleBtn{background:none;border:1px dashed #bbb;color:#777;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:1px 6px;cursor:pointer;letter-spacing:.5px;}
 #syntaxToggleBtn:hover{border-color:#555;color:#333;}
 #syntaxPanel{display:none;position:absolute;bottom:calc(100% + 4px);left:0;z-index:200;background:#fff;border:1px solid #ccc;box-shadow:2px 3px 10px rgba(0,0,0,.18);padding:10px 12px;min-width:280px;font-family:'Courier New',monospace;font-size:11px;color:#111;}
 #syntaxPanel.open{display:block;}
@@ -498,7 +498,7 @@ function buildCard(p,num,adminMode){
 
   // Badge labels
   let badges='';
-  if(isLocked) badges+='<span class="post-badge badge-lock'+(p.locked==='custom'?'-plus':'')+'">'+(p.locked==='custom'?'+':'')+'</span>';
+  if(isLocked) badges+='<span class="post-badge badge-lock'+(p.locked==='custom'?'-plus':'')+'">🔒'+(p.locked==='custom'?'+':'')+'</span>';
   if(isSpoilerPost) badges+='<span class="post-badge badge-spoiler">spoiler</span>';
 
   const header=`<div class="post-card-header">
@@ -516,12 +516,12 @@ function buildCard(p,num,adminMode){
     return `<div class="post-card" id="post-${p.id}">
       ${header}
       <div class="lock-wall">
-        <span class="lock-icon"></span>
-        <p>Post protected by password</p>
+        <span class="lock-icon">🔒</span>
+        <p>Post protegido por senha</p>
         <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
-          <input type="password" class="lock-pw-input" placeholder="password..." autocomplete="current-password"
+          <input type="password" class="lock-pw-input" placeholder="senha..." autocomplete="current-password"
             onkeydown="if(event.key==='Enter')unlockPost('${p.id}','${p.locked}','${p.lockHash||''}')">
-          <button class="lock-btn" onclick="unlockPost('${p.id}','${p.locked}','${p.lockHash||''}')">Unlock</button>
+          <button class="lock-btn" onclick="unlockPost('${p.id}','${p.locked}','${p.lockHash||''}')">Desbloquear</button>
         </div>
         <span class="lock-err" id="lockerr-${p.id}"></span>
       </div>
@@ -533,8 +533,8 @@ function buildCard(p,num,adminMode){
     return `<div class="post-card" id="post-${p.id}">
       ${header}
       <div class="lock-wall-admin">
-        <span style="color:#999;font-size:11px;font-family:'SpecialElite',Georgia,serif;"> content locked</span>
-        <button class="lock-load-btn" id="lockbtn-${p.id}" onclick="adminShowLocked('${p.id}')">load content</button>
+        <span style="color:#999;font-size:11px;font-family:'SpecialElite',Georgia,serif;">🔒 conteúdo bloqueado</span>
+        <button class="lock-load-btn" id="lockbtn-${p.id}" onclick="adminShowLocked('${p.id}')">carregar conteúdo</button>
         <div id="lockcontent-${p.id}"></div>
       </div>
       ${delHTML}
@@ -570,9 +570,9 @@ function buildCard(p,num,adminMode){
 
   let bodyHTML;
   if(isSpoilerPost){
-    bodyHTML=`<div class="post-body spoiler-post-body" title="Click to reveal">
+    bodyHTML=`<div class="post-body spoiler-post-body" title="Clique para revelar">
       <div class="post-blur-inner">${innerBody}</div>
-      <div class="spoiler-post-overlay"><span>reveal</span></div>
+      <div class="spoiler-post-overlay"><span>clique para revelar</span></div>
     </div>`;
   } else {
     bodyHTML=`<div class="post-body">${innerBody}</div>`;
@@ -590,9 +590,9 @@ async function unlockPost(id,lockType,lockHash){
   const errEl=document.getElementById('lockerr-'+id);
   const card=document.getElementById('post-'+id);
   const pw=card?.querySelector('.lock-pw-input')?.value||'';
-  if(!pw){if(errEl)errEl.textContent='type the password.';return;}
+  if(!pw){if(errEl)errEl.textContent='informe a senha.';return;}
 
-  if(errEl) errEl.textContent='verifying…';
+  if(errEl) errEl.textContent='verificando…';
 
   try{
     const inputHash=await window._sha256(pw);
@@ -602,12 +602,12 @@ async function unlockPost(id,lockType,lockHash){
       expectedHash=snap.val();
     }
     if(inputHash!==expectedHash){
-      if(errEl) errEl.textContent='incorrect password.';
+      if(errEl) errEl.textContent='senha incorreta.';
       return;
     }
     // Fetch locked content
     const snap=await window._get(window._ref(window._db,'blog/lockedContent/'+id));
-    if(!snap.exists()){if(errEl)errEl.textContent='content not found.';return;}
+    if(!snap.exists()){if(errEl)errEl.textContent='conteúdo não encontrado.';return;}
     const data=snap.val();
     // Find the post object
     const p=window._allPosts.find(x=>x.id===id)||{};
@@ -620,7 +620,7 @@ async function unlockPost(id,lockType,lockHash){
     const tmp=document.createElement('div');
     tmp.innerHTML=newCard;
     card.replaceWith(tmp.firstChild);
-  }catch(e){if(errEl)errEl.textContent='error: '+e.message;}
+  }catch(e){if(errEl)errEl.textContent='erro: '+e.message;}
 }
 window.unlockPost=unlockPost;
 
@@ -631,11 +631,11 @@ async function adminShowLocked(id){
   if(btn) btn.style.display='none';
   try{
     const snap=await window._get(window._ref(window._db,'blog/lockedContent/'+id));
-    if(!snap.exists()){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">content not found.</span>';return;}
+    if(!snap.exists()){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">conteúdo não encontrado.</span>';return;}
     const data=snap.val();
     const {html}=parse4chan(data.contentRaw||'');
     if(content) content.innerHTML='<div class="post-content" style="margin-top:8px;color:#111;">'+html+'</div>';
-  }catch(e){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">error: '+e.message+'</span>';}
+  }catch(e){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">erro: '+e.message+'</span>';}
 }
 window.adminShowLocked=adminShowLocked;
 
@@ -657,7 +657,7 @@ async function deleteSelectedPost(){
   if(!window._isAdmin) return;
   const sel=document.getElementById('adminPostSelect');
   const id=sel?.value;
-  if(!id){alert('select a post.');return;}
+  if(!id){alert('selecione um post.');return;}
   if(!confirm('delete this post?')) return;
   try{
     await window._remove(window._ref(window._db,'blog/posts/'+id));
@@ -676,8 +676,8 @@ function renderAdminPostList(){
   sel.innerHTML='<option value="">— selecione um post —</option>'+
     posts.map(p=>{
       const preview=(p.contentRaw||'').slice(0,60).replace(/\n/g,' ')||'[sem texto]';
-      const lockMark=p.locked?' ':'';
-      const spoilerMark=p.spoilerPost?'reveal':'';
+      const lockMark=p.locked?'🔒 ':'';
+      const spoilerMark=p.spoilerPost?'👁 ':'';
       return `<option value="${p.id}">${lockMark}${spoilerMark}[${fmtDate(p.ts)}] ${preview}</option>`;
     }).join('');
 }
@@ -718,22 +718,23 @@ function injectAdminUI(){
             <textarea id="postTextarea" placeholder="write your post…&#10;&#10;&gt;greentext  *bold*  _italic_  -strike-  ^script^&#10;|spoiler|  \`code\`  /url  //url+embed"></textarea>
             <div class="syntax-row">
               <div class="syntax-help-wrap">
-                <button id="syntaxToggleBtn" onclick="toggleSyntaxPanel()">[?]</button>
+                <button id="syntaxToggleBtn" onclick="toggleSyntaxPanel()">[?] syntax</button>
                 <div id="syntaxPanel">
                   <table>
                     <tr><td>*text*</td><td><strong>negrito</strong></td></tr>
                     <tr><td>_text_</td><td><em>itálico</em></td></tr>
                     <tr><td>-text-</td><td><s>riscado</s></td></tr>
-                    <tr><td>^text^</td><td><span style="font-family:Georgia,serif;font-style:italic;">script/cursive</span></td></tr>
+                    <tr><td>^text^</td><td><span style="font-family:Georgia,serif;font-style:italic;">script/cursivo</span></td></tr>
                     <tr><td>\`text\`</td><td><code style="background:#eee;padding:0 3px;">monospace</code></td></tr>
                     <tr><td>|text|</td><td><span style="background:#111;color:#fff;padding:0 3px;">spoiler</span></td></tr>
-                    <tr><td class="sp-red">&gt; line</td><td class="sp-red">greentext (red)</td></tr>
-                    <tr><td class="sp-red">/https://…</td><td><span class="sp-red">link red</span></td></tr>
+                    <tr><td class="sp-red">&gt; linha</td><td class="sp-red">greentext (vermelho)</td></tr>
+                    <tr><td class="sp-red">/https://…</td><td><span class="sp-red">link vermelho</span></td></tr>
                     <tr><td class="sp-red">//https://…</td><td><span class="sp-red">link + embed</span></td></tr>
                   </table>
                 </div>
               </div>
               <span style="color:#bbb;">·</span>
+              <span style="color:#aaa;font-size:10px;">Enter após &gt; continua greentext</span>
             </div>
           </td>
         </tr>
@@ -741,9 +742,9 @@ function injectAdminUI(){
           <td class="chan-label" style="padding-top:8px;">File</td>
           <td class="chan-field">
             <div class="ed-footer">
-              <button class="ed-file-btn" onclick="document.getElementById('edFileInput').click()">Choose</button>
-              <span class="ed-fname" id="edFileName">none</span>
-              <button class="ed-file-btn" id="edRemoveImg" style="display:none;color:#c00;border-color:#c00;" onclick="removeEditorImg()">remove</button>
+              <button class="ed-file-btn" onclick="document.getElementById('edFileInput').click()">Escolher</button>
+              <span class="ed-fname" id="edFileName">nenhum</span>
+              <button class="ed-file-btn" id="edRemoveImg" style="display:none;color:#c00;border-color:#c00;" onclick="removeEditorImg()">remover</button>
               <label class="ed-check"><input type="checkbox" id="edSpoilerImg"> spoiler img</label>
               <input type="file" id="edFileInput" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleFileSelect(event)" style="display:none;">
             </div>
@@ -751,20 +752,20 @@ function injectAdminUI(){
           </td>
         </tr>
         <tr>
-          <td class="chan-label" style="padding-top:8px;">Options</td>
+          <td class="chan-label" style="padding-top:8px;">Opções</td>
           <td class="chan-field">
             <div class="lock-options-row">
               <label class="ed-check"><input type="checkbox" id="edSpoilerPost"> spoiler post</label>
               <span style="color:#ccc;margin:0 4px;">|</span>
               <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">lock:</span>
               <select class="lock-type-select" id="lockTypeSelect" onchange="onLockTypeChange()">
-                <option value="none">none</option>
-                <option value="admin"> lock (admin password)</option>
-                <option value="custom"> lock+ (custom password)</option>
+                <option value="none">nenhum</option>
+                <option value="admin">🔒 lock (senha admin)</option>
+                <option value="custom">🔒+ lock+ (senha custom)</option>
               </select>
               <div id="lockCustomPwWrap">
-                <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">password:</span>
-                <input type="password" id="lockCustomPwInput" placeholder="custom password" autocomplete="new-password">
+                <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">senha:</span>
+                <input type="password" id="lockCustomPwInput" placeholder="senha custom" autocomplete="new-password">
               </div>
             </div>
           </td>
@@ -779,7 +780,7 @@ function injectAdminUI(){
     <hr class="admin-sep">
     <span class="admin-section-bar">delete post</span>
     <div class="admin-del-row">
-      <select id="adminPostSelect"><option value="">— loading posts… —</option></select>
+      <select id="adminPostSelect"><option value="">— carregando posts… —</option></select>
       <button class="admin-del-btn" onclick="deleteSelectedPost()">delete</button>
     </div>
   </div>
@@ -854,8 +855,8 @@ function setupGreentextAutocomplete(ta){
 async function tryLogin(){
   const input=document.getElementById('pwInput').value;
   const errEl=document.getElementById('loginErr');
-  if(!input){errEl.textContent='type the password.';return;}
-  errEl.textContent='verifying…';
+  if(!input){errEl.textContent='informe a senha.';return;}
+  errEl.textContent='verificando…';
   try{
     const hash=await window._sha256(input);
     const snap=await window._get(window._ref(window._db,'admin/passHash'));
@@ -867,9 +868,9 @@ async function tryLogin(){
       renderAdminPostList();
       filterPosts(); // re-render with delete buttons
     } else {
-      errEl.textContent='incorrect password.';
+      errEl.textContent='senha incorreta.';
     }
-  }catch(e){errEl.textContent='error: '+e.message;}
+  }catch(e){errEl.textContent='erro: '+e.message;}
 }
 function logout(){
   window._isAdmin=false;
@@ -884,12 +885,12 @@ window.tryLogin=tryLogin; window.logout=logout;
 async function handleFileSelect(event){
   const file=event.target.files[0]; event.target.value='';
   if(!file) return;
-  if(file.size>600*1024){alert('maximum 600 KB');return;}
+  if(file.size>600*1024){alert('máximo 600 KB');return;}
   const statusEl=document.getElementById('edStatus');
   const fnameEl=document.getElementById('edFileName');
   const rmBtn=document.getElementById('edRemoveImg');
   const preview=document.getElementById('edImgPreview');
-  if(statusEl) statusEl.textContent='sending…';
+  if(statusEl) statusEl.textContent='enviando…';
   const tmpUrl=URL.createObjectURL(file);
   const tmpImg=new Image(); tmpImg.src=tmpUrl;
   await new Promise(res=>{tmpImg.onload=tmpImg.onerror=res;});
@@ -900,16 +901,16 @@ async function handleFileSelect(event){
     const fd=new FormData(); fd.append('file',file); fd.append('upload_preset','unsigned_upload');
     const res=await fetch('https://api.cloudinary.com/v1_1/dagsxkazw/image/upload',{method:'POST',body:fd});
     const data=await res.json();
-    if(!data.secure_url) throw new Error('upload failed');
+    if(!data.secure_url) throw new Error('upload falhou');
     _imgUrl=data.secure_url; _imgInfo={name:file.name,sizeKB,w,h};
     if(fnameEl) fnameEl.textContent=file.name;
     if(rmBtn) rmBtn.style.display='inline-block';
-    if(statusEl) statusEl.textContent='image ready.';
+    if(statusEl) statusEl.textContent='imagem pronta.';
     if(preview){
       preview.style.display='block';
       preview.innerHTML=`<img src="${data.secure_url}" alt=""><span class="ed-img-info">File: ${file.name} (${sizeKB} KB, ${w}×${h})</span>`;
     }
-  }catch(err){if(statusEl) statusEl.textContent='error uploading: '+err.message; console.error(err);}
+  }catch(err){if(statusEl) statusEl.textContent='erro no upload: '+err.message; console.error(err);}
 }
 window.handleFileSelect=handleFileSelect;
 
@@ -918,7 +919,7 @@ function removeEditorImg(){
   const fn=document.getElementById('edFileName');
   const rb=document.getElementById('edRemoveImg');
   const pv=document.getElementById('edImgPreview');
-  if(fn) fn.textContent='none';
+  if(fn) fn.textContent='nenhum';
   if(rb) rb.style.display='none';
   if(pv){pv.style.display='none';pv.innerHTML='';}
 }
@@ -933,16 +934,16 @@ async function submitPost(){
   const lockType=document.getElementById('lockTypeSelect')?.value||'none';
   const spoilerPost=document.getElementById('edSpoilerPost')?.checked||false;
 
-  if(!raw&&!_imgUrl){if(status)status.textContent='write something first.';return;}
+  if(!raw&&!_imgUrl){if(status)status.textContent='escreva algo primeiro.';return;}
 
   let customLockPass='';
   if(lockType==='custom'){
     customLockPass=(document.getElementById('lockCustomPwInput')?.value||'').trim();
-    if(!customLockPass){if(status)status.textContent='enter the custom password for lock+.';return;}
+    if(!customLockPass){if(status)status.textContent='informe a senha custom para lock+.';return;}
   }
 
   btn.disabled=true;
-  if(status) status.textContent='posting…';
+  if(status) status.textContent='postando…';
 
   try{
     const postData={
@@ -977,8 +978,8 @@ async function submitPost(){
     const sp=document.getElementById('edSpoilerPost'); if(sp) sp.checked=false;
     const ls=document.getElementById('lockTypeSelect'); if(ls){ls.value='none';onLockTypeChange();}
     const lp=document.getElementById('lockCustomPwInput'); if(lp) lp.value='';
-    if(status){status.textContent='posted!';setTimeout(()=>{status.textContent='';},3000);}
-  }catch(e){if(status)status.textContent='error: '+e.message;console.error(e);}
+    if(status){status.textContent='postado!';setTimeout(()=>{status.textContent='';},3000);}
+  }catch(e){if(status)status.textContent='erro: '+e.message;console.error(e);}
   btn.disabled=false;
 }
 window.submitPost=submitPost;
