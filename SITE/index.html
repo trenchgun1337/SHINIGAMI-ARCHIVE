@@ -617,12 +617,10 @@ body {
 <body>
 <iframe
   id="bgMusicFrame"
-  title="background music"
-  src="https://www.youtube.com/embed/videoseries?list=PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0&autoplay=1&loop=1&playlist=PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0&controls=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1"
-  allow="autoplay; encrypted-media"
+  src="https://player.vimeo.com/video/1187527804?background=1&autoplay=1&muted=0&loop=1"
+  allow="autoplay"
 ></iframe>
 
-<div style="padding:56.25% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1187527804?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="blogbg01"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 <!-- hover card -->
 <div id="shlimazl-card">
   <span class="sc-word">shlimazl</span>
@@ -942,42 +940,16 @@ window.WaTooltip = (function(){
 })();
 </script>
 
-<iframe id="ytPlayer"
-  src=""
-  style="display:none;" allow="autoplay" frameborder="0">
-</iframe>
 
 <script>
-(function(){
-  var muted = localStorage.getItem('musicOff') === '1';
-  var btn   = document.getElementById('musicBtn');
-  var frame = document.getElementById('ytPlayer');
 
-  function applyState() {
-    if (muted) {
-      frame.src = '';
-      btn.textContent = 'Music: Off';
-    } else {
-      frame.src = 'https://www.youtube.com/embed/videoseries?list=PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0';
-      btn.textContent = 'Music: On';
-    }
-  }
-
-  window.toggleMusic = function() {
-    muted = !muted;
-    localStorage.setItem('musicOff', muted ? '1' : '0');
-    applyState();
-  };
-
-  applyState();
-})();
 
 
 (function() {
   const fullTitle = "Home - Archive Shinigami";
   let i = 0;
 
-  // ✍️ efeito digitando
+  // efeito digitando
   const typing = setInterval(() => {
     document.title = fullTitle.slice(0, i);
     i++;
@@ -992,10 +964,10 @@ window.WaTooltip = (function(){
   function startBlink() {
     function loop() {
 
-      const delay = 3000 + Math.random() * 800; // ✅ 3s–3.8s
+      const delay = 3000 + Math.random() * 800; // 3s–3.8s
 
       setTimeout(() => {
-        const original = fullTitle; // ✅ usa sempre o correto
+        const original = fullTitle; // usa sempre o correto
 
         const blinkCount = Math.random() < 0.5 ? 1 : 2;
         let done = 0;
@@ -1270,14 +1242,18 @@ ctx.fill();
   var playlist = 'PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0';
   var playing = true;
 
+
   function setMusic(on) {
     playing = on;
-    var url = 'https://www.youtube.com/embed/videoseries?list=' + playlist +
-      '&autoplay=' + (on ? '1' : '0') +
-      '&loop=1&playlist=' + playlist +
-      '&controls=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1';
-    frame.src = url;
-    btn.textContent = on ? 'Music: On' : 'Music: Off';
+
+    if (on) {
+      frame.src = "https://player.vimeo.com/video/1187527804?background=1&autoplay=1&muted=0&loop=1";
+      btn.textContent = "Music: On";
+    } else {
+      // remove o som completamente
+      frame.src = "";
+      btn.textContent = "Music: Off";
+    }
   }
 
   window.toggleMusic = function() {
