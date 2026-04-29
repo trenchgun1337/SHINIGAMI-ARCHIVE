@@ -666,7 +666,10 @@ function injectAdminUI(){
   </div>
 </div>`;
 
-  setupGreentextAutocomplete(document.getElementById('postTextarea'));
+  
+setupGreentextAutocomplete(document.getElementById('postTextarea'));
+  // Re-render posts now that the container exists
+  filterPosts();
 }
 window.injectAdminUI=injectAdminUI;
 
@@ -964,7 +967,6 @@ async function sha256(str){
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-
 window._db=db;
 window._ref=ref;
 window._push=push;
@@ -972,6 +974,7 @@ window._remove=remove;
 window._get=get;
 window._set=set;
 window._sha256=sha256;
+window._onValue=onValue;
 
 // Init admin pass if not set
 const passRef=ref(db,'admin/passHash');
