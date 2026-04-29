@@ -617,9 +617,11 @@ body {
 <body>
 <iframe
   id="bgMusicFrame"
-  src="https://player.vimeo.com/video/1187527804?background=1&autoplay=1&muted=0&loop=1"
-  allow="autoplay"
+  title="background music"
+  src="https://www.youtube.com/embed/videoseries?list=PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0&autoplay=1&loop=1&playlist=PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0&controls=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1"
+  allow="autoplay; encrypted-media"
 ></iframe>
+
 
 <!-- hover card -->
 <div id="shlimazl-card">
@@ -707,12 +709,13 @@ body {
       <span class="section-bar">pages stats</span>
       <div class="stats-row">
         <div class="stat-cell">
-          <span class="stat-num">01</span>
+          <span class="stat-num">03</span>
           <span class="stat-label">Done</span>
         </div>
         <div class="stat-cell">
-          <span class="stat-num">06</span>
+          <span class="stat-num">00</span>
           <span class="stat-label">In Dev</span>
+          <p> all done for now ...</p>
         </div>
       </div>
 
@@ -752,50 +755,29 @@ body {
         <li class="res-item">
           <a href="assets/pages/sketchbook.html">
             <span class="res-name">Sketchbook</span>
-            <span class="res-note">gallery &amp; js paint</span>
+            <span class="res-note">art gallery and js paint</span>
           </a>
         </li>
         <!-- test-->
         <li class="res-item">
           <a href="assets/pages/blog.html">
             <span class="res-name">Blog</span>
-            <span class="res-note">personal thoughts and posts</span>
+            <span class="res-note">personal diary and posts</span>
           </a>
         </li>
         <!-- test-->
         <li class="res-item">
           <a href="assets/pages/links.html">
             <span class="res-name">Links</span>
-            <span class="res-note">external resources, references and cool sites</span>
+            <span class="res-note">webstuff to maintain or to explore</span>
           </a>
         </li>
-        <li class="res-item locked">
-          <span class="res-name">Music Player</span>
-          <span class="res-note">locked / in dev</span>
-        </li>
-        <li class="res-item locked">
-          <span class="res-name">Video Player</span>
-          <span class="res-note">locked / in dev</span>
-        </li>
-        <li class="res-item locked">
-          <span class="res-name">Ultimate Downloader Converter</span>
-          <span class="res-note">locked / in dev</span>
-        </li>
+       
       </ul>
 
       <div class="black-gap"></div>
 
-      <span class="res-bar">coming soon</span>
-      <ul class="res-block">
-        <li class="res-item locked">
-          <span class="res-name">File Dumpster</span>
-          <span class="res-note">locked / in dev</span>
-        </li>
-        <li class="res-item locked">
-          <span class="res-name">Projects</span>
-          <span class="res-note">locked / in dev</span>
-        </li>
-      </ul>
+      
 
     </div><!-- /#pg-resources -->
 
@@ -940,16 +922,42 @@ window.WaTooltip = (function(){
 })();
 </script>
 
+<iframe id="ytPlayer"
+  src=""
+  style="display:none;" allow="autoplay" frameborder="0">
+</iframe>
 
 <script>
+(function(){
+  var muted = localStorage.getItem('musicOff') === '1';
+  var btn   = document.getElementById('musicBtn');
+  var frame = document.getElementById('ytPlayer');
 
+  function applyState() {
+    if (muted) {
+      frame.src = '';
+      btn.textContent = 'Music: Off';
+    } else {
+      frame.src = 'https://www.youtube.com/embed/videoseries?list=PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0';
+      btn.textContent = 'Music: On';
+    }
+  }
+
+  window.toggleMusic = function() {
+    muted = !muted;
+    localStorage.setItem('musicOff', muted ? '1' : '0');
+    applyState();
+  };
+
+  applyState();
+})();
 
 
 (function() {
   const fullTitle = "Home - Archive Shinigami";
   let i = 0;
 
-  // efeito digitando
+  // ✍️ efeito digitando
   const typing = setInterval(() => {
     document.title = fullTitle.slice(0, i);
     i++;
@@ -964,10 +972,10 @@ window.WaTooltip = (function(){
   function startBlink() {
     function loop() {
 
-      const delay = 3000 + Math.random() * 800; // 3s–3.8s
+      const delay = 3000 + Math.random() * 800; // ✅ 3s–3.8s
 
       setTimeout(() => {
-        const original = fullTitle; // usa sempre o correto
+        const original = fullTitle; // ✅ usa sempre o correto
 
         const blinkCount = Math.random() < 0.5 ? 1 : 2;
         let done = 0;
@@ -1242,18 +1250,14 @@ ctx.fill();
   var playlist = 'PLWZFaY6Iz8KB7CShjDI8a3SAycyfq6YZ0';
   var playing = true;
 
-
   function setMusic(on) {
     playing = on;
-
-    if (on) {
-      frame.src = "https://player.vimeo.com/video/1187527804?background=1&autoplay=1&muted=0&loop=1";
-      btn.textContent = "Music: On";
-    } else {
-      // remove o som completamente
-      frame.src = "";
-      btn.textContent = "Music: Off";
-    }
+    var url = 'https://www.youtube.com/embed/videoseries?list=' + playlist +
+      '&autoplay=' + (on ? '1' : '0') +
+      '&loop=1&playlist=' + playlist +
+      '&controls=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1';
+    frame.src = url;
+    btn.textContent = on ? 'Music: On' : 'Music: Off';
   }
 
   window.toggleMusic = function() {

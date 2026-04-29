@@ -32,16 +32,30 @@ img{-webkit-user-drag:none;user-select:none;}
 ::-webkit-scrollbar-thumb:hover{background-image:url('../images/scrollbar2.webp');filter:brightness(100);}
 ::-webkit-scrollbar-corner{background:#111;}
 
-/* VIDEO BG */
-#videoBg{position:fixed;inset:0;z-index:-1;background:#000;overflow:hidden;pointer-events:none;}
-#videoBg video{
-  position:absolute;width:100%;height:100%;
-  object-fit:cover;opacity:0;pointer-events:none;
-  min-width:100%;min-height:100%;
-  top:50%;left:50%;transform:translate(-50%,-50%);
+/* ── VIMEO VIDEO BACKGROUND ── */
+#videoBg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #000;
+  overflow: hidden;
+  pointer-events: none;
+}
+#videoBg iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* cobre toda a tela mantendo proporção 16:9 */
+  width:  100vw;
+  height: 56.25vw;  /* 9/16 * 100vw */
+  min-height: 100vh;
+  min-width: 177.78vh; /* 16/9 * 100vh */
+  transform: translate(-50%, -50%);
+  border: none;
+  pointer-events: none; /* não pode ser clicado */
 }
 
-/* MUSIC BTN — footer style, identical to index */
+/* MUSIC BTN */
 #musicBtn{cursor:pointer;margin-right:10px;border-bottom:1px dotted #444;color:#777;}
 
 /* LAYOUT */
@@ -97,7 +111,6 @@ a:hover{text-decoration:underline;}
 .spoiler-img-wrap.revealed img{filter:blur(0);}
 .spoiler-img-wrap img{max-width:220px;max-height:220px;object-fit:contain;display:block;filter:blur(10px);}
 
-/* 4chan post content */
 .post-content{line-height:1.72;word-break:break-word;overflow-wrap:break-word;overflow-x:hidden;max-width:100%;font-family:'Courier New',monospace;font-size:13px;color:#111;}
 .post-content .greentext{color:#789922;}
 .post-content .spoiler{background:#111;color:transparent;cursor:pointer;padding:0 2px;border-radius:2px;transition:color 0.15s,background 0.15s;user-select:none;}
@@ -120,23 +133,15 @@ a:hover{text-decoration:underline;}
 .admin-login button{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:5px 14px;cursor:pointer;margin-left:6px;}
 .admin-login button:hover{background:#000;color:#fff;}
 
-/* POST FORM */
 .post-form-wrap{background:#f6f6f6;border:1px solid #ccc;font-family:SpecialElite,Helvetica,sans-serif;font-size:13px;color:#111;overflow:hidden;}
 .chan-table{width:100%;border-collapse:collapse;background:#f9f9f9;table-layout:fixed;}
 .chan-label{background:#f0f0f0;border:1px solid #ccc;font-size:12px;font-weight:bold;color:#111;padding:5px 8px;white-space:nowrap;vertical-align:top;padding-top:7px;width:70px;}
 .chan-field{background:#f8f8f8;border:1px solid #ccc;padding:3px 5px;vertical-align:middle;overflow:hidden;}
 .chan-input-text{width:100%;box-sizing:border-box;background:#fff;border:1px solid #ccc;font-family:SpecialElite,sans-serif;font-size:13px;color:#111;padding:3px 5px;}
 
-/* Plain textarea, no toolbar */
-#postTextarea{
-  width:100%;box-sizing:border-box;background:#fff;border:none;
-  font-family:'Courier New',monospace;font-size:13px;color:#111;
-  line-height:1.7;padding:8px 10px;
-  min-height:140px;max-height:300px;resize:vertical;overflow-y:auto;display:block;
-}
+#postTextarea{width:100%;box-sizing:border-box;background:#fff;border:none;font-family:'Courier New',monospace;font-size:13px;color:#111;line-height:1.7;padding:8px 10px;min-height:140px;max-height:300px;resize:vertical;overflow-y:auto;display:block;}
 #postTextarea::placeholder{color:#aaa;font-style:italic;}
 
-/* Syntax hint */
 .syntax-hint{background:#f0eeec;border-top:1px solid #ddd;padding:4px 8px;font-size:10px;color:#888;font-family:'SpecialElite',sans-serif;line-height:1.9;}
 .syntax-hint .gt{color:#789922;font-family:'Courier New',monospace;}
 
@@ -145,7 +150,7 @@ a:hover{text-decoration:underline;}
 .ed-fname{color:#555;font-size:11px;font-family:SpecialElite,sans-serif;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .ed-check{display:flex;align-items:center;gap:3px;color:#555;font-size:11px;font-family:SpecialElite,sans-serif;cursor:pointer;white-space:nowrap;}
 .ed-footer{background:#e8e8e8;border-top:1px solid #ccc;padding:5px 6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-.submit-row{background:#f0f0f0;border-top:1px solid #ddd;padding:5px 7px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.submit-row{background:#f0f0f0;border-top:1px dashed #ddd;padding:5px 7px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .submit-btn{background:#f0f0f0;border:1px solid #aaa;color:#111;font-family:SpecialElite,sans-serif;font-size:13px;padding:3px 16px;cursor:pointer;}
 .submit-btn:hover{background:#000;color:#fff;border-color:#000;}
 .submit-btn:disabled{opacity:.4;cursor:default;}
@@ -185,7 +190,7 @@ a:hover{text-decoration:underline;}
   #wrapper{width:100%;}
   #siteIcon{margin-left:0;display:block;margin:0 auto 8px;}
   #siteLogo{width:min(100%,280px);margin:0 auto;display:block;height:auto;}
-  #videoBg video{width:100vw!important;height:100vh!important;object-fit:cover!important;}
+  #videoBg iframe{width:100vw!important;height:100vh!important;min-width:unset!important;min-height:unset!important;object-fit:cover!important;}
   #wa-tooltip{display:none!important;}
   .post-img-wrap img{max-width:160px;max-height:160px;}
 }
@@ -197,11 +202,18 @@ a:hover{text-decoration:underline;}
 </head>
 <body>
 
-<!-- VIDEO BACKGROUND — muted attr is required for autoplay to work -->
+<!-- VIMEO VIDEO BACKGROUND — background=1 remove controles e autoplay mudo -->
 <div id="videoBg">
-  <video id="vid1" src="../video/blogbg02.mp4" muted playsinline preload="auto"></video>
-  <video id="vid2" src="../video/blogbg01.mp4" muted playsinline preload="auto"></video>
+  <iframe
+    id="vimeoBg"
+    src="https://player.vimeo.com/video/1187527804?badge=0&autopause=0&player_id=0&app_id=58479&background=1&autoplay=1&loop=1&muted=1"
+    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+    title=""
+  ></iframe>
 </div>
+
+<!-- Vimeo Player API (para controle de mute via musicBtn) -->
+<script src="https://player.vimeo.com/api/player.js"></script>
 
 <div id="wa-tooltip"></div>
 <div id="lightbox">
@@ -245,11 +257,9 @@ a:hover{text-decoration:underline;}
     <div class="black-gap"></div>
     <footer id="pageFooter">
       <span id="musicBtn" onclick="toggleMusic()">Music: Off</span>
-     
     </footer>
   </main>
 </div>
-
 
 <canvas id="cursor-layer" aria-hidden="true"></canvas>
 
@@ -270,6 +280,39 @@ window.WaTooltip = (function(){
   }
   function hide() { if (el) el.style.display = 'none'; }
   return { show: show, hide: hide };
+})();
+</script>
+
+<script>
+// ── VIMEO PLAYER API + MUSIC TOGGLE ──
+(function(){
+  var _muted = true;
+  var _player = null;
+
+  // Inicia o player via API (background=1 já desativa controles)
+  window.addEventListener('load', function(){
+    var iframe = document.getElementById('vimeoBg');
+    if (!iframe || typeof Vimeo === 'undefined') return;
+    _player = new Vimeo.Player(iframe);
+    _player.setMuted(true).catch(function(){});
+  });
+
+  function applyMute(){
+    var btn = document.getElementById('musicBtn');
+    if (_player) {
+      _player.setMuted(_muted).catch(function(){});
+      if (!_muted) {
+        _player.setVolume(1).catch(function(){});
+        _player.play().catch(function(){});
+      }
+    }
+    if (btn) btn.textContent = _muted ? 'Music: Off' : 'Music: On';
+  }
+
+  window.toggleMusic = function(){
+    _muted = !_muted;
+    applyMute();
+  };
 })();
 </script>
 
@@ -322,7 +365,6 @@ let _isAdmin = false;
 let _imgUrl  = null;
 let _imgInfo = null;
 
-// ── DATE ──
 function fmtDate(ts) {
   const d=new Date(ts);
   const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -335,21 +377,13 @@ function fmtDate(ts) {
   return `${MM}/${DD}/${YY}(${DAY[d.getDay()]})${hh}:${mm}:${ss}`;
 }
 
-// ── 4CHAN TEXT PARSER ──
-// Supports: >greentext  **bold**  //italic//  __underline__
-//           ~~strike~~  [spoiler]…[/spoiler]  `code`
 function parse4chan(raw) {
   if (!raw) return '';
-  // Escape HTML
   let s = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  // Greentext: lines starting with &gt;
   s = s.split('\n').map(line => {
-    if (/^(&gt;)+/.test(line.trimStart())) {
-      return `<span class="greentext">${line}</span>`;
-    }
+    if (/^(&gt;)+/.test(line.trimStart())) return `<span class="greentext">${line}</span>`;
     return line;
   }).join('\n');
-  // Inline markup
   s = s
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/\/\/(.+?)\/\//g,'<em>$1</em>')
@@ -358,12 +392,10 @@ function parse4chan(raw) {
     .replace(/`([^`]+)`/g,'<code>$1</code>')
     .replace(/\[spoiler\]([\s\S]+?)\[\/spoiler\]/gi,
       '<span class="spoiler" onclick="this.classList.toggle(\'revealed\')">$1</span>');
-  // Newlines to <br>
   s = s.replace(/\n/g,'<br>');
   return s;
 }
 
-// ── EMBED DETECTION ──
 const EPATS = [
   { re:/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?[^\s"<]*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/g,
     build:m=>({src:`https://www.youtube.com/embed/${m[1]}?rel=0&modestbranding=1`,url:m[0],h:95}) },
@@ -378,7 +410,6 @@ function detectEmbeds(text) {
   return found;
 }
 
-// ── RENDER ──
 function filterPosts() {
   const sort=document.getElementById('sortSelect')?.value||'newest';
   let posts=[...window._allPosts];
@@ -398,7 +429,6 @@ function renderPosts(posts, container, adminMode) {
 
 function buildCard(p, num, adminMode) {
   const raw = p.contentRaw || '';
-  // Support legacy HTML posts too
   const htmlContent = raw ? parse4chan(raw) : (p.contentHtml||'');
   const embedSrc = raw || (p.contentHtml||'').replace(/<[^>]*>/g,' ');
   const embeds = p.noEmbeds ? [] : detectEmbeds(embedSrc);
@@ -442,7 +472,6 @@ async function deletePost(id) {
 }
 window.deletePost=deletePost;
 
-// ── ADMIN UI ──
 function injectAdminUI() {
   const container=document.getElementById('adminContainer');
   if(!container) return;
@@ -514,7 +543,6 @@ function injectAdminUI() {
 }
 window.injectAdminUI=injectAdminUI;
 
-// ── AUTH ──
 async function tryLogin() {
   const input=document.getElementById('pwInput').value;
   const errEl=document.getElementById('loginErr');
@@ -539,7 +567,6 @@ function logout(){
 }
 window.tryLogin=tryLogin; window.logout=logout;
 
-// ── IMAGE UPLOAD ──
 async function handleFileSelect(event) {
   const file=event.target.files[0]; event.target.value='';
   if(!file) return;
@@ -583,7 +610,6 @@ function removeEditorImg(){
 }
 window.removeEditorImg=removeEditorImg;
 
-// ── SUBMIT ──
 async function submitPost(){
   if(!_isAdmin) return;
   const btn=document.getElementById('submitBtn');
@@ -609,7 +635,6 @@ async function submitPost(){
 }
 window.submitPost=submitPost;
 
-// ── ADMIN SEARCH ──
 function adminSearch(){
   const q=document.getElementById('adminSearch').value.toLowerCase().trim();
   const c=document.getElementById('adminResults');
@@ -623,78 +648,11 @@ function adminSearch(){
 }
 window.adminSearch=adminSearch;
 
-// ── LIGHTBOX ──
 function openLb(src){ document.getElementById('lbImg').src=src; document.getElementById('lightbox').classList.add('active'); document.addEventListener('keydown',lbKey); }
 function closeLb(){ document.getElementById('lightbox').classList.remove('active'); document.removeEventListener('keydown',lbKey); }
 function lbKey(e){ if(e.key==='Escape') closeLb(); }
 document.getElementById('lightbox').addEventListener('click',function(e){ if(e.target===this) closeLb(); });
 window.closeLb=closeLb;
-
-// ── VIDEO BACKGROUND + MUSIC TOGGLE ──
-(function(){
-  const v1=document.getElementById('vid1');
-  const v2=document.getElementById('vid2');
-  if(!v1||!v2) return;
-
-  const FADE_MS=1500, OVERLAP_S=3;
-  let current=1, fading=false;
-  let _isMuted=true;
-
-  v1.muted=true; v2.muted=true; v1.volume=0; v2.volume=0;
-
-  function setOp(v,o){ v.style.opacity=String(Math.max(0,Math.min(1,o))); }
-  function fadeIn(v,dur,cb){ const t0=performance.now(); (function s(now){ const p=Math.min((now-t0)/dur,1); setOp(v,p); if(p<1) requestAnimationFrame(s); else if(cb) cb(); })(t0); }
-  function fadeOut(v,dur,cb){ const s0=parseFloat(v.style.opacity)||1, t0=performance.now(); (function s(now){ const p=Math.min((now-t0)/dur,1); setOp(v,s0*(1-p)); if(p<1) requestAnimationFrame(s); else{ setOp(v,0); if(cb) cb(); } })(t0); }
-
-  function crossfadeTo(next){
-    if(fading) return; fading=true;
-    const out=current===1?v1:v2, inn=current===1?v2:v1;
-    inn.currentTime=0; inn.muted=_isMuted; inn.volume=_isMuted?0:1;
-    inn.play().catch(()=>{});
-    setOp(inn,0);
-    fadeIn(inn,FADE_MS,()=>{
-      fadeOut(out,FADE_MS/2,()=>{ out.pause(); out.currentTime=0; current=next; fading=false; });
-    });
-  }
-
-  function chk(v,n){ if(current!==n||fading||!v.duration||isNaN(v.duration)) return; if(v.duration-v.currentTime<=OVERLAP_S) crossfadeTo(n===1?2:1); }
-  v1.addEventListener('timeupdate',()=>chk(v1,1));
-  v2.addEventListener('timeupdate',()=>chk(v2,2));
-  v1.addEventListener('ended',()=>{ if(current===1&&!fading) crossfadeTo(2); });
-  v2.addEventListener('ended',()=>{ if(current===2&&!fading) crossfadeTo(1); });
-
-  function startFirst(){
-    setOp(v1,0); v1.currentTime=0;
-    v1.play().catch(()=>{});
-    fadeIn(v1,1500,null);
-  }
-  if(document.readyState==='complete'||document.readyState==='interactive') startFirst();
-  else document.addEventListener('DOMContentLoaded',startFirst);
-
-  // MUSIC TOGGLE — identical logic to index.html
-  _isMuted = localStorage.getItem('musicOff') !== '0';
-
-  function applyMute(){
-    const btn=document.getElementById('musicBtn');
-    const av=current===1?v1:v2;
-    if(_isMuted){
-      av.muted=true; av.volume=0;
-      if(btn) btn.textContent='Music: Off';
-    } else {
-      av.muted=false; av.volume=1;
-      if(av.paused) av.play().catch(()=>{});
-      if(btn) btn.textContent='Music: On';
-    }
-  }
-
-  applyMute();
-
-  window.toggleMusic=function(){
-    _isMuted=!_isMuted;
-    localStorage.setItem('musicOff',_isMuted?'1':'0');
-    applyMute();
-  };
-})();
 
 // ── TITLE ANIMATION ──
 (function(){
