@@ -955,15 +955,15 @@ async function submitPost(){
     };
 
     if(lockType==='none'){
-      postData.contentRaw=raw;
-    } else if(lockType==='admin'){
-      postData.locked='admin';
-      // content stored separately
-    } else if(lockType==='custom'){
-      postData.locked='custom';
-      postData.lockHash=await window._sha256(customLockPass);
-    }
-
+  postData.contentRaw=raw;
+} else if(lockType==='admin'){
+  postData.locked='admin';
+  postData.contentRaw=''; // adiciona isso
+} else if(lockType==='custom'){
+  postData.locked='custom';
+  postData.lockHash=await window._sha256(customLockPass);
+  postData.contentRaw=''; // adiciona isso
+}
     const newRef=await window._push(window._ref(window._db,'blog/posts'),postData);
 
     // Store locked content separately
