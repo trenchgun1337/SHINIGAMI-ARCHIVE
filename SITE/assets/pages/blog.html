@@ -32,32 +32,26 @@ img{-webkit-user-drag:none;user-select:none;}
 ::-webkit-scrollbar-thumb:hover{background-image:url('../images/scrollbar2.webp');filter:brightness(100);}
 ::-webkit-scrollbar-corner{background:#111;}
 
-/* ── VIDEO BG ── */
 #videoBg{position:fixed;inset:0;z-index:-1;background:#000;overflow:hidden;pointer-events:none;}
 #videoBg iframe{position:absolute;top:50%;left:50%;width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;transform:translate(-50%,-50%);border:none;pointer-events:none;}
 
-/* MUSIC BTN */
 #musicBtn{cursor:pointer;margin-right:10px;border-bottom:1px dotted #444;color:#777;}
 
-/* LAYOUT */
 body{font-family:'SpecialElite',Georgia,serif;font-size:13px;color:#fff;background:transparent;min-height:100vh;overflow-x:hidden;display:flex;justify-content:center;}
 a{color:#fff;text-decoration:none;}
 a:hover{text-decoration:underline;}
 #wrapper{width:560px;max-width:100%;}
 
-/* HEADER */
 #siteHeader{background:#000;border-bottom:2px solid #fff;padding:16px 14px 11px;}
 #siteIcon{width:78px;height:78px;object-fit:contain;object-position:center;display:inline-block;margin-left:221px;}
 #siteLogo{width:370px;margin-left:95px;height:90px;object-position:center;filter:invert();}
 
-/* NAV */
 #siteNav{background:#000;padding:6px 12px;display:flex;align-items:center;justify-content:center;gap:40px;font-family:'SpecialElite',Georgia,serif;font-size:12px;}
 .nav-sep{color:#444;margin:0 9px;user-select:none;}
 .nav-item{color:#fff;text-decoration:none;cursor:pointer;position:relative;display:inline-block;padding:2px 18px 2px 4px;}
 .nav-item:hover,.nav-item.active{color:#000;background-color:#fff;text-decoration:underline;}
 .nav-item:hover::after,.nav-item.active::after{content:"";position:absolute;right:-2px;top:50%;transform:translateY(-50%);width:22px;height:12px;background-image:url('../images/navcross.png');background-size:contain;background-repeat:no-repeat;background-position:center;pointer-events:none;}
 
-/* MAIN */
 #mainContent{position:relative;background:#000;min-height:400px;}
 #mainContent::before,#mainContent::after{content:"";position:absolute;top:0;bottom:0;width:12px;background:url('https://wallpapers.com/images/thumbnail/filigree-samsung-black-9u6vx5ktxvmprgub.webp') repeat-y;filter:brightness(3.4);z-index:1;pointer-events:none;}
 #mainContent::before{left:0;}
@@ -68,13 +62,11 @@ a:hover{text-decoration:underline;}
 .intro-box{background:#000;color:#fff;padding:12px 14px 14px;border-bottom:2px solid #fff;text-align:center;}
 .intro-box p{font-family:'SpecialElite',Georgia,serif;font-size:13px;line-height:1.72;color:#fff;}
 
-/* SORT BAR */
 .sort-bar{display:flex;justify-content:flex-end;align-items:center;background:#000;padding:6px 14px 6px;border-bottom:1px solid #1a1a1a;}
 .sort-bar label{color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;margin-right:6px;}
 #sortSelect{background:#000;color:#fff;border:1px solid #444;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 22px 3px 6px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23fff'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 5px center;}
 #sortSelect option{background:#000;color:#fff;}
 
-/* POSTS */
 .posts-area{background:#000;padding:0 14px 14px;}
 .post-card{background:#f6f6f6;border:1px solid #ccc;margin-top:14px;font-family:SpecialElite,Helvetica,sans-serif;font-size:13px;color:#111;}
 .post-card-header{background:#f0f0f0;border-bottom:1px solid #ccc;padding:4px 8px;font-family:SpecialElite,Helvetica,sans-serif;font-size:12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
@@ -93,19 +85,15 @@ a:hover{text-decoration:underline;}
 .spoiler-img-wrap img{max-width:220px;max-height:220px;object-fit:contain;display:block;filter:blur(10px);}
 
 .post-content{line-height:1.72;word-break:break-word;overflow-wrap:break-word;overflow-x:hidden;max-width:100%;font-family:'Courier New',monospace;font-size:13px;color:#111;}
-/* ── NEW SYNTAX CLASSES ── */
 .post-content .redtext{color:#cc0000;}
 .post-content .red-link{color:#cc0000;text-decoration:underline;cursor:pointer;}
 .post-content .red-link:hover{color:#ff3333;}
 .post-content .scripttype{font-family:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif;font-style:italic;font-size:14px;}
-/* Legacy greentext kept for old posts */
 .post-content .greentext{color:#789922;}
-/* Spoiler inline */
 .post-content .spoiler{background:#111;color:transparent;cursor:pointer;padding:0 2px;border-radius:2px;transition:color 0.15s,background 0.15s;user-select:none;}
 .post-content .spoiler:hover,.post-content .spoiler.revealed{background:#333;color:#fff;}
 .post-content code{font-family:monospace;background:#eee;padding:0 3px;font-size:12px;}
 
-/* SPOILER POST (entire post blurred) */
 .spoiler-post-body{position:relative;cursor:pointer;}
 .spoiler-post-body .post-blur-inner{filter:blur(7px);pointer-events:none;user-select:none;transition:filter 0.25s;}
 .spoiler-post-body.revealed .post-blur-inner{filter:none;pointer-events:auto;user-select:auto;}
@@ -113,7 +101,6 @@ a:hover{text-decoration:underline;}
 .spoiler-post-overlay span{font-family:'SpecialElite',Georgia,serif;font-size:11px;color:#555;letter-spacing:1px;text-transform:uppercase;background:#f6f6f6;padding:2px 8px;border:1px dashed #aaa;}
 .spoiler-post-body.revealed .spoiler-post-overlay{display:none;}
 
-/* LOCK WALL */
 .lock-wall{padding:20px 12px;text-align:center;background:#f0f0f0;border-top:1px dashed #ccc;}
 .lock-wall .lock-icon{font-size:26px;display:block;margin-bottom:8px;}
 .lock-wall p{font-family:'SpecialElite',Georgia,serif;font-size:12px;color:#555;margin-bottom:10px;}
@@ -129,26 +116,22 @@ a:hover{text-decoration:underline;}
 .post-badge.badge-lock-plus{border-color:#c60;color:#c60;}
 .post-badge.badge-spoiler{border-color:#66a;color:#66a;}
 
-/* EMBED */
 .post-embed{margin-top:8px;clear:both;}
 .post-embed iframe{border:1px solid #ccc;display:block;max-width:100%;}
 
-/* POST ACTIONS */
 .post-actions{padding:4px 10px 6px;text-align:right;border-top:1px dashed #ccc;}
 .post-del-btn{background:none;border:1px solid #ccc;color:#aaa;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:2px 8px;cursor:pointer;letter-spacing:.5px;}
 .post-del-btn:hover{background:#fff;color:#c00;border-color:#c00;}
 .no-posts{padding:30px;text-align:center;color:#555;font-family:'SpecialElite',Georgia,serif;font-size:13px;}
 
-/* ADMIN */
 #adminContainer{background:#000;}
 .admin-inner{padding:0 14px 20px;}
 .admin-section-bar{background:#000;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:16px;font-weight:normal;padding:6px 0 4px;display:block;text-align:center;border-bottom:1px solid #333;text-transform:uppercase;margin-bottom:10px;}
 .admin-login-box{padding:20px 0;text-align:center;}
-.admin-login-box input[type="password"]{background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:13px;padding:5px 10px;width:200px;autocomplete:current-password;}
+.admin-login-box input[type="password"]{background:#000;border:1px solid #444;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:13px;padding:5px 10px;width:200px;}
 .admin-login-box button{background:#fff;border:1px solid #fff;color:#000;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:5px 14px;cursor:pointer;margin-left:6px;}
 .admin-login-box button:hover{background:#000;color:#fff;}
 
-/* POST FORM */
 .post-form-wrap{background:#f6f6f6;border:1px solid #ccc;font-family:SpecialElite,Helvetica,sans-serif;font-size:13px;color:#111;overflow:hidden;}
 .chan-table{width:100%;border-collapse:collapse;background:#f9f9f9;}
 .chan-table td{vertical-align:top;border:1px solid #ccc;overflow:hidden;word-break:break-word;}
@@ -159,7 +142,6 @@ a:hover{text-decoration:underline;}
 #postTextarea{width:100%;box-sizing:border-box;background:#fff;border:none;border-bottom:1px solid #eee;font-family:'Courier New',monospace;font-size:13px;color:#111;line-height:1.7;padding:8px 10px;min-height:140px;max-height:300px;resize:vertical;overflow-y:auto;display:block;}
 #postTextarea::placeholder{color:#aaa;font-style:italic;}
 
-/* SYNTAX DROPDOWN */
 .syntax-row{background:#f0eeec;border-top:1px solid #ddd;padding:4px 8px;display:flex;align-items:center;gap:6px;font-size:10px;color:#888;font-family:'SpecialElite',sans-serif;}
 .syntax-help-wrap{position:relative;display:inline-block;}
 #syntaxToggleBtn{background:none;border:1px dashed #bbb;color:#777;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:1px 6px;cursor:pointer;letter-spacing:.5px;}
@@ -189,13 +171,11 @@ a:hover{text-decoration:underline;}
 #edImgPreview img{max-width:180px;max-height:180px;object-fit:contain;border:1px solid #ccc;display:block;float:left;margin-right:8px;}
 #edImgPreview .ed-img-info{font-family:monospace;font-size:11px;color:#555;display:block;clear:both;padding-top:4px;}
 
-/* LOCK OPTIONS IN FORM */
 .lock-options-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0;}
 .lock-type-select{background:#fff;border:1px solid #ccc;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 6px;color:#111;cursor:pointer;}
 #lockCustomPwWrap{display:none;align-items:center;gap:4px;}
 #lockCustomPwInput{background:#fff;border:1px solid #ccc;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 6px;color:#111;width:140px;}
 
-/* ADMIN DELETE (select list) */
 .admin-del-row{display:flex;gap:6px;align-items:stretch;flex-wrap:wrap;padding:6px 0;}
 #adminPostSelect{flex:1;min-width:0;background:#fff;border:1px solid #ccc;color:#111;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:4px 7px;cursor:pointer;}
 #adminPostSelect option{padding:3px;}
@@ -203,22 +183,18 @@ a:hover{text-decoration:underline;}
 .admin-del-btn:hover{background:#c00;border-color:#c00;}
 .admin-sep{border:none;border-top:1px solid #222;margin:14px 0;}
 
-/* LIGHTBOX */
 #lightbox{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.95);align-items:center;justify-content:center;flex-direction:column;gap:12px;}
 #lightbox.active{display:flex;}
 #lbImg{max-width:90vw;max-height:85vh;object-fit:contain;border:1px solid #444;display:block;}
 #lbClose{position:fixed;top:16px;right:20px;background:#000;border:1px solid #fff;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 10px;cursor:pointer;}
 #lbClose:hover{background:#fff;color:#000;}
 
-/* FOOTER */
 #pageFooter{padding:1px 1px 10px;background:#000;border-top:1px solid #222;font-family:'SpecialElite',Georgia,serif;font-size:11.5px;color:#555;text-align:center;}
 #pageFooter .footer-author{color:#777;cursor:default;border-bottom:1px dotted #444;}
 #pageFooter .footer-author:hover{color:#ccc;border-bottom-style:solid;}
 
-/* TOOLTIP */
 #wa-tooltip{position:fixed;z-index:99999;background:#fff;border:1px solid #aaa;box-shadow:2px 3px 8px rgba(0,0,0,0.30);padding:8px 10px;font-size:11.5px;color:#111;font-family:'SpecialElite',Georgia,serif;pointer-events:none;display:none;max-width:280px;line-height:1.5;}
 
-/* MOBILE */
 @media(max-width:700px){
   body{justify-content:flex-start;}
   #wrapper{width:100%;}
@@ -314,60 +290,11 @@ a:hover{text-decoration:underline;}
 })();
 </script>
 
-<!-- ── FIREBASE MODULE ── -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, remove, onValue, get, set }
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const FB={
-  apiKey:"AIzaSyBBr6zPaWgGNcGHz9iiNTO8O4EgAzsUMOk",
-  authDomain:"scrapfielddatabase.firebaseapp.com",
-  databaseURL:"https://scrapfielddatabase-default-rtdb.firebaseio.com",
-  projectId:"scrapfielddatabase",
-  storageBucket:"scrapfielddatabase.firebasestorage.app",
-  messagingSenderId:"489751764776",
-  appId:"1:489751764776:web:22255a1e9bf05a538bfa1d"
-};
-const app=initializeApp(FB);
-const db=getDatabase(app);
-
-async function sha256(str){
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-// Expose to global scope
-window._db=db;
-window._ref=ref;
-window._push=push;
-window._remove=remove;
-window._get=get;
-window._set=set;
-window._sha256=sha256;
-
-// Init admin pass if not set
-const passRef=ref(db,'admin/passHash');
-get(passRef).then(snap=>{if(!snap.exists()) sha256('shlimazl').then(hash=>set(passRef,hash));});
-
-// Live posts listener
-onValue(ref(db,'blog/posts'),snap=>{
-  const raw=[];
-  snap.forEach(c=>raw.push({id:c.key,...c.val()}));
-  window._allPosts=raw.reverse();
-  filterPosts();
-  if(window._isAdmin) renderAdminPostList();
-});
-
-// Inject admin panel if ?admin in URL
-if(new URLSearchParams(window.location.search).has('admin')){
-  window._isAdminUrl=true;
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',injectAdminUI);
-  else injectAdminUI();
-}
-</script>
-
-<!-- ── MAIN SCRIPT ── -->
+<!-- ══════════════════════════════════════════
+     MAIN SCRIPT — must come BEFORE the Firebase
+     module so all functions exist on window when
+     the module calls injectAdminUI / filterPosts
+     ══════════════════════════════════════════ -->
 <script>
 window._allPosts=[];
 window._isAdmin=false;
@@ -386,77 +313,45 @@ function fmtDate(ts){
   return `${MM}/${DD}/${YY}(${DAY[d.getDay()]})${hh}:${mm}:${ss}`;
 }
 
-/* ── PARSER ──
-  Syntax:
-  > line      → red greentext
-  |text|      → inline spoiler
-  *text*      → bold
-  _text_      → italic
-  -text-      → strikethrough
-  ^text^      → script/cursive type
-  `text`      → monospace code
-  /url        → red link (no embed)
-  //url       → red link + embed
-*/
+/* ── PARSER ── */
 function parse4chan(raw){
   if(!raw) return {html:'',embedUrls:[]};
-
   const embedUrls=[];
   const linkUrls=[];
 
-  // 1. Extract //url (embed) before any escaping
   let s=raw.replace(/\/\/(https?:\/\/[^\s]+)/g,(match,url)=>{
     embedUrls.push(url);
     return '\x00EMB'+(embedUrls.length-1)+'\x00';
   });
-
-  // 2. Extract /url (plain link) — not preceded by another /
   s=s.replace(/(?<![:/])\/(?!\/)(https?:\/\/[^\s]+)/g,(match,url)=>{
     linkUrls.push(url);
     return '\x00LNK'+(linkUrls.length-1)+'\x00';
   });
-
-  // 3. HTML escape
   s=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-  // 4. Greentext: lines starting with > → red
   s=s.split('\n').map(line=>{
     const t=line.trimStart();
     if(t.startsWith('&gt;')) return '<span class="redtext">'+line+'</span>';
     return line;
   }).join('\n');
-
-  // 5. Inline formatting (order matters)
-  // Spoiler: |text|
   s=s.replace(/\|([^|\n]+)\|/g,'<span class="spoiler" onclick="this.classList.toggle(\'revealed\')">$1</span>');
-  // Bold: *text*
   s=s.replace(/\*([^*\n]+)\*/g,'<strong>$1</strong>');
-  // Italic: _text_ (not inside words)
   s=s.replace(/(?<![a-zA-Z0-9])_([^_\n]+)_(?![a-zA-Z0-9])/g,'<em>$1</em>');
-  // Strikethrough: -text- (not inside words)
   s=s.replace(/(?<![a-zA-Z0-9])-([^-\n]+)-(?![a-zA-Z0-9])/g,'<s>$1</s>');
-  // Script/cursive: ^text^
   s=s.replace(/\^([^\^\n]+)\^/g,'<span class="scripttype">$1</span>');
-  // Code: `text`
   s=s.replace(/`([^`\n]+)`/g,'<code>$1</code>');
-
-  // 6. Restore embed links
   s=s.replace(/\x00EMB(\d+)\x00/g,(_,i)=>{
     const url=embedUrls[parseInt(i)];
     return '<a href="'+url+'" class="red-link" target="_blank" rel="noopener">'+url+'</a>';
   });
-  // 7. Restore plain links
   s=s.replace(/\x00LNK(\d+)\x00/g,(_,i)=>{
     const url=linkUrls[parseInt(i)];
     return '<a href="'+url+'" class="red-link" target="_blank" rel="noopener">'+url+'</a>';
   });
-
-  // 8. Newlines → <br>
   s=s.replace(/\n/g,'<br>');
-  return {html:s, embedUrls};
+  return {html:s,embedUrls};
 }
 
-/* ── EMBED DETECTION (for //url and legacy auto-embed) ── */
+/* ── EMBED DETECTION ── */
 const EPATS=[
   {re:/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?[^\s"<]*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/g,
    build:m=>({src:'https://www.youtube.com/embed/'+m[1]+'?rel=0&modestbranding=1',url:m[0],h:95})},
@@ -485,10 +380,8 @@ function renderPosts(posts,container,adminMode){
   if(!posts.length){container.innerHTML='<div class="no-posts">no posts found.</div>';return;}
   const total=posts.length;
   container.innerHTML=posts.map((p,i)=>buildCard(p,total-i,adminMode)).join('');
-  // Attach image click
   container.querySelectorAll('.post-img-wrap img').forEach(img=>img.addEventListener('click',()=>openLb(img.src)));
   container.querySelectorAll('.spoiler-img-wrap').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('revealed')));
-  // Attach spoiler-post click
   container.querySelectorAll('.spoiler-post-body').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('revealed')));
 }
 
@@ -496,7 +389,6 @@ function buildCard(p,num,adminMode){
   const isLocked=p.locked&&p.locked!==false;
   const isSpoilerPost=!!p.spoilerPost;
 
-  // Badge labels
   let badges='';
   if(isLocked) badges+='<span class="post-badge badge-lock'+(p.locked==='custom'?'-plus':'')+'">🔒'+(p.locked==='custom'?'+':'')+'</span>';
   if(isSpoilerPost) badges+='<span class="post-badge badge-spoiler">spoiler</span>';
@@ -511,42 +403,38 @@ function buildCard(p,num,adminMode){
   const delHTML=(window._isAdmin||adminMode)
     ?`<div class="post-actions"><button class="post-del-btn" onclick="deletePost('${p.id}')">delete</button></div>`:'';
 
-  /* LOCKED POST */
   if(isLocked&&!window._isAdmin&&!adminMode){
     return `<div class="post-card" id="post-${p.id}">
       ${header}
       <div class="lock-wall">
         <span class="lock-icon">🔒</span>
-        <p>Post protegido por senha</p>
+        <p>Password protected post</p>
         <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
-          <input type="password" class="lock-pw-input" placeholder="senha..." autocomplete="current-password"
+          <input type="password" class="lock-pw-input" placeholder="password..."
             onkeydown="if(event.key==='Enter')unlockPost('${p.id}','${p.locked}','${p.lockHash||''}')">
-          <button class="lock-btn" onclick="unlockPost('${p.id}','${p.locked}','${p.lockHash||''}')">Desbloquear</button>
+          <button class="lock-btn" onclick="unlockPost('${p.id}','${p.locked}','${p.lockHash||''}')">Unlock</button>
         </div>
         <span class="lock-err" id="lockerr-${p.id}"></span>
       </div>
     </div>`;
   }
 
-  /* LOCKED POST — ADMIN VIEW */
   if(isLocked&&(window._isAdmin||adminMode)){
     return `<div class="post-card" id="post-${p.id}">
       ${header}
       <div class="lock-wall-admin">
-        <span style="color:#999;font-size:11px;font-family:'SpecialElite',Georgia,serif;">🔒 conteúdo bloqueado</span>
-        <button class="lock-load-btn" id="lockbtn-${p.id}" onclick="adminShowLocked('${p.id}')">carregar conteúdo</button>
+        <span style="color:#999;font-size:11px;font-family:'SpecialElite',Georgia,serif;">🔒 locked content</span>
+        <button class="lock-load-btn" id="lockbtn-${p.id}" onclick="adminShowLocked('${p.id}')">load content</button>
         <div id="lockcontent-${p.id}"></div>
       </div>
       ${delHTML}
     </div>`;
   }
 
-  /* NORMAL POST (with optional spoilerPost blur) */
   const raw=p.contentRaw||'';
   const parsed=parse4chan(raw);
   const htmlContent=raw?parsed.html:(p.contentHtml||'');
 
-  // Embeds: explicit //url embeds + legacy auto-detect from raw
   const embedsFromUrl=parsed.embedUrls.flatMap(url=>{
     const e=detectEmbeds(url);
     return e.length?e:[{src:null,url,h:95}];
@@ -570,9 +458,9 @@ function buildCard(p,num,adminMode){
 
   let bodyHTML;
   if(isSpoilerPost){
-    bodyHTML=`<div class="post-body spoiler-post-body" title="Clique para revelar">
+    bodyHTML=`<div class="post-body spoiler-post-body" title="Click to reveal">
       <div class="post-blur-inner">${innerBody}</div>
-      <div class="spoiler-post-overlay"><span>clique para revelar</span></div>
+      <div class="spoiler-post-overlay"><span>click to reveal</span></div>
     </div>`;
   } else {
     bodyHTML=`<div class="post-body">${innerBody}</div>`;
@@ -585,15 +473,13 @@ function buildCard(p,num,adminMode){
   </div>`;
 }
 
-/* ── UNLOCK POST (public) ── */
+/* ── UNLOCK POST ── */
 async function unlockPost(id,lockType,lockHash){
   const errEl=document.getElementById('lockerr-'+id);
   const card=document.getElementById('post-'+id);
   const pw=card?.querySelector('.lock-pw-input')?.value||'';
-  if(!pw){if(errEl)errEl.textContent='informe a senha.';return;}
-
-  if(errEl) errEl.textContent='verificando…';
-
+  if(!pw){if(errEl)errEl.textContent='enter a password.';return;}
+  if(errEl) errEl.textContent='checking…';
   try{
     const inputHash=await window._sha256(pw);
     let expectedHash=lockHash;
@@ -601,26 +487,20 @@ async function unlockPost(id,lockType,lockHash){
       const snap=await window._get(window._ref(window._db,'admin/passHash'));
       expectedHash=snap.val();
     }
-    if(inputHash!==expectedHash){
-      if(errEl) errEl.textContent='senha incorreta.';
-      return;
-    }
-    // Fetch locked content
+    if(inputHash!==expectedHash){if(errEl)errEl.textContent='wrong password.';return;}
     const snap=await window._get(window._ref(window._db,'blog/lockedContent/'+id));
-    if(!snap.exists()){if(errEl)errEl.textContent='conteúdo não encontrado.';return;}
+    if(!snap.exists()){if(errEl)errEl.textContent='content not found.';return;}
     const data=snap.val();
-    // Find the post object
     const p=window._allPosts.find(x=>x.id===id)||{};
     p.contentRaw=data.contentRaw||'';
     p.locked=false;
-    // Re-render card inline
     const idx=window._allPosts.findIndex(x=>x.id===id);
     const num=window._allPosts.length-idx;
     const newCard=buildCard({...p,locked:false},num,false);
     const tmp=document.createElement('div');
     tmp.innerHTML=newCard;
     card.replaceWith(tmp.firstChild);
-  }catch(e){if(errEl)errEl.textContent='erro: '+e.message;}
+  }catch(e){if(errEl)errEl.textContent='error: '+e.message;}
 }
 window.unlockPost=unlockPost;
 
@@ -631,11 +511,11 @@ async function adminShowLocked(id){
   if(btn) btn.style.display='none';
   try{
     const snap=await window._get(window._ref(window._db,'blog/lockedContent/'+id));
-    if(!snap.exists()){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">conteúdo não encontrado.</span>';return;}
+    if(!snap.exists()){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">content not found.</span>';return;}
     const data=snap.val();
     const {html}=parse4chan(data.contentRaw||'');
     if(content) content.innerHTML='<div class="post-content" style="margin-top:8px;color:#111;">'+html+'</div>';
-  }catch(e){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">erro: '+e.message+'</span>';}
+  }catch(e){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">error: '+e.message+'</span>';}
 }
 window.adminShowLocked=adminShowLocked;
 
@@ -657,7 +537,7 @@ async function deleteSelectedPost(){
   if(!window._isAdmin) return;
   const sel=document.getElementById('adminPostSelect');
   const id=sel?.value;
-  if(!id){alert('selecione um post.');return;}
+  if(!id){alert('select a post.');return;}
   if(!confirm('delete this post?')) return;
   try{
     await window._remove(window._ref(window._db,'blog/posts/'+id));
@@ -673,9 +553,9 @@ function renderAdminPostList(){
   const sel=document.getElementById('adminPostSelect');
   if(!sel) return;
   const posts=window._allPosts;
-  sel.innerHTML='<option value="">— selecione um post —</option>'+
+  sel.innerHTML='<option value="">— select a post —</option>'+
     posts.map(p=>{
-      const preview=(p.contentRaw||'').slice(0,60).replace(/\n/g,' ')||'[sem texto]';
+      const preview=(p.contentRaw||'').slice(0,60).replace(/\n/g,' ')||'[no text]';
       const lockMark=p.locked?'🔒 ':'';
       const spoilerMark=p.spoilerPost?'👁 ':'';
       return `<option value="${p.id}">${lockMark}${spoilerMark}[${fmtDate(p.ts)}] ${preview}</option>`;
@@ -693,7 +573,7 @@ function injectAdminUI(){
 <div class="admin-inner">
   <div id="adminLogin" class="admin-login-box">
     <span style="color:#555;font-family:'SpecialElite',Georgia,serif;font-size:12px;display:block;margin-bottom:8px;">admin password:</span>
-    <input type="password" id="pwInput" placeholder="password" autocomplete="current-password"
+    <input type="password" id="pwInput" placeholder="password"
       onkeydown="if(event.key==='Enter')tryLogin()">
     <button onclick="tryLogin()">enter</button>
     <div id="loginErr" style="color:#c00;font-size:11px;margin-top:6px;font-family:'SpecialElite',Georgia,serif;"></div>
@@ -721,20 +601,20 @@ function injectAdminUI(){
                 <button id="syntaxToggleBtn" onclick="toggleSyntaxPanel()">[?] syntax</button>
                 <div id="syntaxPanel">
                   <table>
-                    <tr><td>*text*</td><td><strong>negrito</strong></td></tr>
-                    <tr><td>_text_</td><td><em>itálico</em></td></tr>
-                    <tr><td>-text-</td><td><s>riscado</s></td></tr>
-                    <tr><td>^text^</td><td><span style="font-family:Georgia,serif;font-style:italic;">script/cursivo</span></td></tr>
+                    <tr><td>*text*</td><td><strong>bold</strong></td></tr>
+                    <tr><td>_text_</td><td><em>italic</em></td></tr>
+                    <tr><td>-text-</td><td><s>strikethrough</s></td></tr>
+                    <tr><td>^text^</td><td><span style="font-family:Georgia,serif;font-style:italic;">script/cursive</span></td></tr>
                     <tr><td>\`text\`</td><td><code style="background:#eee;padding:0 3px;">monospace</code></td></tr>
                     <tr><td>|text|</td><td><span style="background:#111;color:#fff;padding:0 3px;">spoiler</span></td></tr>
-                    <tr><td class="sp-red">&gt; linha</td><td class="sp-red">greentext (vermelho)</td></tr>
-                    <tr><td class="sp-red">/https://…</td><td><span class="sp-red">link vermelho</span></td></tr>
+                    <tr><td class="sp-red">&gt; line</td><td class="sp-red">greentext (red)</td></tr>
+                    <tr><td class="sp-red">/https://…</td><td><span class="sp-red">red link</span></td></tr>
                     <tr><td class="sp-red">//https://…</td><td><span class="sp-red">link + embed</span></td></tr>
                   </table>
                 </div>
               </div>
               <span style="color:#bbb;">·</span>
-              <span style="color:#aaa;font-size:10px;">Enter após &gt; continua greentext</span>
+              <span style="color:#aaa;font-size:10px;">Enter after &gt; continues greentext</span>
             </div>
           </td>
         </tr>
@@ -742,9 +622,9 @@ function injectAdminUI(){
           <td class="chan-label" style="padding-top:8px;">File</td>
           <td class="chan-field">
             <div class="ed-footer">
-              <button class="ed-file-btn" onclick="document.getElementById('edFileInput').click()">Escolher</button>
-              <span class="ed-fname" id="edFileName">nenhum</span>
-              <button class="ed-file-btn" id="edRemoveImg" style="display:none;color:#c00;border-color:#c00;" onclick="removeEditorImg()">remover</button>
+              <button class="ed-file-btn" onclick="document.getElementById('edFileInput').click()">Choose</button>
+              <span class="ed-fname" id="edFileName">none</span>
+              <button class="ed-file-btn" id="edRemoveImg" style="display:none;color:#c00;border-color:#c00;" onclick="removeEditorImg()">remove</button>
               <label class="ed-check"><input type="checkbox" id="edSpoilerImg"> spoiler img</label>
               <input type="file" id="edFileInput" accept="image/jpeg,image/png,image/gif,image/webp" onchange="handleFileSelect(event)" style="display:none;">
             </div>
@@ -752,20 +632,20 @@ function injectAdminUI(){
           </td>
         </tr>
         <tr>
-          <td class="chan-label" style="padding-top:8px;">Opções</td>
+          <td class="chan-label" style="padding-top:8px;">Options</td>
           <td class="chan-field">
             <div class="lock-options-row">
               <label class="ed-check"><input type="checkbox" id="edSpoilerPost"> spoiler post</label>
               <span style="color:#ccc;margin:0 4px;">|</span>
               <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">lock:</span>
               <select class="lock-type-select" id="lockTypeSelect" onchange="onLockTypeChange()">
-                <option value="none">nenhum</option>
-                <option value="admin">🔒 lock (senha admin)</option>
-                <option value="custom">🔒+ lock+ (senha custom)</option>
+                <option value="none">none</option>
+                <option value="admin">🔒 lock (admin password)</option>
+                <option value="custom">🔒+ lock+ (custom password)</option>
               </select>
               <div id="lockCustomPwWrap">
-                <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">senha:</span>
-                <input type="password" id="lockCustomPwInput" placeholder="senha custom" autocomplete="new-password">
+                <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">password:</span>
+                <input type="password" id="lockCustomPwInput" placeholder="custom password">
               </div>
             </div>
           </td>
@@ -780,13 +660,12 @@ function injectAdminUI(){
     <hr class="admin-sep">
     <span class="admin-section-bar">delete post</span>
     <div class="admin-del-row">
-      <select id="adminPostSelect"><option value="">— carregando posts… —</option></select>
+      <select id="adminPostSelect"><option value="">— loading posts… —</option></select>
       <button class="admin-del-btn" onclick="deleteSelectedPost()">delete</button>
     </div>
   </div>
 </div>`;
 
-  // Set up greentext autocomplete after textarea exists
   setupGreentextAutocomplete(document.getElementById('postTextarea'));
 }
 window.injectAdminUI=injectAdminUI;
@@ -798,7 +677,6 @@ function toggleSyntaxPanel(){
 }
 window.toggleSyntaxPanel=toggleSyntaxPanel;
 
-// Close syntax panel when clicking outside
 document.addEventListener('click',function(e){
   const p=document.getElementById('syntaxPanel');
   const btn=document.getElementById('syntaxToggleBtn');
@@ -855,8 +733,8 @@ function setupGreentextAutocomplete(ta){
 async function tryLogin(){
   const input=document.getElementById('pwInput').value;
   const errEl=document.getElementById('loginErr');
-  if(!input){errEl.textContent='informe a senha.';return;}
-  errEl.textContent='verificando…';
+  if(!input){errEl.textContent='enter a password.';return;}
+  errEl.textContent='checking…';
   try{
     const hash=await window._sha256(input);
     const snap=await window._get(window._ref(window._db,'admin/passHash'));
@@ -866,11 +744,11 @@ async function tryLogin(){
       document.getElementById('adminPanel').style.display='block';
       errEl.textContent='';
       renderAdminPostList();
-      filterPosts(); // re-render with delete buttons
+      filterPosts();
     } else {
-      errEl.textContent='senha incorreta.';
+      errEl.textContent='wrong password.';
     }
-  }catch(e){errEl.textContent='erro: '+e.message;}
+  }catch(e){errEl.textContent='error: '+e.message;}
 }
 function logout(){
   window._isAdmin=false;
@@ -879,18 +757,19 @@ function logout(){
   document.getElementById('pwInput').value='';
   filterPosts();
 }
-window.tryLogin=tryLogin; window.logout=logout;
+window.tryLogin=tryLogin;
+window.logout=logout;
 
 /* ── FILE UPLOAD ── */
 async function handleFileSelect(event){
   const file=event.target.files[0]; event.target.value='';
   if(!file) return;
-  if(file.size>600*1024){alert('máximo 600 KB');return;}
+  if(file.size>600*1024){alert('max 600 KB');return;}
   const statusEl=document.getElementById('edStatus');
   const fnameEl=document.getElementById('edFileName');
   const rmBtn=document.getElementById('edRemoveImg');
   const preview=document.getElementById('edImgPreview');
-  if(statusEl) statusEl.textContent='enviando…';
+  if(statusEl) statusEl.textContent='uploading…';
   const tmpUrl=URL.createObjectURL(file);
   const tmpImg=new Image(); tmpImg.src=tmpUrl;
   await new Promise(res=>{tmpImg.onload=tmpImg.onerror=res;});
@@ -901,16 +780,16 @@ async function handleFileSelect(event){
     const fd=new FormData(); fd.append('file',file); fd.append('upload_preset','unsigned_upload');
     const res=await fetch('https://api.cloudinary.com/v1_1/dagsxkazw/image/upload',{method:'POST',body:fd});
     const data=await res.json();
-    if(!data.secure_url) throw new Error('upload falhou');
+    if(!data.secure_url) throw new Error('upload failed');
     _imgUrl=data.secure_url; _imgInfo={name:file.name,sizeKB,w,h};
     if(fnameEl) fnameEl.textContent=file.name;
     if(rmBtn) rmBtn.style.display='inline-block';
-    if(statusEl) statusEl.textContent='imagem pronta.';
+    if(statusEl) statusEl.textContent='image ready.';
     if(preview){
       preview.style.display='block';
       preview.innerHTML=`<img src="${data.secure_url}" alt=""><span class="ed-img-info">File: ${file.name} (${sizeKB} KB, ${w}×${h})</span>`;
     }
-  }catch(err){if(statusEl) statusEl.textContent='erro no upload: '+err.message; console.error(err);}
+  }catch(err){if(statusEl) statusEl.textContent='upload error: '+err.message; console.error(err);}
 }
 window.handleFileSelect=handleFileSelect;
 
@@ -919,7 +798,7 @@ function removeEditorImg(){
   const fn=document.getElementById('edFileName');
   const rb=document.getElementById('edRemoveImg');
   const pv=document.getElementById('edImgPreview');
-  if(fn) fn.textContent='nenhum';
+  if(fn) fn.textContent='none';
   if(rb) rb.style.display='none';
   if(pv){pv.style.display='none';pv.innerHTML='';}
 }
@@ -941,15 +820,6 @@ async function submitPost(){
   if(lockType==='custom'){
     customLockPass=(document.getElementById('lockCustomPwInput')?.value||'').trim();
     if(!customLockPass){if(status)status.textContent='enter a custom password for lock+.';return;}
-  }
-
-  // Debug: confirm Firebase functions are available
-  console.log('[submitPost] _push:', typeof window._push, '| _ref:', typeof window._ref, '| _set:', typeof window._set);
-
-  if(!window._push||!window._ref||!window._set){
-    if(status) status.textContent='error: Firebase not ready. Refresh and try again.';
-    console.error('[submitPost] Firebase functions missing on window');
-    return;
   }
 
   btn.disabled=true;
@@ -975,17 +845,12 @@ async function submitPost(){
       postData.contentRaw='';
     }
 
-    console.log('[submitPost] Writing to blog/posts:', postData);
     const newRef=await window._push(window._ref(window._db,'blog/posts'),postData);
-    console.log('[submitPost] Post created with key:', newRef.key);
 
     if(lockType!=='none'){
-      console.log('[submitPost] Writing to blog/lockedContent/'+newRef.key);
       await window._set(window._ref(window._db,'blog/lockedContent/'+newRef.key),{contentRaw:raw});
-      console.log('[submitPost] Locked content saved.');
     }
 
-    // Reset form
     document.getElementById('postTextarea').value='';
     removeEditorImg();
     const si=document.getElementById('edSpoilerImg'); if(si) si.checked=false;
@@ -995,7 +860,7 @@ async function submitPost(){
     if(status){status.textContent='posted!';setTimeout(()=>{status.textContent='';},3000);}
 
   }catch(e){
-    console.error('[submitPost] ERROR:', e);
+    console.error('[submitPost] error:',e);
     if(status) status.textContent='error: '+e.message;
   }
 
@@ -1076,5 +941,58 @@ window.closeLb=closeLb;
   document.addEventListener('visibilitychange',function(){if(document.hidden)off();});
 })();
 </script>
+
+<!-- ── FIREBASE MODULE — comes AFTER main script ── -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, remove, onValue, get, set }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const FB={
+  apiKey:"AIzaSyBBr6zPaWgGNcGHz9iiNTO8O4EgAzsUMOk",
+  authDomain:"scrapfielddatabase.firebaseapp.com",
+  databaseURL:"https://scrapfielddatabase-default-rtdb.firebaseio.com",
+  projectId:"scrapfielddatabase",
+  storageBucket:"scrapfielddatabase.firebasestorage.app",
+  messagingSenderId:"489751764776",
+  appId:"1:489751764776:web:22255a1e9bf05a538bfa1d"
+};
+const app=initializeApp(FB);
+const db=getDatabase(app);
+
+async function sha256(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+window._db=db;
+window._ref=ref;
+window._push=push;
+window._remove=remove;
+window._get=get;
+window._set=set;
+window._sha256=sha256;
+
+// Init admin pass if not set
+const passRef=ref(db,'admin/passHash');
+get(passRef).then(snap=>{if(!snap.exists()) sha256('shlimazl').then(hash=>set(passRef,hash));});
+
+// Live posts listener
+onValue(ref(db,'blog/posts'),snap=>{
+  const raw=[];
+  snap.forEach(c=>raw.push({id:c.key,...c.val()}));
+  window._allPosts=raw.reverse();
+  filterPosts();
+  if(window._isAdmin) renderAdminPostList();
+});
+
+// Inject admin panel if ?admin in URL
+if(new URLSearchParams(window.location.search).has('admin')){
+  window._isAdminUrl=true;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',injectAdminUI);
+  else injectAdminUI();
+}
+</script>
+
 </body>
 </html>
