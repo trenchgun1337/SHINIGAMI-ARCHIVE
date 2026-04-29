@@ -171,7 +171,7 @@ a:hover { text-decoration:underline; }
 }
 .link-item {
   padding:7px 20px;
-  border-bottom:1px dotted #222;
+  border-bottom:1px dotted #ffffff;
 }
 .link-item:last-child { border-bottom:none; }
 .link-item:hover { background:#0d0d0d; }
@@ -341,10 +341,11 @@ a:hover { text-decoration:underline; }
         <li class="link-item"><a href="https://www.japanforum.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">japan forum</span></a></li>
         <li class="link-item"><a href="https://xboxfan.ru/" target="_blank" rel="noopener noreferrer"><span class="link-name">xbox fan</span></a></li>
         <li class="link-item"><a href="https://starbust-ent.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">starbust ent</span></a></li>
-        
+        <li class="link-item"><a href="https://radiolights.cc/" target="_blank" rel="noopener noreferrer"><span class="link-name">radiolights</span></a></li>
+
 
           <!-- ── CHANS ── -->
-    <details class="link-group">
+<details class="link-group" id="chans-group">
       <summary>chans</summary>
       <ul class="links-list">
         <li class="link-item"><a href="https://www.4chan.org/" target="_blank" rel="noopener noreferrer"><span class="link-name">4chan</span></a></li>
@@ -429,7 +430,6 @@ a:hover { text-decoration:underline; }
         <li class="link-item"><a href="http://nyanchan.atspace.eu/" target="_blank" rel="noopener noreferrer"><span class="link-name">nyanchan</span></a></li>
         <li class="link-item"><a href="https://otterchan.net/" target="_blank" rel="noopener noreferrer"><span class="link-name">otterchan</span></a></li>
         <li class="link-item"><a href="https://ourchan.org/index.html" target="_blank" rel="noopener noreferrer"><span class="link-name">ourchan</span></a></li>
-        <li class="link-item"><a href="https://paperchan.club/" target="_blank" rel="noopener noreferrer"><span class="link-name">paperchan</span></a></li>
         <li class="link-item"><a href="https://plus4chan.org/" target="_blank" rel="noopener noreferrer"><span class="link-name">plus4chan</span></a></li>
         <li class="link-item"><a href="https://www.ponychan.co/" target="_blank" rel="noopener noreferrer"><span class="link-name">ponychan</span></a></li>
         <li class="link-item"><a href="https://poorchan.net/" target="_blank" rel="noopener noreferrer"><span class="link-name">poorchan</span></a></li>
@@ -465,7 +465,6 @@ a:hover { text-decoration:underline; }
         <li class="link-item"><a href="https://ziemniachan.org/" target="_blank" rel="noopener noreferrer"><span class="link-name">ziemniachan</span></a></li>
         <li class="link-item"><a href="https://zzzchan.xyz/index.html" target="_blank" rel="noopener noreferrer"><span class="link-name">zzzchan</span></a></li>
         <li class="link-item"><a href="https://magalichan.com/" target="_blank" rel="noopener noreferrer"><span class="link-name">magalichan</span></a></li>
-        <li class="link-item"><a href="https://radiolights.cc/" target="_blank" rel="noopener noreferrer"><span class="link-name">radiolights</span></a></li>
       </ul>
     </details>
 
@@ -511,6 +510,14 @@ a:hover { text-decoration:underline; }
 </div><!-- /#wrapper -->
 
 <script>
+  const chans = document.getElementById("chans-group");
+
+chans.addEventListener("toggle", function () {
+  if (chans.open) {
+    alert("i didn’t check all those chans and may not have consumed all of them, so i don’t take responsibility for illegal or sensitive content in them. be aware. DO NOT acess chans without knowing what they are.");
+  }
+});
+
 /* ── TOOLTIP ── */
 window.WaTooltip = (function(){
   var el = document.getElementById('wa-tooltip');
