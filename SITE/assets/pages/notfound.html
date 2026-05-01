@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>‎ </title>
     <style>
-     
 @font-face {
   font-family: 'SpecialElite';
   src: url('../fonts/Special_Elite/SpecialElite-Regular.ttf') format('truetype');
@@ -39,59 +38,62 @@ html, body {
   font-size: 120px;
   color: #fff;
   letter-spacing: 8px;
-  
   margin: 0;
   user-select: none;
 }
+
+#cursor-layer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity 1000ms linear;
+}
+#cursor-layer.active { opacity: 1; }
     </style>
 </head>
 <body>
   <div class="bg"></div>
-  
+
   <h1 class="error">   
 404</h1>
+
+  <canvas id="cursor-layer" aria-hidden="true"></canvas>
 
 <script>
 (function() {
   const fullTitle = "404 - Not Found";
   let i = 0;
 
-  // ✍️ efeito digitando
   const typing = setInterval(() => {
     document.title = fullTitle.slice(0, i);
     i++;
-
     if (i > fullTitle.length) {
       clearInterval(typing);
-      document.title = fullTitle; // garante título completo
+      document.title = fullTitle;
       startBlink();
     }
   }, 120);
 
   function startBlink() {
     function loop() {
-
-      const delay = 3000 + Math.random() * 800; // ✅ 3s–3.8s
-
+      const delay = 3000 + Math.random() * 800;
       setTimeout(() => {
-        const original = fullTitle; // ✅ usa sempre o correto
-
+        const original = fullTitle;
         const blinkCount = Math.random() < 0.5 ? 1 : 2;
         let done = 0;
-
         function doBlink() {
           let j = 0;
-
           const blink = setInterval(() => {
             document.title = (j % 2 === 0) ? "デスノート" : original;
             j++;
-
-            // ⏱️ ~0.6s
             if (j > 5) {
               clearInterval(blink);
               document.title = original;
               done++;
-
               if (done < blinkCount) {
                 setTimeout(doBlink, 120);
               } else {
@@ -100,15 +102,15 @@ html, body {
             }
           }, 120);
         }
-
         doBlink();
-
       }, delay);
     }
-
     loop();
   }
 })();
 </script>
+
+<script src="../scripts/js/cursortrail.js" defer></script>
+
 </body>
 </html>
