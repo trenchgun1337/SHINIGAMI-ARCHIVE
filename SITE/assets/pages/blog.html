@@ -865,8 +865,8 @@ window._onValue=onValue;
 
 // Listener de posts em tempo real
 onValue(ref(db,'blog/posts'),snap=>{
-  const raw=[];
-  snap.forEach(c=>raw.push({id:c.key,...c.val()}));
+  const val=snap.val()||{};
+  const raw=Object.entries(val).map(([id,data])=>({...(data||{}),id}));
   console.log('[onValue] total posts recebidos do Firebase:', raw.length, raw.map(p=>p.id));
   window._allPosts=sortPostsNewest(raw);
   filterPosts();
