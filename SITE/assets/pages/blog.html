@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="
 default-src 'self';
-script-src 'self' 'unsafe-inline' https://www.youtube.com https://www.gstatic.com;
+script-src 'self' 'unsafe-inline' https://www.youtube.com https://www.gstatic.com https://*.firebaseio.com https://www.googleapis.com;
 style-src 'self' 'unsafe-inline';
 img-src 'self' data: https:;
-connect-src https://api.cloudinary.com https://*.firebaseio.com https://www.gstatic.com;
+connect-src https://api.cloudinary.com https://*.firebaseio.com https://firestore.googleapis.com https://www.gstatic.com https://identitytoolkit.googleapis.com wss://*.firebaseio.com;
 frame-src https://www.youtube.com https://open.spotify.com https://w.soundcloud.com;
 font-src 'self' data:;
+worker-src blob:;
 ">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog - Archive Shinigami</title>
@@ -278,17 +279,14 @@ a:hover{text-decoration:underline;}
     }});
   };
 
-  /* ── MUSIC TOGGLE (FIX) ── */
   function applyMute(){
     var btn=document.getElementById('musicBtn');
     if(player && typeof player.getPlayerState === 'function'){
       if(muted){
         player.mute();
       } else {
-        // unMute, set full volume, ensure playing
         player.unMute();
         player.setVolume(100);
-        // if paused or not started, force play
         var state=player.getPlayerState();
         if(state===YT.PlayerState.PAUSED||state===YT.PlayerState.CUED||state===-1){
           player.playVideo();
@@ -330,7 +328,6 @@ function sortPostsNewest(posts){
   return [...posts].sort((a,b)=>postTime(b)-postTime(a)||String(b.id||'').localeCompare(String(a.id||'')));
 }
 
-/* ── DATE FORMAT ── */
 function fmtDate(ts){
   const d=new Date(ts);
   const DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -343,7 +340,6 @@ function fmtDate(ts){
   return `${MM}/${DD}/${YY}(${DAY[d.getDay()]})${hh}:${mm}:${ss}`;
 }
 
-/* ── PARSER ── */
 function parse4chan(raw){
   if(!raw) return {html:'',embedUrls:[]};
   const embedUrls=[];
@@ -376,7 +372,6 @@ function parse4chan(raw){
   return {html:s,embedUrls};
 }
 
-/* ── EMBED DETECTION ── */
 const EPATS=[
   {re:/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?[^\s"<]*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/g,
    build:m=>({src:'https://www.youtube.com/embed/'+m[1]+'?rel=0&modestbranding=1',url:m[0],h:95})},
@@ -391,7 +386,6 @@ function detectEmbeds(text){
   return found;
 }
 
-/* ── FILTER / RENDER ── */
 function filterPosts(){
   const container=document.getElementById('postsContainer');
   if(!container) return;
@@ -485,7 +479,6 @@ function buildCard(p,num,adminMode){
   </div>`;
 }
 
-/* ── DELETE POST ── */
 async function deletePost(id){
   if(!window._isAdmin) return;
   if(!confirm('delete this post?')) return;
@@ -497,7 +490,6 @@ async function deletePost(id){
 }
 window.deletePost=deletePost;
 
-/* ── ADMIN DELETE SELECTED ── */
 async function deleteSelectedPost(){
   if(!window._isAdmin) return;
   const sel=document.getElementById('adminPostSelect');
@@ -512,7 +504,6 @@ async function deleteSelectedPost(){
 }
 window.deleteSelectedPost=deleteSelectedPost;
 
-/* ── RENDER ADMIN POST LIST ── */
 function renderAdminPostList(){
   const sel=document.getElementById('adminPostSelect');
   if(!sel) return;
@@ -520,14 +511,12 @@ function renderAdminPostList(){
   sel.innerHTML='<option value="">— select a post —</option>'+
     posts.map(p=>{
       const preview=(p.contentRaw||'').slice(0,60).replace(/\n/g,' ')||'[no text]';
-      const lockMark='';
       const spoilerMark=p.spoilerImg?'[img spoiler] ':'';
-      return `<option value="${escAttr(p.id)}">${lockMark}${spoilerMark}[${fmtDate(p.ts)}] ${escHTML(preview)}</option>`;
+      return `<option value="${escAttr(p.id)}">${spoilerMark}[${fmtDate(p.ts)}] ${escHTML(preview)}</option>`;
     }).join('');
 }
 window.renderAdminPostList=renderAdminPostList;
 
-/* ── ADMIN PANEL INJECT ── */
 function injectAdminUI(){
   const container=document.getElementById('adminContainer');
   if(!container) return;
@@ -611,7 +600,6 @@ function injectAdminUI(){
 }
 window.injectAdminUI=injectAdminUI;
 
-/* ── SYNTAX PANEL TOGGLE ── */
 function toggleSyntaxPanel(){
   const p=document.getElementById('syntaxPanel');
   if(p) p.classList.toggle('open');
@@ -626,7 +614,6 @@ document.addEventListener('click',function(e){
   }
 });
 
-/* ── GREENTEXT AUTOCOMPLETE ── */
 function setupGreentextAutocomplete(ta){
   if(!ta) return;
   let lastAutoGT=false;
@@ -664,10 +651,23 @@ function setupGreentextAutocomplete(ta){
 
 /* ── LOGIN / LOGOUT ── */
 async function tryLogin(){
-  const input=document.getElementById('pwInput').value;
+  const pwEl=document.getElementById('pwInput');
   const errEl=document.getElementById('loginErr');
-  if(!input){errEl.textContent='enter a password.';return;}
-  errEl.textContent='checking…';
+  const input=pwEl?pwEl.value:'';
+  if(!input){if(errEl)errEl.textContent='enter a password.';return;}
+  if(errEl) errEl.textContent='checking…';
+
+  /* wait for Firebase to be ready (max 8s) */
+  let waited=0;
+  while((!window._sha256||!window._get||!window._ref||!window._db)&&waited<8000){
+    await new Promise(r=>setTimeout(r,120));
+    waited+=120;
+  }
+  if(!window._sha256||!window._get||!window._ref||!window._db){
+    if(errEl) errEl.textContent='firebase not ready. try again.';
+    return;
+  }
+
   try{
     const hash=await window._sha256(input);
     const snap=await window._get(window._ref(window._db,'admin/passHash'));
@@ -675,13 +675,16 @@ async function tryLogin(){
       window._isAdmin=true;
       document.getElementById('adminLogin').style.display='none';
       document.getElementById('adminPanel').style.display='block';
-      errEl.textContent='';
+      if(errEl) errEl.textContent='';
       renderAdminPostList();
       filterPosts();
     } else {
-      errEl.textContent='wrong password.';
+      if(errEl) errEl.textContent='wrong password.';
     }
-  }catch(e){errEl.textContent='error: '+e.message;}
+  }catch(e){
+    if(errEl) errEl.textContent='error: '+e.message;
+    console.error('[tryLogin]',e);
+  }
 }
 function logout(){
   window._isAdmin=false;
@@ -693,7 +696,6 @@ function logout(){
 window.tryLogin=tryLogin;
 window.logout=logout;
 
-/* ── FILE UPLOAD ── */
 async function handleFileSelect(event){
   const file=event.target.files[0]; event.target.value='';
   if(!file) return;
@@ -737,13 +739,11 @@ function removeEditorImg(){
 }
 window.removeEditorImg=removeEditorImg;
 
-/* ── SUBMIT POST ── */
 async function submitPost(){
   if(!window._isAdmin) return;
   if(typeof window._push !== 'function' || typeof window._ref !== 'function' || !window._db){
     const status=document.getElementById('edStatus');
     if(status) status.textContent='aguarde, Firebase ainda carregando…';
-    console.warn('[submitPost] Firebase não está pronto ainda.');
     return;
   }
   const btn=document.getElementById('submitBtn');
@@ -766,7 +766,7 @@ async function submitPost(){
     const si=document.getElementById('edSpoilerImg'); if(si) si.checked=false;
     if(status){status.textContent='posted!';setTimeout(()=>{status.textContent='';},3000);}
   }catch(e){
-    console.error('[submitPost] erro completo:',e);
+    console.error('[submitPost]',e);
     if(status) status.textContent='erro ao postar: '+e.message;
     btn.disabled=false;
     return;
@@ -775,21 +775,18 @@ async function submitPost(){
 }
 window.submitPost=submitPost;
 
-/* ── LIGHTBOX ── */
 function openLb(src){document.getElementById('lbImg').src=src;document.getElementById('lightbox').classList.add('active');document.addEventListener('keydown',lbKey);}
 function closeLb(){document.getElementById('lightbox').classList.remove('active');document.removeEventListener('keydown',lbKey);}
 function lbKey(e){if(e.key==='Escape')closeLb();}
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLb();});
 window.closeLb=closeLb;
 
-/* ── TITLE ANIMATION ── */
 (function(){
   const T="Blog - Archive Shinigami"; let i=0;
   const ti=setInterval(()=>{document.title=T.slice(0,i);i++;if(i>T.length){clearInterval(ti);document.title=T;blink();}},120);
   function blink(){setTimeout(()=>{let j=0;const bi=setInterval(()=>{document.title=(j%2===0)?"デスノート":T;j++;if(j>5){clearInterval(bi);document.title=T;blink();}},120);},3000+Math.random()*800);}
 })();
 
-/* ── CURSOR TRAIL (primary particles + ink ribbon overlay) ── */
 (function(){
   var canvas=document.getElementById('cursor-layer');
   if(!canvas||window.matchMedia&&window.matchMedia('(pointer:coarse)').matches) return;
@@ -797,9 +794,9 @@ window.closeLb=closeLb;
   var dpr=Math.min(window.devicePixelRatio||1,2),w=0,h=0;
   var ptr={x:innerWidth*.5,y:innerHeight*.5,px:innerWidth*.5,py:innerHeight*.5,vis:false};
 
-  var ghosts=[];       // primary red particle trail
-  var ribbon=[];       // ink ribbon position history [{x,y,t}]
-  var RIBBON_AGE=820;  // ms ribbon stays alive
+  var ghosts=[];
+  var ribbon=[];
+  var RIBBON_AGE=820;
   var ls=0;
 
   function resize(){
@@ -816,7 +813,6 @@ window.closeLb=closeLb;
     canvas.classList.remove('active');ctx.clearRect(0,0,w,h);
   }
 
-  /* spawn primary ghost particle */
   function sg(x,y,str,dx,dy,sp){
     ghosts.push({x,y,dx,dy,life:1.1,ttl:.06+str*.03,size:8.1+str*9.4+sp,spread:sp});
     if(ghosts.length>14) ghosts.shift();
@@ -830,7 +826,6 @@ window.closeLb=closeLb;
     var dx=ptr.x-ptr.px,dy=ptr.y-ptr.py,dist=Math.sqrt(dx*dx+dy*dy);
     if(dist<1.5) return;
 
-    /* ribbon: store every position, cap at 90 pts */
     ribbon.push({x:ptr.x,y:ptr.y,t:now});
     if(ribbon.length>90) ribbon.shift();
 
@@ -843,7 +838,6 @@ window.closeLb=closeLb;
     if(dist>16) sg(ptr.x-dirX*Math.min(13,dist*.72), ptr.y-dirY*Math.min(13,dist*.72), str*.58,dx,dy,1.35);
   }
 
-  /* ── DRAW PRIMARY ghost particle ── */
   function dg(g){
     var a=g.life*.62,sz=g.size*g.life;
     var d=Math.sqrt(g.dx*g.dx+g.dy*g.dy)||1,dX=g.dx/d,dY=g.dy/d;
@@ -865,53 +859,37 @@ window.closeLb=closeLb;
     ctx.beginPath();ctx.arc(g.x,g.y,Math.max(1.1,sz*.14),0,Math.PI*2);ctx.fill();
   }
 
-  /* ── DRAW INK RIBBON (smooth bezier overlay) ──
-     Uses midpoint-quadratic technique for a perfectly smooth curve.
-     'screen' composite = additive overlay: glows on dark, invisible on white.
-     Width tapers: ~1px at tail → ~11px near cursor.
-     Alpha is quadratic so the tail evaporates gently. */
   function drawRibbon(now){
-    /* prune old points */
     while(ribbon.length>0 && now-ribbon[0].t>RIBBON_AGE) ribbon.shift();
     var live=ribbon;
     if(live.length<3) return;
 
-    /* precompute midpoints for smooth bezier */
     var mids=[];
     for(var i=0;i<live.length-1;i++){
       mids.push({x:(live[i].x+live[i+1].x)*0.5, y:(live[i].y+live[i+1].y)*0.5});
     }
 
     ctx.save();
-    ctx.globalCompositeOperation='screen'; /* additive overlay — glows on dark bg */
+    ctx.globalCompositeOperation='screen';
     ctx.lineCap='round';
     ctx.lineJoin='round';
 
     var n=live.length;
     for(var i=1;i<n-1;i++){
-      var frac=i/(n-1);           /* 0 = oldest tail, 1 = newest head */
-      var age_t=1-(now-live[i].t)/RIBBON_AGE; /* 1 = just born, 0 = dying */
-
-      /* alpha: quadratic age × linear frac → tail evaporates, head visible */
+      var frac=i/(n-1);
+      var age_t=1-(now-live[i].t)/RIBBON_AGE;
       var a=age_t*age_t*frac*0.28;
       if(a<0.004) continue;
-
-      /* width: very thin at tail, fuller near cursor */
       var lw=1.0+frac*frac*11;
-
-      /* colour: deep wine at tail, brightens slightly near head */
-      var rv=Math.floor(140+frac*100); /* 140→240 */
+      var rv=Math.floor(140+frac*100);
       ctx.strokeStyle='rgba('+rv+',0,8,'+a+')';
       ctx.lineWidth=lw;
-
-      /* one smooth quadratic segment: prev-mid → control(live[i]) → next-mid */
       ctx.beginPath();
       ctx.moveTo(mids[i-1].x, mids[i-1].y);
       ctx.quadraticCurveTo(live[i].x, live[i].y, mids[i].x, mids[i].y);
       ctx.stroke();
     }
 
-    /* thin bright highlight pass on top (the "sheen" of the ribbon) */
     ctx.globalCompositeOperation='screen';
     for(var i=Math.floor(n*0.5);i<n-1;i++){
       var frac=i/(n-1);
@@ -932,10 +910,7 @@ window.closeLb=closeLb;
   function draw(dt,now){
     ctx.clearRect(0,0,w,h);
     if(!ptr.vis) return;
-
-    /* ribbon first (behind), then primary particles on top */
     drawRibbon(now);
-
     for(var j=ghosts.length-1;j>=0;j--){
       var g=ghosts[j];
       g.life-=dt/g.ttl;
@@ -996,7 +971,6 @@ window._onValue=onValue;
 onValue(ref(db,'blog/posts'),snap=>{
   const val=snap.val()||{};
   const raw=Object.entries(val).map(([id,data])=>({...(data||{}),id}));
-  console.log('[onValue] total posts recebidos do Firebase:', raw.length, raw.map(p=>p.id));
   window._allPosts=sortPostsNewest(raw);
   filterPosts();
   if(window._isAdmin) renderAdminPostList();
