@@ -781,7 +781,7 @@ window.closeLb=closeLb;
   function blink(){setTimeout(()=>{let j=0;const bi=setInterval(()=>{document.title=(j%2===0)?"デスノート":T;j++;if(j>5){clearInterval(bi);document.title=T;blink();}},120);},3000+Math.random()*800);}
 })();
 
-/* ── CURSOR TRAIL (dual ghost — Death Note effect) ── */
+/* ── CURSOR TRAIL (primary particles + ink ribbon overlay) ── */
 (function(){
   var canvas=document.getElementById('cursor-layer');
   if(!canvas||window.matchMedia&&window.matchMedia('(pointer:coarse)').matches) return;
@@ -789,9 +789,9 @@ window.closeLb=closeLb;
   var dpr=Math.min(window.devicePixelRatio||1,2),w=0,h=0;
   var ptr={x:innerWidth*.5,y:innerHeight*.5,px:innerWidth*.5,py:innerHeight*.5,vis:false};
 
-  /* Two separate particle pools */
-  var ghosts=[];   // primary: red trail
-  var ghosts2=[];  // secondary: ghost/glow aura, drawn behind
+  var ghosts=[];       // primary red particle trail
+  var ribbon=[];       // ink ribbon position history [{x,y,t}]
+  var RIBBON_AGE=820;  // ms ribbon stays alive
   var ls=0;
 
   function resize(){
@@ -804,28 +804,14 @@ window.closeLb=closeLb;
   }
   function on(){if(!ptr.vis){ptr.vis=true;canvas.classList.add('active');}}
   function off(){
-    ptr.vis=false;
-    ghosts.length=0;ghosts2.length=0;
-    canvas.classList.remove('active');
-    ctx.clearRect(0,0,w,h);
+    ptr.vis=false;ghosts.length=0;ribbon.length=0;
+    canvas.classList.remove('active');ctx.clearRect(0,0,w,h);
   }
 
-  /* Spawn primary ghost */
+  /* spawn primary ghost particle */
   function sg(x,y,str,dx,dy,sp){
     ghosts.push({x,y,dx,dy,life:1.1,ttl:.06+str*.03,size:8.1+str*9.4+sp,spread:sp});
     if(ghosts.length>14) ghosts.shift();
-  }
-
-  /* Spawn secondary ghost (larger, glowy, slower fade in time but faster in alpha) */
-  function sg2(x,y,str,dx,dy,sp){
-    ghosts2.push({
-      x,y,dx,dy,
-      life: 1.0,
-      ttl: .10 + str*.05,          // lives longer in time than primary
-      size: (10 + str*12 + sp) * 2.0, // significantly bigger
-      spread: sp
-    });
-    if(ghosts2.length>18) ghosts2.shift();
   }
 
   function mv(e){
@@ -835,28 +821,21 @@ window.closeLb=closeLb;
     ptr.x=e.clientX;ptr.y=e.clientY;
     var dx=ptr.x-ptr.px,dy=ptr.y-ptr.py,dist=Math.sqrt(dx*dx+dy*dy);
     if(dist<1.5) return;
+
+    /* ribbon: store every position, cap at 90 pts */
+    ribbon.push({x:ptr.x,y:ptr.y,t:now});
+    if(ribbon.length>90) ribbon.shift();
+
     var dirX=dx/dist,dirY=dy/dist,str=Math.min(1,dist/18);
     if(now-ls<6&&dist<7) return; ls=now;
 
-    /* Spawn primary + ghost at same positions */
-    sg (ptr.x-dirX*Math.min(4,dist*.22), ptr.y-dirY*Math.min(4,dist*.22), str,dx,dy,0);
-    sg2(ptr.x-dirX*Math.min(4,dist*.22), ptr.y-dirY*Math.min(4,dist*.22), str,dx,dy,0);
-
-    if(dist>7){
-      sg (ptr.x-dirX*Math.min(7,dist*.38),  ptr.y-dirY*Math.min(7,dist*.38),  str*.92,dx,dy,.45);
-      sg2(ptr.x-dirX*Math.min(7,dist*.38),  ptr.y-dirY*Math.min(7,dist*.38),  str*.92,dx,dy,.45);
-    }
-    if(dist>11){
-      sg (ptr.x-dirX*Math.min(10,dist*.52), ptr.y-dirY*Math.min(10,dist*.52), str*.78,dx,dy,.9);
-      sg2(ptr.x-dirX*Math.min(10,dist*.52), ptr.y-dirY*Math.min(10,dist*.52), str*.78,dx,dy,.9);
-    }
-    if(dist>16){
-      sg (ptr.x-dirX*Math.min(13,dist*.72), ptr.y-dirY*Math.min(13,dist*.72), str*.58,dx,dy,1.35);
-      sg2(ptr.x-dirX*Math.min(13,dist*.72), ptr.y-dirY*Math.min(13,dist*.72), str*.58,dx,dy,1.35);
-    }
+    sg(ptr.x-dirX*Math.min(4,dist*.22), ptr.y-dirY*Math.min(4,dist*.22), str,dx,dy,0);
+    if(dist>7)  sg(ptr.x-dirX*Math.min(7,dist*.38),  ptr.y-dirY*Math.min(7,dist*.38),  str*.92,dx,dy,.45);
+    if(dist>11) sg(ptr.x-dirX*Math.min(10,dist*.52), ptr.y-dirY*Math.min(10,dist*.52), str*.78,dx,dy,.9);
+    if(dist>16) sg(ptr.x-dirX*Math.min(13,dist*.72), ptr.y-dirY*Math.min(13,dist*.72), str*.58,dx,dy,1.35);
   }
 
-  /* Draw PRIMARY ghost particle (red trail) */
+  /* ── DRAW PRIMARY ghost particle ── */
   function dg(g){
     var a=g.life*.62,sz=g.size*g.life;
     var d=Math.sqrt(g.dx*g.dx+g.dy*g.dy)||1,dX=g.dx/d,dY=g.dy/d;
@@ -878,59 +857,83 @@ window.closeLb=closeLb;
     ctx.beginPath();ctx.arc(g.x,g.y,Math.max(1.1,sz*.14),0,Math.PI*2);ctx.fill();
   }
 
-  /* Draw SECONDARY ghost particle (bright/transparent aura — the Death Note ghost effect)
-     Alpha uses life^2 so it decays FAST (transparent quickly) even though TTL is longer.
-     Color: white-pink core fading to red, giving a supernatural "shinigami glow" */
-  function dg2(g){
-    var lifeQ = g.life * g.life;        // quadratic: drops fast → feels ghostly/brief
-    var a = lifeQ * 0.22;               // low max opacity → transparent & ethereal
-    var sz = g.size * g.life;
-    var r = Math.max(8, sz * 1.0);
+  /* ── DRAW INK RIBBON (smooth bezier overlay) ──
+     Uses midpoint-quadratic technique for a perfectly smooth curve.
+     'screen' composite = additive overlay: glows on dark, invisible on white.
+     Width tapers: ~1px at tail → ~11px near cursor.
+     Alpha is quadratic so the tail evaporates gently. */
+  function drawRibbon(now){
+    /* prune old points */
+    while(ribbon.length>0 && now-ribbon[0].t>RIBBON_AGE) ribbon.shift();
+    var live=ribbon;
+    if(live.length<3) return;
 
-    /* Outer glow: soft white-red halo */
-    var gl=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,r);
-    gl.addColorStop(0,   'rgba(255,230,210,'+(Math.min(1, a*2.8))+')'); // bright white-pink core
-    gl.addColorStop(0.15,'rgba(255,160,120,'+(a*1.8)+')');
-    gl.addColorStop(0.40,'rgba(220,30,20,'  +(a*0.9)+')');
-    gl.addColorStop(0.70,'rgba(180,0,0,'    +(a*0.35)+')');
-    gl.addColorStop(1,   'rgba(120,0,0,0)');
-    ctx.fillStyle=gl;
-    ctx.beginPath();ctx.arc(g.x,g.y,r,0,Math.PI*2);ctx.fill();
+    /* precompute midpoints for smooth bezier */
+    var mids=[];
+    for(var i=0;i<live.length-1;i++){
+      mids.push({x:(live[i].x+live[i+1].x)*0.5, y:(live[i].y+live[i+1].y)*0.5});
+    }
 
-    /* Inner bright flare — the "soul" */
-    var fr = Math.max(3, sz * 0.28);
-    var fl=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,fr);
-    fl.addColorStop(0,  'rgba(255,255,240,'+(Math.min(1,a*4.5))+')'); // near-white
-    fl.addColorStop(0.5,'rgba(255,180,160,'+(a*2.0)+')');
-    fl.addColorStop(1,  'rgba(255,80,60,0)');
-    ctx.fillStyle=fl;
-    ctx.beginPath();ctx.arc(g.x,g.y,fr,0,Math.PI*2);ctx.fill();
+    ctx.save();
+    ctx.globalCompositeOperation='screen'; /* additive overlay — glows on dark bg */
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+
+    var n=live.length;
+    for(var i=1;i<n-1;i++){
+      var frac=i/(n-1);           /* 0 = oldest tail, 1 = newest head */
+      var age_t=1-(now-live[i].t)/RIBBON_AGE; /* 1 = just born, 0 = dying */
+
+      /* alpha: quadratic age × linear frac → tail evaporates, head visible */
+      var a=age_t*age_t*frac*0.28;
+      if(a<0.004) continue;
+
+      /* width: very thin at tail, fuller near cursor */
+      var lw=1.0+frac*frac*11;
+
+      /* colour: deep wine at tail, brightens slightly near head */
+      var rv=Math.floor(140+frac*100); /* 140→240 */
+      ctx.strokeStyle='rgba('+rv+',0,8,'+a+')';
+      ctx.lineWidth=lw;
+
+      /* one smooth quadratic segment: prev-mid → control(live[i]) → next-mid */
+      ctx.beginPath();
+      ctx.moveTo(mids[i-1].x, mids[i-1].y);
+      ctx.quadraticCurveTo(live[i].x, live[i].y, mids[i].x, mids[i].y);
+      ctx.stroke();
+    }
+
+    /* thin bright highlight pass on top (the "sheen" of the ribbon) */
+    ctx.globalCompositeOperation='screen';
+    for(var i=Math.floor(n*0.5);i<n-1;i++){
+      var frac=i/(n-1);
+      var age_t=1-(now-live[i].t)/RIBBON_AGE;
+      var a=age_t*age_t*frac*0.14;
+      if(a<0.006) continue;
+      ctx.strokeStyle='rgba(255,80,80,'+a+')';
+      ctx.lineWidth=Math.max(0.5,(frac*frac*3.5));
+      ctx.beginPath();
+      ctx.moveTo(mids[i-1].x, mids[i-1].y);
+      ctx.quadraticCurveTo(live[i].x, live[i].y, mids[i].x, mids[i].y);
+      ctx.stroke();
+    }
+
+    ctx.restore();
   }
 
-  function draw(dt){
+  function draw(dt,now){
     ctx.clearRect(0,0,w,h);
     if(!ptr.vis) return;
 
-    /* ── Draw secondary ghost trail FIRST (behind primary) ── */
-    for(var i=ghosts2.length-1;i>=0;i--){
-      var g2=ghosts2[i];
-      g2.life -= dt/g2.ttl;
-      if(g2.life<=0){ghosts2.splice(i,1);continue;}
-      /* Ghost moves slightly more lazily / drifts */
-      g2.x -= g2.dx * .004 * g2.life;
-      g2.y -= g2.dy * .004 * g2.life;
-      g2.dx *= .92; g2.dy *= .92;
-      dg2(g2);
-    }
+    /* ribbon first (behind), then primary particles on top */
+    drawRibbon(now);
 
-    /* ── Draw primary red trail ON TOP ── */
     for(var j=ghosts.length-1;j>=0;j--){
       var g=ghosts[j];
-      g.life -= dt/g.ttl;
+      g.life-=dt/g.ttl;
       if(g.life<=0){ghosts.splice(j,1);continue;}
-      g.x -= g.dx * .0068 * g.life;
-      g.y -= g.dy * .0068 * g.life;
-      g.dx *= .88; g.dy *= .88;
+      g.x-=g.dx*.0068*g.life; g.y-=g.dy*.0068*g.life;
+      g.dx*=.88; g.dy*=.88;
       dg(g);
     }
   }
@@ -938,7 +941,7 @@ window.closeLb=closeLb;
   var prev=performance.now();
   function tick(){
     var now=performance.now(),dt=Math.min(.032,(now-prev)/1000);
-    prev=now;draw(dt);requestAnimationFrame(tick);
+    prev=now; draw(dt,now); requestAnimationFrame(tick);
   }
   resize();tick();
   window.addEventListener('resize',resize);
