@@ -269,14 +269,31 @@ a:hover{text-decoration:underline;}
       onStateChange:function(e){if(e.data===YT.PlayerState.ENDED) loadNext();}
     }});
   };
+
+  /* ── MUSIC TOGGLE (FIX) ── */
   function applyMute(){
     var btn=document.getElementById('musicBtn');
-    if(player){
-      if(muted) player.mute(); else {player.unMute();player.setVolume(100);player.playVideo();}
+    if(player && typeof player.getPlayerState === 'function'){
+      if(muted){
+        player.mute();
+      } else {
+        // unMute, set full volume, ensure playing
+        player.unMute();
+        player.setVolume(100);
+        // if paused or not started, force play
+        var state=player.getPlayerState();
+        if(state===YT.PlayerState.PAUSED||state===YT.PlayerState.CUED||state===-1){
+          player.playVideo();
+        }
+      }
     }
     if(btn) btn.textContent=muted?'Music: Off':'Music: On';
   }
-  window.toggleMusic=function(){muted=!muted;applyMute();};
+  window.toggleMusic=function(){
+    muted=!muted;
+    applyMute();
+  };
+
   if(window.YT&&YT.Player) window.onYouTubeIframeAPIReady();
   else {
     var tag=document.createElement('script');
@@ -368,7 +385,6 @@ function detectEmbeds(text){
 
 /* ── FILTER / RENDER ── */
 function filterPosts(){
-  // FIX: guard para container null (chamado antes do DOM estar pronto)
   const container=document.getElementById('postsContainer');
   if(!container) return;
   const sort=document.getElementById('sortSelect')?.value||'newest';
@@ -412,13 +428,10 @@ function buildCard(p,num,adminMode){
 
   const raw=p.contentRaw||'';
 
-  // FIX: suporte a posts legados que têm contentHtml com tags <div><br>
-  // em vez de contentRaw (formato antigo do Firebase)
   let htmlContent;
   if(raw){
     htmlContent=parse4chan(raw).html;
   } else if(p.contentHtml){
-    // Converte HTML legado para texto plano e re-parseia com parse4chan
     const stripped=p.contentHtml
       .replace(/<div><br\s*\/?><\/div>/gi,'\n')
       .replace(/<br\s*\/?>/gi,'\n')
@@ -434,7 +447,6 @@ function buildCard(p,num,adminMode){
     htmlContent='';
   }
 
-  // embeds: só processa a partir de contentRaw (legado sem contentRaw não tem embeds)
   const parsed=raw?parse4chan(raw):{html:'',embedUrls:[]};
   const embedsFromUrl=parsed.embedUrls.flatMap(url=>{
     const e=detectEmbeds(url);
@@ -456,7 +468,6 @@ function buildCard(p,num,adminMode){
   }
 
   const innerBody=`${imgHTML}<div class="post-content">${htmlContent}</div><div style="clear:both;"></div>${embedHTML}`;
-
   const bodyHTML=`<div class="post-body">${innerBody}</div>`;
 
   return `<div class="post-card" id="post-${p.id}">
@@ -721,24 +732,18 @@ window.removeEditorImg=removeEditorImg;
 /* ── SUBMIT POST ── */
 async function submitPost(){
   if(!window._isAdmin) return;
-
-  // FIX: guard — Firebase module pode não ter carregado ainda
   if(typeof window._push !== 'function' || typeof window._ref !== 'function' || !window._db){
     const status=document.getElementById('edStatus');
     if(status) status.textContent='aguarde, Firebase ainda carregando…';
     console.warn('[submitPost] Firebase não está pronto ainda.');
     return;
   }
-
   const btn=document.getElementById('submitBtn');
   const status=document.getElementById('edStatus');
   const raw=(document.getElementById('postTextarea')?.value||'').trim();
-
   if(!raw&&!_imgUrl){if(status)status.textContent='write something first.';return;}
-
   btn.disabled=true;
   if(status) status.textContent='posting…';
-
   try{
     const postData={
       imageSrc:  _imgUrl||null,
@@ -747,22 +752,17 @@ async function submitPost(){
       contentRaw: raw,
       ts: Date.now()
     };
-
     await window._push(window._ref(window._db,'blog/posts'),postData);
-
     document.getElementById('postTextarea').value='';
     removeEditorImg();
     const si=document.getElementById('edSpoilerImg'); if(si) si.checked=false;
     if(status){status.textContent='posted!';setTimeout(()=>{status.textContent='';},3000);}
-
   }catch(e){
-    // FIX: erro fica visível e não desaparece automaticamente
     console.error('[submitPost] erro completo:',e);
     if(status) status.textContent='erro ao postar: '+e.message;
     btn.disabled=false;
     return;
   }
-
   btn.disabled=false;
 }
 window.submitPost=submitPost;
@@ -781,55 +781,165 @@ window.closeLb=closeLb;
   function blink(){setTimeout(()=>{let j=0;const bi=setInterval(()=>{document.title=(j%2===0)?"デスノート":T;j++;if(j>5){clearInterval(bi);document.title=T;blink();}},120);},3000+Math.random()*800);}
 })();
 
-/* ── CURSOR TRAIL ── */
+/* ── CURSOR TRAIL (dual ghost — Death Note effect) ── */
 (function(){
   var canvas=document.getElementById('cursor-layer');
   if(!canvas||window.matchMedia&&window.matchMedia('(pointer:coarse)').matches) return;
   var ctx=canvas.getContext('2d',{alpha:true}); if(!ctx) return;
   var dpr=Math.min(window.devicePixelRatio||1,2),w=0,h=0;
   var ptr={x:innerWidth*.5,y:innerHeight*.5,px:innerWidth*.5,py:innerHeight*.5,vis:false};
-  var ghosts=[],ls=0;
-  function resize(){w=innerWidth;h=innerHeight;dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.max(1,Math.floor(w*dpr));canvas.height=Math.max(1,Math.floor(h*dpr));canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
+
+  /* Two separate particle pools */
+  var ghosts=[];   // primary: red trail
+  var ghosts2=[];  // secondary: ghost/glow aura, drawn behind
+  var ls=0;
+
+  function resize(){
+    w=innerWidth;h=innerHeight;
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=Math.max(1,Math.floor(w*dpr));
+    canvas.height=Math.max(1,Math.floor(h*dpr));
+    canvas.style.width=w+'px';canvas.style.height=h+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
   function on(){if(!ptr.vis){ptr.vis=true;canvas.classList.add('active');}}
-  function off(){ptr.vis=false;ghosts.length=0;canvas.classList.remove('active');ctx.clearRect(0,0,w,h);}
-  function sg(x,y,str,dx,dy,sp){ghosts.push({x,y,dx,dy,life:1.1,ttl:.06+str*.03,size:8.1+str*9.4+sp,spread:sp});if(ghosts.length>14)ghosts.shift();}
+  function off(){
+    ptr.vis=false;
+    ghosts.length=0;ghosts2.length=0;
+    canvas.classList.remove('active');
+    ctx.clearRect(0,0,w,h);
+  }
+
+  /* Spawn primary ghost */
+  function sg(x,y,str,dx,dy,sp){
+    ghosts.push({x,y,dx,dy,life:1.1,ttl:.06+str*.03,size:8.1+str*9.4+sp,spread:sp});
+    if(ghosts.length>14) ghosts.shift();
+  }
+
+  /* Spawn secondary ghost (larger, glowy, slower fade in time but faster in alpha) */
+  function sg2(x,y,str,dx,dy,sp){
+    ghosts2.push({
+      x,y,dx,dy,
+      life: 1.0,
+      ttl: .10 + str*.05,          // lives longer in time than primary
+      size: (10 + str*12 + sp) * 2.0, // significantly bigger
+      spread: sp
+    });
+    if(ghosts2.length>18) ghosts2.shift();
+  }
+
   function mv(e){
-    on();var now=performance.now();
-    ptr.px=ptr.x;ptr.py=ptr.y;ptr.x=e.clientX;ptr.y=e.clientY;
+    on();
+    var now=performance.now();
+    ptr.px=ptr.x;ptr.py=ptr.y;
+    ptr.x=e.clientX;ptr.y=e.clientY;
     var dx=ptr.x-ptr.px,dy=ptr.y-ptr.py,dist=Math.sqrt(dx*dx+dy*dy);
     if(dist<1.5) return;
     var dirX=dx/dist,dirY=dy/dist,str=Math.min(1,dist/18);
     if(now-ls<6&&dist<7) return; ls=now;
-    sg(ptr.x-dirX*Math.min(4,dist*.22),ptr.y-dirY*Math.min(4,dist*.22),str,dx,dy,0);
-    if(dist>7)  sg(ptr.x-dirX*Math.min(7,dist*.38), ptr.y-dirY*Math.min(7,dist*.38), str*.92,dx,dy,.45);
-    if(dist>11) sg(ptr.x-dirX*Math.min(10,dist*.52),ptr.y-dirY*Math.min(10,dist*.52),str*.78,dx,dy,.9);
-    if(dist>16) sg(ptr.x-dirX*Math.min(13,dist*.72),ptr.y-dirY*Math.min(13,dist*.72),str*.58,dx,dy,1.35);
+
+    /* Spawn primary + ghost at same positions */
+    sg (ptr.x-dirX*Math.min(4,dist*.22), ptr.y-dirY*Math.min(4,dist*.22), str,dx,dy,0);
+    sg2(ptr.x-dirX*Math.min(4,dist*.22), ptr.y-dirY*Math.min(4,dist*.22), str,dx,dy,0);
+
+    if(dist>7){
+      sg (ptr.x-dirX*Math.min(7,dist*.38),  ptr.y-dirY*Math.min(7,dist*.38),  str*.92,dx,dy,.45);
+      sg2(ptr.x-dirX*Math.min(7,dist*.38),  ptr.y-dirY*Math.min(7,dist*.38),  str*.92,dx,dy,.45);
+    }
+    if(dist>11){
+      sg (ptr.x-dirX*Math.min(10,dist*.52), ptr.y-dirY*Math.min(10,dist*.52), str*.78,dx,dy,.9);
+      sg2(ptr.x-dirX*Math.min(10,dist*.52), ptr.y-dirY*Math.min(10,dist*.52), str*.78,dx,dy,.9);
+    }
+    if(dist>16){
+      sg (ptr.x-dirX*Math.min(13,dist*.72), ptr.y-dirY*Math.min(13,dist*.72), str*.58,dx,dy,1.35);
+      sg2(ptr.x-dirX*Math.min(13,dist*.72), ptr.y-dirY*Math.min(13,dist*.72), str*.58,dx,dy,1.35);
+    }
   }
+
+  /* Draw PRIMARY ghost particle (red trail) */
   function dg(g){
     var a=g.life*.62,sz=g.size*g.life;
     var d=Math.sqrt(g.dx*g.dx+g.dy*g.dy)||1,dX=g.dx/d,dY=g.dy/d;
     var tl=Math.min(24,7+d*.42+g.spread*1.8),tx=g.x-dX*tl,ty=g.y-dY*tl,sw=Math.max(2.1,sz*.42);
     var tg=ctx.createLinearGradient(tx,ty,g.x,g.y);
-    tg.addColorStop(0,'rgba(255,0,0,0)');tg.addColorStop(.24,'rgba(255,0,0,'+(a*.08)+')');
-    tg.addColorStop(.64,'rgba(255,0,0,'+(a*.3)+')');tg.addColorStop(1,'rgba(255,0,0,'+(a*.96)+')');
+    tg.addColorStop(0,'rgba(255,0,0,0)');
+    tg.addColorStop(.24,'rgba(255,0,0,'+(a*.08)+')');
+    tg.addColorStop(.64,'rgba(255,0,0,'+(a*.3)+')');
+    tg.addColorStop(1,'rgba(255,0,0,'+(a*.96)+')');
     ctx.strokeStyle=tg;ctx.lineWidth=sw;ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(g.x,g.y);ctx.stroke();
     var gl=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,Math.max(4.5,sz*.88));
-    gl.addColorStop(0,'rgba(255,0,0,'+(a*.92)+')');gl.addColorStop(.28,'rgba(255,0,0,'+(a*.18)+')');
-    gl.addColorStop(.62,'rgba(255,0,0,'+(a*.06)+')');gl.addColorStop(1,'rgba(255,0,0,0)');
+    gl.addColorStop(0,'rgba(255,0,0,'+(a*.92)+')');
+    gl.addColorStop(.28,'rgba(255,0,0,'+(a*.18)+')');
+    gl.addColorStop(.62,'rgba(255,0,0,'+(a*.06)+')');
+    gl.addColorStop(1,'rgba(255,0,0,0)');
     ctx.fillStyle=gl;ctx.beginPath();ctx.arc(g.x,g.y,Math.max(4.5,sz*.88),0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='rgba(255,0,0,'+(a*.9)+')';ctx.beginPath();ctx.arc(g.x,g.y,Math.max(1.1,sz*.14),0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(255,0,0,'+(a*.9)+')';
+    ctx.beginPath();ctx.arc(g.x,g.y,Math.max(1.1,sz*.14),0,Math.PI*2);ctx.fill();
   }
+
+  /* Draw SECONDARY ghost particle (bright/transparent aura — the Death Note ghost effect)
+     Alpha uses life^2 so it decays FAST (transparent quickly) even though TTL is longer.
+     Color: white-pink core fading to red, giving a supernatural "shinigami glow" */
+  function dg2(g){
+    var lifeQ = g.life * g.life;        // quadratic: drops fast → feels ghostly/brief
+    var a = lifeQ * 0.22;               // low max opacity → transparent & ethereal
+    var sz = g.size * g.life;
+    var r = Math.max(8, sz * 1.0);
+
+    /* Outer glow: soft white-red halo */
+    var gl=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,r);
+    gl.addColorStop(0,   'rgba(255,230,210,'+(Math.min(1, a*2.8))+')'); // bright white-pink core
+    gl.addColorStop(0.15,'rgba(255,160,120,'+(a*1.8)+')');
+    gl.addColorStop(0.40,'rgba(220,30,20,'  +(a*0.9)+')');
+    gl.addColorStop(0.70,'rgba(180,0,0,'    +(a*0.35)+')');
+    gl.addColorStop(1,   'rgba(120,0,0,0)');
+    ctx.fillStyle=gl;
+    ctx.beginPath();ctx.arc(g.x,g.y,r,0,Math.PI*2);ctx.fill();
+
+    /* Inner bright flare — the "soul" */
+    var fr = Math.max(3, sz * 0.28);
+    var fl=ctx.createRadialGradient(g.x,g.y,0,g.x,g.y,fr);
+    fl.addColorStop(0,  'rgba(255,255,240,'+(Math.min(1,a*4.5))+')'); // near-white
+    fl.addColorStop(0.5,'rgba(255,180,160,'+(a*2.0)+')');
+    fl.addColorStop(1,  'rgba(255,80,60,0)');
+    ctx.fillStyle=fl;
+    ctx.beginPath();ctx.arc(g.x,g.y,fr,0,Math.PI*2);ctx.fill();
+  }
+
   function draw(dt){
-    ctx.clearRect(0,0,w,h);if(!ptr.vis||!ghosts.length) return;
-    for(var i=ghosts.length-1;i>=0;i--){
-      var g=ghosts[i];g.life-=dt/g.ttl;
-      if(g.life<=0){ghosts.splice(i,1);continue;}
-      g.x-=g.dx*.0068*g.life;g.y-=g.dy*.0068*g.life;g.dx*=.88;g.dy*=.88;dg(g);
+    ctx.clearRect(0,0,w,h);
+    if(!ptr.vis) return;
+
+    /* ── Draw secondary ghost trail FIRST (behind primary) ── */
+    for(var i=ghosts2.length-1;i>=0;i--){
+      var g2=ghosts2[i];
+      g2.life -= dt/g2.ttl;
+      if(g2.life<=0){ghosts2.splice(i,1);continue;}
+      /* Ghost moves slightly more lazily / drifts */
+      g2.x -= g2.dx * .004 * g2.life;
+      g2.y -= g2.dy * .004 * g2.life;
+      g2.dx *= .92; g2.dy *= .92;
+      dg2(g2);
+    }
+
+    /* ── Draw primary red trail ON TOP ── */
+    for(var j=ghosts.length-1;j>=0;j--){
+      var g=ghosts[j];
+      g.life -= dt/g.ttl;
+      if(g.life<=0){ghosts.splice(j,1);continue;}
+      g.x -= g.dx * .0068 * g.life;
+      g.y -= g.dy * .0068 * g.life;
+      g.dx *= .88; g.dy *= .88;
+      dg(g);
     }
   }
+
   var prev=performance.now();
-  function tick(){var now=performance.now(),dt=Math.min(.032,(now-prev)/1000);prev=now;draw(dt);requestAnimationFrame(tick);}
+  function tick(){
+    var now=performance.now(),dt=Math.min(.032,(now-prev)/1000);
+    prev=now;draw(dt);requestAnimationFrame(tick);
+  }
   resize();tick();
   window.addEventListener('resize',resize);
   window.addEventListener('mousemove',mv,{passive:true});
@@ -864,7 +974,6 @@ async function sha256(str){
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// Expõe funções Firebase para o script principal
 window._db=db;
 window._ref=ref;
 window._push=push;
@@ -873,7 +982,6 @@ window._get=get;
 window._sha256=sha256;
 window._onValue=onValue;
 
-// Listener de posts em tempo real
 onValue(ref(db,'blog/posts'),snap=>{
   const val=snap.val()||{};
   const raw=Object.entries(val).map(([id,data])=>({...(data||{}),id}));
@@ -883,7 +991,6 @@ onValue(ref(db,'blog/posts'),snap=>{
   if(window._isAdmin) renderAdminPostList();
 });
 
-// Injeta painel admin se ?admin na URL
 if(new URLSearchParams(window.location.search).has('admin')){
   window._isAdminUrl=true;
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',injectAdminUI);
