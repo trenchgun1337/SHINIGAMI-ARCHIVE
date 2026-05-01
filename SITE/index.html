@@ -854,23 +854,21 @@ body {
   'use strict';
   var pages = ['introduction','resources'];
 
- function gotoPage(name) {
-  if (pages.indexOf(name) === -1) name = 'introduction';
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
-  var pg  = document.getElementById('pg-'   + name);
-  var btn = document.getElementById('nbtn-' + name);
-  if (pg)  pg.classList.add('active');
-  if (btn) btn.classList.add('active');
-  document.title = name[0].toUpperCase() + name.slice(1) + ' \u2014 Shinigami Archive';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  function gotoPage(name) {
+    if (pages.indexOf(name) === -1) name = 'introduction';
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
+    var pg  = document.getElementById('pg-'   + name);
+    var btn = document.getElementById('nbtn-' + name);
+    if (pg)  pg.classList.add('active');
+    if (btn) btn.classList.add('active');
+    document.title = name[0].toUpperCase() + name.slice(1) + ' \u2014 Shinigami Archive';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
+     // esconde footer em resources
   var footer = document.getElementById('pageFooter');
-  var mc     = document.getElementById('mainContent');
-  var isRes  = name === 'resources';
-  if (footer) footer.style.display = isRes ? 'none' : '';
-  if (mc)     mc.style.minHeight   = isRes ? '0'    : '';
-}
+  if (footer) footer.style.display = name === 'resources' ? 'none' : '';
+  }
 
   window.gotoPage = gotoPage;
   window.navClick = function(e, name) {
