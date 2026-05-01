@@ -33,7 +33,9 @@ img{-webkit-user-drag:none;user-select:none;}
 ::-webkit-scrollbar-corner{background:#111;}
 
 #videoBg{position:fixed;inset:0;z-index:-1;background:#000;overflow:hidden;pointer-events:none;}
-#videoBg iframe{position:absolute;top:50%;left:50%;width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;transform:translate(-50%,-50%);border:none;pointer-events:none;}
+#ytBg,#videoBg iframe{position:absolute;top:50%;left:50%;width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;transform:translate(-50%,-50%);border:none;pointer-events:none;}
+#videoFade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;}
+#videoFade.active{opacity:1;}
 
 #musicBtn{cursor:pointer;margin-right:10px;border-bottom:1px dotted #444;color:#777;}
 
@@ -88,11 +90,9 @@ a:hover{text-decoration:underline;}
 .post-content .redtext{color:#cc0000;}
 .post-content .red-link{color:#cc0000;text-decoration:underline;cursor:pointer;}
 .post-content .red-link:hover{color:#ff3333;}
-.post-content .scripttype{font-family:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif;font-style:italic;font-size:14px;}
 .post-content .greentext{color:#789922;}
 .post-content .spoiler{background:#111;color:transparent;cursor:pointer;padding:0 2px;border-radius:2px;transition:color 0.15s,background 0.15s;user-select:none;}
 .post-content .spoiler:hover,.post-content .spoiler.revealed{background:#333;color:#fff;}
-.post-content code{font-family:monospace;background:#eee;padding:0 3px;font-size:12px;}
 
 .post-badge{display:inline-block;font-size:9px;font-family:'SpecialElite',Georgia,serif;padding:1px 5px;border:1px solid;margin-left:4px;letter-spacing:.5px;text-transform:uppercase;}
 .post-badge.badge-spoiler{border-color:#66a;color:#66a;}
@@ -176,7 +176,7 @@ a:hover{text-decoration:underline;}
   #wrapper{width:100%;}
   #siteIcon{margin-left:0;display:block;margin:0 auto 8px;}
   #siteLogo{width:min(100%,280px);margin:0 auto;display:block;height:auto;}
-  #videoBg iframe{width:100vw!important;height:100vh!important;min-width:unset!important;min-height:unset!important;}
+  #ytBg,#videoBg iframe{width:100vw!important;height:100vh!important;min-width:unset!important;min-height:unset!important;}
   #wa-tooltip{display:none!important;}
   .post-img-wrap img{max-width:160px;max-height:160px;}
   #syntaxPanel{left:auto;right:0;}
@@ -189,12 +189,9 @@ a:hover{text-decoration:underline;}
 <body>
 
 <div id="videoBg">
-  <iframe id="vimeoBg"
-    src="https://player.vimeo.com/video/1187527804?badge=0&autopause=0&player_id=0&app_id=58479&background=1&autoplay=1&loop=1&muted=1"
-    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-    title=""></iframe>
+  <div id="ytBg"></div>
+  <div id="videoFade"></div>
 </div>
-<script src="https://player.vimeo.com/api/player.js"></script>
 
 <div id="wa-tooltip"></div>
 <div id="lightbox">
@@ -244,25 +241,48 @@ a:hover{text-decoration:underline;}
 
 <canvas id="cursor-layer" aria-hidden="true"></canvas>
 
-<!-- ── VIMEO TOGGLE ── -->
+<!-- ── YOUTUBE BG ── -->
 <script>
 (function(){
-  var _muted=true,_player=null;
-  window.addEventListener('load',function(){
-    var iframe=document.getElementById('vimeoBg');
-    if(!iframe||typeof Vimeo==='undefined') return;
-    _player=new Vimeo.Player(iframe);
-    _player.setMuted(true).catch(function(){});
-  });
+  var IDS=['oG7EaSELOiM','e6sSMIfG94k'],idx=0,muted=true,player=null,swapLock=false,timer=null;
+  function fade(on){var el=document.getElementById('videoFade');if(el)el.classList.toggle('active',!!on);}
+  function loadNext(){
+    if(!player||swapLock) return;
+    swapLock=true; fade(true); idx=(idx+1)%IDS.length;
+    player.loadVideoById({videoId:IDS[idx]});
+    setTimeout(function(){fade(false);swapLock=false;},450);
+  }
+  function watchEnd(){
+    clearInterval(timer);
+    timer=setInterval(function(){
+      if(!player||swapLock||typeof player.getDuration!=='function') return;
+      var d=player.getDuration()||0,t=player.getCurrentTime()||0;
+      if(d>40&&d-t<=32) loadNext();
+    },500);
+  }
+  window.onYouTubeIframeAPIReady=function(){
+    player=new YT.Player('ytBg',{videoId:IDS[idx],playerVars:{
+      autoplay:1,controls:0,disablekb:1,fs:0,iv_load_policy:3,modestbranding:1,
+      playsinline:1,rel:0,mute:1
+    },events:{
+      onReady:function(e){e.target.mute();e.target.playVideo();watchEnd();},
+      onStateChange:function(e){if(e.data===YT.PlayerState.ENDED) loadNext();}
+    }});
+  };
   function applyMute(){
     var btn=document.getElementById('musicBtn');
-    if(_player){
-      _player.setMuted(_muted).catch(function(){});
-      if(!_muted){_player.setVolume(1).catch(function(){});_player.play().catch(function(){});}
+    if(player){
+      if(muted) player.mute(); else {player.unMute();player.setVolume(100);player.playVideo();}
     }
-    if(btn) btn.textContent=_muted?'Music: Off':'Music: On';
+    if(btn) btn.textContent=muted?'Music: Off':'Music: On';
   }
-  window.toggleMusic=function(){_muted=!_muted;applyMute();};
+  window.toggleMusic=function(){muted=!muted;applyMute();};
+  if(window.YT&&YT.Player) window.onYouTubeIframeAPIReady();
+  else {
+    var tag=document.createElement('script');
+    tag.src='https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  }
 })();
 </script>
 
@@ -319,11 +339,6 @@ function parse4chan(raw){
     return line;
   }).join('\n');
   s=s.replace(/\|([^|\n]+)\|/g,'<span class="spoiler" onclick="this.classList.toggle(\'revealed\')">$1</span>');
-  s=s.replace(/\*([^*\n]+)\*/g,'<strong>$1</strong>');
-  s=s.replace(/(?<![a-zA-Z0-9])_([^_\n]+)_(?![a-zA-Z0-9])/g,'<em>$1</em>');
-  s=s.replace(/(?<![a-zA-Z0-9])-([^-\n]+)-(?![a-zA-Z0-9])/g,'<s>$1</s>');
-  s=s.replace(/\^([^\^\n]+)\^/g,'<span class="scripttype">$1</span>');
-  s=s.replace(/`([^`\n]+)`/g,'<code>$1</code>');
   s=s.replace(/\x00EMB(\d+)\x00/g,(_,i)=>{
     const url=embedUrls[parseInt(i)];
     return '<a href="'+url+'" class="red-link" target="_blank" rel="noopener">'+url+'</a>';
@@ -525,17 +540,12 @@ function injectAdminUI(){
         <tr>
           <td class="chan-label" style="padding-top:8px;">Comment</td>
           <td class="chan-field" style="padding:0;">
-            <textarea id="postTextarea" placeholder="write your post…&#10;&#10;&gt;greentext  *bold*  _italic_  -strike-  ^script^&#10;|spoiler|  \`code\`  /url  //url+embed"></textarea>
+            <textarea id="postTextarea" placeholder="write your post…&#10;&#10;&gt;greentext&#10;|spoiler|&#10;/url  //url+embed"></textarea>
             <div class="syntax-row">
               <div class="syntax-help-wrap">
                 <button id="syntaxToggleBtn" onclick="toggleSyntaxPanel()">[?] syntax</button>
                 <div id="syntaxPanel">
                   <table>
-                    <tr><td>*text*</td><td><strong>bold</strong></td></tr>
-                    <tr><td>_text_</td><td><em>italic</em></td></tr>
-                    <tr><td>-text-</td><td><s>strikethrough</s></td></tr>
-                    <tr><td>^text^</td><td><span style="font-family:Georgia,serif;font-style:italic;">script/cursive</span></td></tr>
-                    <tr><td>\`text\`</td><td><code style="background:#eee;padding:0 3px;">monospace</code></td></tr>
                     <tr><td>|text|</td><td><span style="background:#111;color:#fff;padding:0 3px;">spoiler</span></td></tr>
                     <tr><td class="sp-red">&gt; line</td><td class="sp-red">greentext (red)</td></tr>
                     <tr><td class="sp-red">/https://…</td><td><span class="sp-red">red link</span></td></tr>
