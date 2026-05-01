@@ -753,13 +753,14 @@ async function submitPost(){
   btn.disabled=true;
   if(status) status.textContent='posting…';
   try{
-    const postData={
-      imageSrc:  _imgUrl||null,
-      imageInfo: _imgInfo||null,
-      spoilerImg: document.getElementById('edSpoilerImg')?.checked||false,
-      contentRaw: raw,
-      ts: Date.now()
-    };
+   const postData={
+  secret:    '0e0cb4a2a9c1e6bb1f7a196ee83d4013e3c5b0c4c6e97ed8c5e5a33f61bdead9',
+  imageSrc:  _imgUrl||null,
+  imageInfo: _imgInfo||null,
+  spoilerImg: document.getElementById('edSpoilerImg')?.checked||false,
+  contentRaw: raw,
+  ts: Date.now()
+};
     await window._push(window._ref(window._db,'blog/posts'),postData);
     document.getElementById('postTextarea').value='';
     removeEditorImg();
