@@ -94,26 +94,7 @@ a:hover{text-decoration:underline;}
 .post-content .spoiler:hover,.post-content .spoiler.revealed{background:#333;color:#fff;}
 .post-content code{font-family:monospace;background:#eee;padding:0 3px;font-size:12px;}
 
-.spoiler-post-body{position:relative;cursor:pointer;}
-.spoiler-post-body .post-blur-inner{filter:blur(7px);pointer-events:none;user-select:none;transition:filter 0.25s;}
-.spoiler-post-body.revealed .post-blur-inner{filter:none;pointer-events:auto;user-select:auto;}
-.spoiler-post-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.08);pointer-events:none;}
-.spoiler-post-overlay span{font-family:'SpecialElite',Georgia,serif;font-size:11px;color:#555;letter-spacing:1px;text-transform:uppercase;background:#f6f6f6;padding:2px 8px;border:1px dashed #aaa;}
-.spoiler-post-body.revealed .spoiler-post-overlay{display:none;}
-
-.lock-wall{padding:20px 12px;text-align:center;background:#f0f0f0;border-top:1px dashed #ccc;}
-.lock-wall .lock-icon{font-size:26px;display:block;margin-bottom:8px;}
-.lock-wall p{font-family:'SpecialElite',Georgia,serif;font-size:12px;color:#555;margin-bottom:10px;}
-.lock-pw-input{background:#fff;border:1px solid #aaa;color:#111;font-family:'SpecialElite',Georgia,serif;font-size:12px;padding:4px 8px;margin:0 4px 0 0;width:160px;}
-.lock-btn{background:#111;border:1px solid #111;color:#fff;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:4px 12px;cursor:pointer;}
-.lock-btn:hover{background:#fff;color:#111;}
-.lock-err{display:block;color:#c00;font-family:'SpecialElite',Georgia,serif;font-size:10px;margin-top:5px;}
-.lock-wall-admin{padding:8px 12px;background:#f8f8f8;border-top:1px dashed #ccc;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.lock-load-btn{background:none;border:1px dashed #aaa;color:#888;font-family:'SpecialElite',Georgia,serif;font-size:10px;padding:2px 8px;cursor:pointer;}
-.lock-load-btn:hover{border-color:#333;color:#333;}
 .post-badge{display:inline-block;font-size:9px;font-family:'SpecialElite',Georgia,serif;padding:1px 5px;border:1px solid;margin-left:4px;letter-spacing:.5px;text-transform:uppercase;}
-.post-badge.badge-lock{border-color:#c00;color:#c00;}
-.post-badge.badge-lock-plus{border-color:#c60;color:#c60;}
 .post-badge.badge-spoiler{border-color:#66a;color:#66a;}
 
 .post-embed{margin-top:8px;clear:both;}
@@ -170,11 +151,6 @@ a:hover{text-decoration:underline;}
 #edImgPreview{display:none;padding:6px 10px 0;background:#f9f9f9;border-top:1px solid #eee;overflow:hidden;}
 #edImgPreview img{max-width:180px;max-height:180px;object-fit:contain;border:1px solid #ccc;display:block;float:left;margin-right:8px;}
 #edImgPreview .ed-img-info{font-family:monospace;font-size:11px;color:#555;display:block;clear:both;padding-top:4px;}
-
-.lock-options-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0;}
-.lock-type-select{background:#fff;border:1px solid #ccc;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 6px;color:#111;cursor:pointer;}
-#lockCustomPwWrap{display:none;align-items:center;gap:4px;}
-#lockCustomPwInput{background:#fff;border:1px solid #ccc;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:3px 6px;color:#111;width:140px;}
 
 .admin-del-row{display:flex;gap:6px;align-items:stretch;flex-wrap:wrap;padding:6px 0;}
 #adminPostSelect{flex:1;min-width:0;background:#fff;border:1px solid #ccc;color:#111;font-family:'SpecialElite',Georgia,serif;font-size:11px;padding:4px 7px;cursor:pointer;}
@@ -295,6 +271,20 @@ window._allPosts=[];
 window._isAdmin=false;
 let _imgUrl=null,_imgInfo=null;
 
+function escHTML(v){
+  return String(v??'').replace(/[&<>"']/g,ch=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+function escAttr(v){return escHTML(v);}
+function postTime(p){
+  const n=Number(p?.ts);
+  return Number.isFinite(n)?n:0;
+}
+function sortPostsNewest(posts){
+  return [...posts].sort((a,b)=>postTime(b)-postTime(a)||String(b.id||'').localeCompare(String(a.id||'')));
+}
+
 /* ── DATE FORMAT ── */
 function fmtDate(ts){
   const d=new Date(ts);
@@ -367,7 +357,7 @@ function filterPosts(){
   const container=document.getElementById('postsContainer');
   if(!container) return;
   const sort=document.getElementById('sortSelect')?.value||'newest';
-  let posts=[...window._allPosts];
+  let posts=sortPostsNewest(window._allPosts);
   if(sort==='oldest') posts.reverse();
   renderPosts(posts,container,false);
 }
@@ -376,20 +366,24 @@ window.filterPosts=filterPosts;
 function renderPosts(posts,container,adminMode){
   if(!container) return;
   if(!posts.length){container.innerHTML='<div class="no-posts">no posts found.</div>';return;}
-  const total=posts.length;
-  container.innerHTML=posts.map((p,i)=>buildCard(p,total-i,adminMode)).join('');
+  const newest=sortPostsNewest(window._allPosts);
+  const total=newest.length;
+  container.innerHTML=posts.map(p=>{
+    const realIndex=newest.findIndex(x=>x.id===p.id);
+    const num=realIndex>=0?total-realIndex:total;
+    try{return buildCard(p,num,adminMode);}
+    catch(e){
+      console.error('[renderPosts] post skipped:',p?.id,e);
+      return '<div class="post-card"><div class="post-body">post render error.</div></div>';
+    }
+  }).join('');
   container.querySelectorAll('.post-img-wrap img').forEach(img=>img.addEventListener('click',()=>openLb(img.src)));
   container.querySelectorAll('.spoiler-img-wrap').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('revealed')));
-  container.querySelectorAll('.spoiler-post-body').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('revealed')));
 }
 
 function buildCard(p,num,adminMode){
-  const isLocked=p.locked&&p.locked!==false;
-  const isSpoilerPost=!!p.spoilerPost;
-
   let badges='';
-  if(isLocked) badges+='<span class="post-badge badge-lock'+(p.locked==='custom'?'-plus':'')+'">content locked'+(p.locked==='custom'?'+':'')+'</span>';
-  if(isSpoilerPost) badges+='<span class="post-badge badge-spoiler">spoiler</span>';
+  if(p.spoilerImg) badges+='<span class="post-badge badge-spoiler">spoiler image</span>';
 
   const header=`<div class="post-card-header">
     <span class="post-author">Settembre</span>
@@ -400,34 +394,6 @@ function buildCard(p,num,adminMode){
 
   const delHTML=(window._isAdmin||adminMode)
     ?`<div class="post-actions"><button class="post-del-btn" onclick="deletePost('${p.id}')">delete</button></div>`:'';
-
-  if(isLocked&&!window._isAdmin&&!adminMode){
-    return `<div class="post-card" id="post-${p.id}">
-      ${header}
-      <div class="lock-wall">
-        <span class="lock-icon" style="font-size:13px;font-family:'SpecialElite',Georgia,serif;">content locked</span>
-        <p>Password protected post</p>
-        <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
-          <input type="password" class="lock-pw-input" placeholder="password..."
-            onkeydown="if(event.key==='Enter')unlockPost('${p.id}','${p.locked}','${p.lockHash||''}')">
-          <button class="lock-btn" onclick="unlockPost('${p.id}','${p.locked}','${p.lockHash||''}')">Unlock</button>
-        </div>
-        <span class="lock-err" id="lockerr-${p.id}"></span>
-      </div>
-    </div>`;
-  }
-
-  if(isLocked&&(window._isAdmin||adminMode)){
-    return `<div class="post-card" id="post-${p.id}">
-      ${header}
-      <div class="lock-wall-admin">
-        <span style="color:#999;font-size:11px;font-family:'SpecialElite',Georgia,serif;">content locked</span>
-        <button class="lock-load-btn" id="lockbtn-${p.id}" onclick="adminShowLocked('${p.id}')">load content</button>
-        <div id="lockcontent-${p.id}"></div>
-      </div>
-      ${delHTML}
-    </div>`;
-  }
 
   const raw=p.contentRaw||'';
 
@@ -469,22 +435,14 @@ function buildCard(p,num,adminMode){
 
   let imgHTML='';
   if(p.imageSrc){
-    const info=p.imageInfo?`<span class="post-img-file-info">File: ${p.imageInfo.name} (${p.imageInfo.sizeKB} KB, ${p.imageInfo.w}×${p.imageInfo.h})</span>`:'';
+    const info=p.imageInfo?`<span class="post-img-file-info">File: ${escHTML(p.imageInfo.name)} (${escHTML(p.imageInfo.sizeKB)} KB, ${escHTML(p.imageInfo.w)}x${escHTML(p.imageInfo.h)})</span>`:'';
     const cls=p.spoilerImg?'post-img-wrap spoiler-img-wrap':'post-img-wrap';
-    imgHTML=info+`<div class="${cls}"><img src="${p.imageSrc}" alt="" loading="lazy"></div>`;
+    imgHTML=info+`<div class="${cls}"><img src="${escAttr(p.imageSrc)}" alt="" loading="lazy"></div>`;
   }
 
   const innerBody=`${imgHTML}<div class="post-content">${htmlContent}</div><div style="clear:both;"></div>${embedHTML}`;
 
-  let bodyHTML;
-  if(isSpoilerPost){
-    bodyHTML=`<div class="post-body spoiler-post-body" title="Click to reveal">
-      <div class="post-blur-inner">${innerBody}</div>
-      <div class="spoiler-post-overlay"><span>click to reveal</span></div>
-    </div>`;
-  } else {
-    bodyHTML=`<div class="post-body">${innerBody}</div>`;
-  }
+  const bodyHTML=`<div class="post-body">${innerBody}</div>`;
 
   return `<div class="post-card" id="post-${p.id}">
     ${header}
@@ -493,59 +451,12 @@ function buildCard(p,num,adminMode){
   </div>`;
 }
 
-/* ── UNLOCK POST ── */
-async function unlockPost(id,lockType,lockHash){
-  const errEl=document.getElementById('lockerr-'+id);
-  const card=document.getElementById('post-'+id);
-  const pw=card?.querySelector('.lock-pw-input')?.value||'';
-  if(!pw){if(errEl)errEl.textContent='enter a password.';return;}
-  if(errEl) errEl.textContent='checking…';
-  try{
-    const inputHash=await window._sha256(pw);
-    let expectedHash=lockHash;
-    if(lockType==='admin'){
-      const snap=await window._get(window._ref(window._db,'admin/passHash'));
-      expectedHash=snap.val();
-    }
-    if(inputHash!==expectedHash){if(errEl)errEl.textContent='wrong password.';return;}
-    const snap=await window._get(window._ref(window._db,'blog/lockedContent/'+id));
-    if(!snap.exists()){if(errEl)errEl.textContent='content not found.';return;}
-    const data=snap.val();
-    const p=window._allPosts.find(x=>x.id===id)||{};
-    p.contentRaw=data.contentRaw||'';
-    p.locked=false;
-    const idx=window._allPosts.findIndex(x=>x.id===id);
-    const num=window._allPosts.length-idx;
-    const newCard=buildCard({...p,locked:false},num,false);
-    const tmp=document.createElement('div');
-    tmp.innerHTML=newCard;
-    card.replaceWith(tmp.firstChild);
-  }catch(e){if(errEl)errEl.textContent='error: '+e.message;}
-}
-window.unlockPost=unlockPost;
-
-/* ── ADMIN SHOW LOCKED ── */
-async function adminShowLocked(id){
-  const btn=document.getElementById('lockbtn-'+id);
-  const content=document.getElementById('lockcontent-'+id);
-  if(btn) btn.style.display='none';
-  try{
-    const snap=await window._get(window._ref(window._db,'blog/lockedContent/'+id));
-    if(!snap.exists()){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">content not found.</span>';return;}
-    const data=snap.val();
-    const {html}=parse4chan(data.contentRaw||'');
-    if(content) content.innerHTML='<div class="post-content" style="margin-top:8px;color:#111;">'+html+'</div>';
-  }catch(e){if(content)content.innerHTML='<span style="color:#c00;font-size:11px;">error: '+e.message+'</span>';}
-}
-window.adminShowLocked=adminShowLocked;
-
 /* ── DELETE POST ── */
 async function deletePost(id){
   if(!window._isAdmin) return;
   if(!confirm('delete this post?')) return;
   try{
     await window._remove(window._ref(window._db,'blog/posts/'+id));
-    await window._remove(window._ref(window._db,'blog/lockedContent/'+id)).catch(()=>{});
     document.getElementById('post-'+id)?.remove();
     renderAdminPostList();
   }catch(e){alert('error: '+e.message);}
@@ -561,7 +472,6 @@ async function deleteSelectedPost(){
   if(!confirm('delete this post?')) return;
   try{
     await window._remove(window._ref(window._db,'blog/posts/'+id));
-    await window._remove(window._ref(window._db,'blog/lockedContent/'+id)).catch(()=>{});
     document.getElementById('post-'+id)?.remove();
     renderAdminPostList();
   }catch(e){alert('error: '+e.message);}
@@ -572,13 +482,13 @@ window.deleteSelectedPost=deleteSelectedPost;
 function renderAdminPostList(){
   const sel=document.getElementById('adminPostSelect');
   if(!sel) return;
-  const posts=window._allPosts;
+  const posts=sortPostsNewest(window._allPosts);
   sel.innerHTML='<option value="">— select a post —</option>'+
     posts.map(p=>{
       const preview=(p.contentRaw||'').slice(0,60).replace(/\n/g,' ')||'[no text]';
-      const lockMark=p.locked?'🔒 ':'';
-      const spoilerMark=p.spoilerPost?'👁 ':'';
-      return `<option value="${p.id}">${lockMark}${spoilerMark}[${fmtDate(p.ts)}] ${preview}</option>`;
+      const lockMark='';
+      const spoilerMark=p.spoilerImg?'[img spoiler] ':'';
+      return `<option value="${escAttr(p.id)}">${lockMark}${spoilerMark}[${fmtDate(p.ts)}] ${escHTML(preview)}</option>`;
     }).join('');
 }
 window.renderAdminPostList=renderAdminPostList;
@@ -651,25 +561,6 @@ function injectAdminUI(){
             <div id="edImgPreview"></div>
           </td>
         </tr>
-        <tr>
-          <td class="chan-label" style="padding-top:8px;">Options</td>
-          <td class="chan-field">
-            <div class="lock-options-row">
-              <label class="ed-check"><input type="checkbox" id="edSpoilerPost"> spoiler post</label>
-              <span style="color:#ccc;margin:0 4px;">|</span>
-              <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">lock:</span>
-              <select class="lock-type-select" id="lockTypeSelect" onchange="onLockTypeChange()">
-                <option value="none">none</option>
-                <option value="admin">🔒 lock (admin password)</option>
-                <option value="custom">🔒+ lock+ (custom password)</option>
-              </select>
-              <div id="lockCustomPwWrap">
-                <span style="color:#555;font-size:11px;font-family:'SpecialElite',Georgia,serif;">password:</span>
-                <input type="password" id="lockCustomPwInput" placeholder="custom password">
-              </div>
-            </div>
-          </td>
-        </tr>
       </tbody></table>
       <div class="submit-row">
         <button class="submit-btn" id="submitBtn" onclick="submitPost()">Post</button>
@@ -705,14 +596,6 @@ document.addEventListener('click',function(e){
     p.classList.remove('open');
   }
 });
-
-/* ── LOCK TYPE CHANGE ── */
-function onLockTypeChange(){
-  const sel=document.getElementById('lockTypeSelect');
-  const wrap=document.getElementById('lockCustomPwWrap');
-  if(wrap) wrap.style.display=sel.value==='custom'?'flex':'none';
-}
-window.onLockTypeChange=onLockTypeChange;
 
 /* ── GREENTEXT AUTOCOMPLETE ── */
 function setupGreentextAutocomplete(ta){
@@ -808,7 +691,7 @@ async function handleFileSelect(event){
     if(statusEl) statusEl.textContent='image ready.';
     if(preview){
       preview.style.display='block';
-      preview.innerHTML=`<img src="${data.secure_url}" alt=""><span class="ed-img-info">File: ${file.name} (${sizeKB} KB, ${w}×${h})</span>`;
+      preview.innerHTML=`<img src="${escAttr(data.secure_url)}" alt=""><span class="ed-img-info">File: ${escHTML(file.name)} (${escHTML(sizeKB)} KB, ${escHTML(w)}x${escHTML(h)})</span>`;
     }
   }catch(err){if(statusEl) statusEl.textContent='upload error: '+err.message; console.error(err);}
 }
@@ -840,16 +723,8 @@ async function submitPost(){
   const btn=document.getElementById('submitBtn');
   const status=document.getElementById('edStatus');
   const raw=(document.getElementById('postTextarea')?.value||'').trim();
-  const lockType=document.getElementById('lockTypeSelect')?.value||'none';
-  const spoilerPost=document.getElementById('edSpoilerPost')?.checked||false;
 
   if(!raw&&!_imgUrl){if(status)status.textContent='write something first.';return;}
-
-  let customLockPass='';
-  if(lockType==='custom'){
-    customLockPass=(document.getElementById('lockCustomPwInput')?.value||'').trim();
-    if(!customLockPass){if(status)status.textContent='enter a custom password for lock+.';return;}
-  }
 
   btn.disabled=true;
   if(status) status.textContent='posting…';
@@ -859,33 +734,15 @@ async function submitPost(){
       imageSrc:  _imgUrl||null,
       imageInfo: _imgInfo||null,
       spoilerImg: document.getElementById('edSpoilerImg')?.checked||false,
-      spoilerPost: spoilerPost,
+      contentRaw: raw,
       ts: Date.now()
     };
 
-    if(lockType==='none'){
-      postData.contentRaw=raw;
-    } else if(lockType==='admin'){
-      postData.locked='admin';
-      postData.contentRaw='';
-    } else if(lockType==='custom'){
-      postData.locked='custom';
-      postData.lockHash=await window._sha256(customLockPass);
-      postData.contentRaw='';
-    }
-
-    const newRef=await window._push(window._ref(window._db,'blog/posts'),postData);
-
-    if(lockType!=='none'){
-      await window._set(window._ref(window._db,'blog/lockedContent/'+newRef.key),{contentRaw:raw});
-    }
+    await window._push(window._ref(window._db,'blog/posts'),postData);
 
     document.getElementById('postTextarea').value='';
     removeEditorImg();
     const si=document.getElementById('edSpoilerImg'); if(si) si.checked=false;
-    const sp=document.getElementById('edSpoilerPost'); if(sp) sp.checked=false;
-    const ls=document.getElementById('lockTypeSelect'); if(ls){ls.value='none';onLockTypeChange();}
-    const lp=document.getElementById('lockCustomPwInput'); if(lp) lp.value='';
     if(status){status.textContent='posted!';setTimeout(()=>{status.textContent='';},3000);}
 
   }catch(e){
@@ -977,7 +834,7 @@ window.closeLb=closeLb;
 <!-- ── FIREBASE MODULE ── -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, remove, onValue, get, set }
+import { getDatabase, ref, push, remove, onValue, get }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const FB={
@@ -1003,20 +860,15 @@ window._ref=ref;
 window._push=push;
 window._remove=remove;
 window._get=get;
-window._set=set;
 window._sha256=sha256;
 window._onValue=onValue;
-
-// Init admin pass se não existir
-const passRef=ref(db,'admin/passHash');
-get(passRef).then(snap=>{if(!snap.exists()) sha256('shlimazl').then(hash=>set(passRef,hash));});
 
 // Listener de posts em tempo real
 onValue(ref(db,'blog/posts'),snap=>{
   const raw=[];
   snap.forEach(c=>raw.push({id:c.key,...c.val()}));
   console.log('[onValue] total posts recebidos do Firebase:', raw.length, raw.map(p=>p.id));
-  window._allPosts=raw.slice().reverse();
+  window._allPosts=sortPostsNewest(raw);
   filterPosts();
   if(window._isAdmin) renderAdminPostList();
 });
