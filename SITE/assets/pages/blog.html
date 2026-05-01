@@ -248,6 +248,7 @@ a:hover{text-decoration:underline;}
 </div>
 
 <canvas id="cursor-layer" aria-hidden="true"></canvas>
+<script src="../scripts/js/cursortrail.js" defer></script>
 
 <!-- ── YOUTUBE BG ── -->
 <script>
@@ -788,11 +789,55 @@ window.closeLb=closeLb;
   const ti=setInterval(()=>{document.title=T.slice(0,i);i++;if(i>T.length){clearInterval(ti);document.title=T;blink();}},120);
   function blink(){setTimeout(()=>{let j=0;const bi=setInterval(()=>{document.title=(j%2===0)?"デスノート":T;j++;if(j>5){clearInterval(bi);document.title=T;blink();}},120);},3000+Math.random()*800);}
 })();
+
 </script>
 
+<!-- ── FIREBASE MODULE ── -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, remove, onValue, get }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-<script src="../scripts/js/cursortrail.js" defer></script>
+const FB={
+  apiKey:"AIzaSyBBr6zPaWgGNcGHz9iiNTO8O4EgAzsUMOk",
+  authDomain:"scrapfielddatabase.firebaseapp.com",
+  databaseURL:"https://scrapfielddatabase-default-rtdb.firebaseio.com",
+  projectId:"scrapfielddatabase",
+  storageBucket:"scrapfielddatabase.firebasestorage.app",
+  messagingSenderId:"489751764776",
+  appId:"1:489751764776:web:22255a1e9bf05a538bfa1d"
+};
+const app=initializeApp(FB);
+const db=getDatabase(app);
 
+async function sha256(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+window._db=db;
+window._ref=ref;
+window._push=push;
+window._remove=remove;
+window._get=get;
+window._sha256=sha256;
+window._onValue=onValue;
+
+onValue(ref(db,'blog/posts'),snap=>{
+  const val=snap.val()||{};
+  const raw=Object.entries(val).map(([id,data])=>({...(data||{}),id}));
+  console.log('[onValue] total posts recebidos do Firebase:', raw.length, raw.map(p=>p.id));
+  window._allPosts=sortPostsNewest(raw);
+  filterPosts();
+  if(window._isAdmin) renderAdminPostList();
+});
+
+if(new URLSearchParams(window.location.search).has('admin')){
+  window._isAdminUrl=true;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',injectAdminUI);
+  else injectAdminUI();
+}
+</script>
 
 </body>
 </html>
