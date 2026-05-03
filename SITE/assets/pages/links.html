@@ -348,7 +348,25 @@ a:hover { text-decoration:underline; }
 
 
           <!-- ── CHANS ── -->
-<details class="link-group" id="chans-group">
+<details class="link-group" id="chans-group" style="display:none;">
+      </main>
+
+      <script>
+      // Mostra o grupo 'chans' ao digitar 'chans' fora de inputs
+      let chansBuffer = '';
+      document.addEventListener('keydown', function(e) {
+        // Ignora se estiver digitando em input, textarea ou contenteditable
+        const ae = document.activeElement;
+        if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+        chansBuffer += e.key.toLowerCase();
+        if (chansBuffer.length > 5) chansBuffer = chansBuffer.slice(-5);
+        if (chansBuffer === 'chans') {
+          const chansGroup = document.getElementById('chans-group');
+          if (chansGroup) chansGroup.style.display = '';
+          chansBuffer = '';
+        }
+      });
+      </script>
       <summary>chans</summary>
       <ul class="links-list">
         <li class="link-item"><a href="https://www.4chan.org/" target="_blank" rel="noopener noreferrer"><span class="link-name">4chan</span></a></li>
