@@ -542,13 +542,33 @@ a:hover { text-decoration:underline; }
 
 </div><!-- /#wrapper -->
 
-<script>
-  const chans = document.getElementById("chans-group");
 
-chans.addEventListener("toggle", function () {
-  if (chans.open) {
-    alert("i didn’t check all those chans and may not have consumed all of them, so i don’t take responsibility for illegal or sensitive content in them. be aware. DO NOT acess chans without knowing what they are.");
+document.addEventListener('DOMContentLoaded', function() {
+  // Alerta ao abrir o grupo 'chans'
+  const chans = document.getElementById("chans-group");
+  if (chans) {
+    chans.addEventListener("toggle", function () {
+      if (chans.open) {
+        alert("i didn’t check all those chans and may not have consumed all of them, so i don’t take responsibility for illegal or sensitive content in them. be aware. DO NOT acess chans without knowing what they are.");
+      }
+    });
+    // Esconde o grupo 'chans' por padrão
+    chans.style.display = 'none';
   }
+
+  // Mostra o grupo 'chans' ao digitar 'chans' fora de inputs
+  let chansBuffer = '';
+  document.addEventListener('keydown', function(e) {
+    // Ignora se estiver digitando em input, textarea ou contenteditable
+    const ae = document.activeElement;
+    if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable)) return;
+    chansBuffer += e.key.toLowerCase();
+    if (chansBuffer.length > 5) chansBuffer = chansBuffer.slice(-5);
+    if (chansBuffer === 'chans') {
+      if (chans) chans.style.display = '';
+      chansBuffer = '';
+    }
+  });
 });
 
 /* ── TOOLTIP ── */
